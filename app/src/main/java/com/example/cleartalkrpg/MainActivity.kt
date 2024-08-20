@@ -47,10 +47,10 @@ fun SceneGenerator() {
             startDestination = ClearTalkRPGScreen.Title.name,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable(route = ClearTalkRPGScreen.SelectScenario.name) {
+            composable(route = ClearTalkRPGScreen.Title.name) {
 
             }
-            composable(route = ClearTalkRPGScreen.Scenario.name) {
+            composable(route = ClearTalkRPGScreen.SelectScenario.name) {
 
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
