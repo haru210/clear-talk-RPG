@@ -19,15 +19,34 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
+import com.example.cleartalkrpg.ClearTalkRPGScreen
 
 @Composable
-fun TitleScreen() {
+fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
     TitleLogo()
-    TitleScreenMenu()
+    TitleScreenMenu(navController)
+}
+
+@Composable
+fun TitleScreenMenu(navController: NavController) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(0.dp, 120.dp, 0.dp, 0.dp)
+    ) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
+        ) {
+            TapToStartButton(navController)
+            ViewResultHistoryButton()
+        }
+    }
 }
 
 @Composable
@@ -65,25 +84,11 @@ fun TitleLogo() {
 }
 
 @Composable
-fun TitleScreenMenu() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(0.dp, 120.dp, 0.dp, 0.dp)
-    ) {
-        Row(
-            horizontalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            TapToStartButton()
-            ViewResultHistoryButton()
-        }
-    }
-}
-
-@Composable
-fun TapToStartButton() {
+fun TapToStartButton(navController: NavController) {
     Surface(
+        onClick = {
+            navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
+        },
         color = Color.Gray.copy(alpha = 0.65f)
     ) {
         Text(
@@ -116,13 +121,5 @@ fun ViewResultHistoryButton() {
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TitleScreenPreview() {
-    ClearTalkRPGTheme {
-        TitleScreen()
     }
 }

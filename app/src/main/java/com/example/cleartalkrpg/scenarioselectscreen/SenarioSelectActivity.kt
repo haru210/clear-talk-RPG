@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.scenarioselectscreen
+/*package com.example.cleartalkrpg.scenarioselectscreen
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
@@ -35,7 +35,7 @@ class ScenarioSelectActivity : ComponentActivity() {
                         selectedScenario = selectedScenario.value,
                         onScenarioSelected = { scenario -> selectedScenario.value = scenario }
                     ),
-                    onBackClick = { /* Handle back navigation */ },
+                    onBackClick = { finish() },
                     onStartScenarioClick = {
                         // シナリオを開始する処理をここに記述
                         startScenario(selectedScenario.value)
@@ -58,3 +58,4 @@ data class Scenario(
     val timeRequired: String,
     val highScore: Int
 )
+*/
