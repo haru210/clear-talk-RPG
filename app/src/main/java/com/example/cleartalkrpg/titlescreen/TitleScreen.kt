@@ -1,6 +1,7 @@
 package com.example.cleartalkrpg.titlescreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,13 +19,14 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 
-/* タイトル画面を表示する関数 */
 @Composable
 fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
