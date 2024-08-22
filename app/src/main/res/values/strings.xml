@@ -4,4 +4,5 @@
     <string name="scenario_time">所要時間: %1$s</string>
     <string name="scenario_high_score">最高スコア: %1$d</string>
     <string name="title_activity_title_screen">Title Screen</string>
+    <string name="title_activity_scenario_select">Title Screen</string>
 </resources>

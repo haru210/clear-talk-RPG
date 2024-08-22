@@ -9,13 +9,18 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.Box
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+
+
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -49,82 +54,97 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 
 @Composable
 fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit, onStartScenarioClick: () -> Unit) {
-    Column(modifier = Modifier.fillMaxSize()) {
-        CustomTopBar(onBackClick = onBackClick)
-        Row(modifier = Modifier.fillMaxSize()) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
-            ) {
-                Image(
-                    painter = painterResource(id = state.selectedScenario.imageRes),
-                    contentDescription = state.selectedScenario.title,
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+        ) {
+            CustomTopBar(onBackClick = onBackClick)
+            Row(modifier = Modifier.fillMaxSize()) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .weight(1f),
-                    contentScale = ContentScale.Crop
-                )
-                Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(vertical = 8.dp),
-                    elevation = CardDefaults.elevatedCardElevation(4.dp)
+                        .weight(1f)
+                        .padding(8.dp)
                 ) {
-                    Text(
-                        text = state.selectedScenario.description,
-                        fontSize = 16.sp,
-                        modifier = Modifier.padding(16.dp)
+                    Image(
+                        painter = painterResource(id = state.selectedScenario.imageRes),
+                        contentDescription = state.selectedScenario.title,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(1f),
+                        contentScale = ContentScale.Crop
                     )
-                }
-                Row(modifier = Modifier.fillMaxWidth()) {
                     Card(
                         modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp),
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
                         elevation = CardDefaults.elevatedCardElevation(4.dp)
                     ) {
                         Text(
-                            text = "Time: ${state.selectedScenario.timeRequired}",
-                            fontSize = 14.sp,
+                            text = state.selectedScenario.description,
+                            fontSize = 16.sp,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
-                    Card(
-                        modifier = Modifier
-                            .weight(1f)
-                            .padding(8.dp),
-                        elevation = CardDefaults.elevatedCardElevation(4.dp)
-                    ) {
-                        Text(
-                            text = "High Score: ${state.selectedScenario.highScore}",
-                            fontSize = 14.sp,
-                            modifier = Modifier.padding(16.dp)
-                        )
+                    Row(modifier = Modifier.fillMaxWidth()) {
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp),
+                            elevation = CardDefaults.elevatedCardElevation(4.dp)
+                        ) {
+                            Text(
+                                text = "Time: ${state.selectedScenario.timeRequired}",
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
+                        Card(
+                            modifier = Modifier
+                                .weight(1f)
+                                .padding(8.dp),
+                            elevation = CardDefaults.elevatedCardElevation(4.dp)
+                        ) {
+                            Text(
+                                text = "High Score: ${state.selectedScenario.highScore}",
+                                fontSize = 14.sp,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                        }
                     }
                 }
-                Spacer(modifier = Modifier.height(16.dp)) // ボタンの上にスペースを追加
-                Button(
-                    onClick = onStartScenarioClick,
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
+                        .weight(1f)
+                        .verticalScroll(rememberScrollState())
                 ) {
-                    Text(text = "スタート")
-                }
-            }
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                state.scenarios.forEach { scenario ->
-                    ScenarioButton(scenario = scenario, onClick = { state.onScenarioSelected(scenario) })
+                    state.scenarios.forEach { scenario ->
+                        ScenarioButton(scenario = scenario, onClick = { state.onScenarioSelected(scenario) })
+                    }
                 }
             }
         }
+
+        // 丸型のスタートボタンを右下に配置
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(16.dp)
+                .size(60.dp) // ボタンのサイズを指定
+                .background(Color.Blue, shape = CircleShape) // 丸型の背景色
+                .clickable(onClick = onStartScenarioClick)
+                .border(2.dp, Color.White, CircleShape), // ボタンの枠線
+            contentAlignment = Alignment.Center
+        ) {
+            Text(
+                text = "スタート",
+                color = Color.White,
+                fontSize = 14.sp
+            )
+        }
     }
 }
+
 
 
 @Composable
@@ -133,7 +153,7 @@ fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp)
-            .height(100.dp)
+            .height(60.dp)
             .clickable(onClick = onClick),
         contentAlignment = Alignment.Center
     ) {
