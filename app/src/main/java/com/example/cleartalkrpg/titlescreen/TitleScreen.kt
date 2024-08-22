@@ -97,9 +97,32 @@ fun TapToStartButton() {
 }
 
 @Composable
-fun TitleScreen(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Good evening $name!",
-        modifier = modifier
-    )
+fun ViewResultHistoryButton() {
+    Surface(
+        color = Color.Gray.copy(alpha = 0.65f),
+    ) {
+        Box(
+            modifier = Modifier.padding(16.dp, 0.dp)
+        ) {
+            Row(
+            ) {
+                HistoryIcon(iconColor = Color.White, iconSize = 48.dp)
+                Text(
+                    text = "リザルト履歴確認",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp,
+                    color = Color.White,
+                    modifier = Modifier.padding(12.dp, 12.dp)
+                )
+            }
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun TitleScreenPreview() {
+    ClearTalkRPGTheme {
+        TitleScreen()
+    }
 }
