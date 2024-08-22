@@ -1,4 +1,4 @@
-/*package com.example.cleartalkrpg
+package com.example.cleartalkrpg
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
