@@ -67,6 +67,7 @@ fun TitleLogo() {
                 color = Color.White,
                 modifier = Modifier.padding(36.dp, 12.dp)
             )
+
         }
     }
 }

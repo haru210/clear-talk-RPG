@@ -29,6 +29,14 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <!-- 他のアクティビティ
+        <activity
+            android:name=".TitleScreen"
+            android:exported="true"
+            android:label="@string/title_activity_title_screen"
+            android:theme="@style/Theme.ClearTalkRPG" />-->
+
     </application>
 
 </manifest>
