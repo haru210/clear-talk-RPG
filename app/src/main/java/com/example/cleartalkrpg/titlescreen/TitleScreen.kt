@@ -23,7 +23,6 @@ import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 
-@Composable
 fun TitleScreen() {
     TitleScreenBackgroundImage()
     TitleLogo()
