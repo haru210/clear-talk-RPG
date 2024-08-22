@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.titlescreen
+/*package com.example.cleartalkrpg.titlescreen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -10,3 +10,4 @@ fun TitleScreen(name: String, modifier: Modifier = Modifier) {
         modifier = modifier
     )
 }
+*/
