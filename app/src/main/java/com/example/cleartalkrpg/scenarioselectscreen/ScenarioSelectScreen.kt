@@ -9,6 +9,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.Box
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,14 +48,14 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
+fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit, onStartScenarioClick: () -> Unit) {
     Column(modifier = Modifier.fillMaxSize()) {
         CustomTopBar(onBackClick = onBackClick)
         Row(modifier = Modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp) // 追加のパディング
+                    .padding(8.dp)
             ) {
                 Image(
                     painter = painterResource(id = state.selectedScenario.imageRes),
@@ -67,7 +69,7 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(vertical = 8.dp),
-                    elevation = CardDefaults.elevatedCardElevation(4.dp) // 修正箇所
+                    elevation = CardDefaults.elevatedCardElevation(4.dp)
                 ) {
                     Text(
                         text = state.selectedScenario.description,
@@ -80,7 +82,7 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                             .padding(8.dp),
-                        elevation = CardDefaults.elevatedCardElevation(4.dp) // 修正箇所
+                        elevation = CardDefaults.elevatedCardElevation(4.dp)
                     ) {
                         Text(
                             text = "Time: ${state.selectedScenario.timeRequired}",
@@ -92,7 +94,7 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
                         modifier = Modifier
                             .weight(1f)
                             .padding(8.dp),
-                        elevation = CardDefaults.elevatedCardElevation(4.dp) // 修正箇所
+                        elevation = CardDefaults.elevatedCardElevation(4.dp)
                     ) {
                         Text(
                             text = "High Score: ${state.selectedScenario.highScore}",
@@ -101,8 +103,16 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
                         )
                     }
                 }
+                Spacer(modifier = Modifier.height(16.dp)) // ボタンの上にスペースを追加
+                Button(
+                    onClick = onStartScenarioClick,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(text = "スタート")
+                }
             }
-
             Column(
                 modifier = Modifier
                     .weight(1f)
@@ -115,6 +125,7 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit) {
         }
     }
 }
+
 
 @Composable
 fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {

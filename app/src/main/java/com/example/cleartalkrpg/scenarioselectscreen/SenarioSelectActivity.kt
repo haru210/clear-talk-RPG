@@ -17,7 +17,6 @@ class ScenarioSelectActivity : ComponentActivity() {
             val scenarios = listOf(
                 Scenario("Scenario 1", "Description for Scenario 1", R.mipmap.scenario1_image, "5 mins", 1500),
                 Scenario("Scenario 2", "Description for Scenario 2", R.mipmap.scenario1_image, "7 mins", 2000)
-                // 他のシナリオを追加
             )
             val selectedScenario = remember { mutableStateOf(scenarios[0]) }
 
@@ -28,12 +27,21 @@ class ScenarioSelectActivity : ComponentActivity() {
                         selectedScenario = selectedScenario.value,
                         onScenarioSelected = { scenario -> selectedScenario.value = scenario }
                     ),
-                    onBackClick = { /* Handle back navigation */ }
+                    onBackClick = { /* Handle back navigation */ },
+                    onStartScenarioClick = {
+                        // シナリオを開始する処理をここに記述
+                        startScenario(selectedScenario.value)
+                    }
                 )
             }
         }
     }
+
+    private fun startScenario(scenario: Scenario) {
+        // シナリオ開始処理を実装（別のActivityを起動するなど）
+    }
 }
+
 
 data class Scenario(
     val title: String,
