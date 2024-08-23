@@ -11,7 +11,6 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
@@ -19,11 +18,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-
-
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import androidx.annotation.DrawableRes
 
 @Composable
 fun CustomTopBar(onBackClick: () -> Unit) {
@@ -53,7 +52,12 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit, onStartScenarioClick: () -> Unit) {
+fun ScenarioSelectScreen(
+    state: ScenarioSelectState,
+    onBackClick: () -> Unit,
+    onStartScenarioClick: () -> Unit, // 追加
+    navController: NavController // 追加
+) {
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -145,8 +149,6 @@ fun ScenarioSelectScreen(state: ScenarioSelectState, onBackClick: () -> Unit, on
     }
 }
 
-
-
 @Composable
 fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {
     Box(
@@ -160,3 +162,11 @@ fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {
         Text(text = scenario.title, fontSize = 14.sp, color = Color.Black)
     }
 }
+
+data class Scenario(
+    val title: String,
+    val description: String,
+    @DrawableRes val imageRes: Int,
+    val timeRequired: String,
+    val highScore: Int
+)
