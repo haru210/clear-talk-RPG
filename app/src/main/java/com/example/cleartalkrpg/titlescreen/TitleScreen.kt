@@ -1,7 +1,6 @@
 package com.example.cleartalkrpg.titlescreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -11,24 +10,29 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
-import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 
-fun TitleScreen() {
+/* タイトル画面を表示する関数 */
+@Composable
+fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
     TitleLogo()
-    TitleScreenMenu()
+    TitleScreenMenu(navController)
 }
 
+/* タイトル画面の背景を表示する関数 */
 @Composable
 fun TitleScreenBackgroundImage() {
     Box(modifier = Modifier.fillMaxSize()) {
@@ -41,6 +45,7 @@ fun TitleScreenBackgroundImage() {
     }
 }
 
+/* タイトルロゴを表示する関数 */
 @Composable
 fun TitleLogo() {
     Box(
@@ -49,7 +54,9 @@ fun TitleLogo() {
     ) {
         Surface(
             color = Color.Gray.copy(alpha = 0.65f),
-            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 120.dp)
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 0.dp, 120.dp)
+                .clip(RoundedCornerShape(8.dp))
         ) {
             Text(
                 text = "Clear Talk RPG",
@@ -58,13 +65,13 @@ fun TitleLogo() {
                 color = Color.White,
                 modifier = Modifier.padding(36.dp, 12.dp)
             )
-
         }
     }
 }
 
+/* メニュー (選択画面への移動ボタンと履歴確認画面への移動ボタン) を表示する関数 */
 @Composable
-fun TitleScreenMenu() {
+fun TitleScreenMenu(navController: NavController) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -74,16 +81,21 @@ fun TitleScreenMenu() {
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            TapToStartButton()
+            TapToStartButton(navController)
             ViewResultHistoryButton()
         }
     }
 }
 
+/* 選択画面への移動ボタンを表示する関数 */
 @Composable
-fun TapToStartButton() {
+fun TapToStartButton(navController: NavController) {
     Surface(
-        color = Color.Gray.copy(alpha = 0.65f)
+        onClick = {
+            navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
+        },
+        color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Text(
             text = "tap to start",
@@ -95,10 +107,13 @@ fun TapToStartButton() {
     }
 }
 
+/* 履歴確認画面への移動ボタンを表示する関数 */
 @Composable
 fun ViewResultHistoryButton() {
     Surface(
+        onClick = {},
         color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Box(
             modifier = Modifier.padding(16.dp, 0.dp)
@@ -115,13 +130,5 @@ fun ViewResultHistoryButton() {
                 )
             }
         }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun TitleScreenPreview() {
-    ClearTalkRPGTheme {
-        TitleScreen()
     }
 }
