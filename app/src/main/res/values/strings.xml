@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">VoiceApp</string>
+    <string name="app_name">ctrpg</string>
     <string name="scroll_view_description">Scroll through the list of boxes</string>
     <string name="scenario_time">所要時間: %1$s</string>
     <string name="scenario_high_score">最高スコア: %1$d</string>
