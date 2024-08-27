@@ -39,7 +39,9 @@ fun rememberScenarioSelectState(): ScenarioSelectState {
             clarity = "75",
             speed = "95",
             comment = "Excellent performance!"
-        )
+        ),
+        Scenario("Scenario 1", "Description for Scenario 1", R.mipmap.scenario1_image, "5 mins", 1500, "2024-08-21", "1000", "80", "70", "90", "Good work!"),
+        Scenario("Scenario 2", "Description for Scenario 2", R.mipmap.scenario1_image, "7 mins", 2000, "2024-08-22", "1500", "85", "75", "95", "Excellent performance!")
     )
     val selectedScenario = remember { mutableStateOf(scenarios[0]) }
 
