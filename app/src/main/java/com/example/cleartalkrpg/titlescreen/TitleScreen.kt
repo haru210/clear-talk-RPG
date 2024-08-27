@@ -48,7 +48,7 @@ fun TitleScreenMenu(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             TapToStartButton(navController)
-            ViewResultHistoryButton()
+            ViewResultHistoryButton(navController)
         }
     }
 }
@@ -115,9 +115,12 @@ fun TapToStartButton(navController: NavController) {
 }
 
 @Composable
-fun ViewResultHistoryButton() {
+fun ViewResultHistoryButton(navController: NavController) {
     Surface(
-        color = Color.Gray.copy(alpha = 0.65f),
+        onClick = {
+            navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
+        },
+        color = Color.Gray.copy(alpha = 0.65f)
     ) {
         Box(
             modifier = Modifier.padding(16.dp, 0.dp)
