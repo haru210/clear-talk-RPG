@@ -14,8 +14,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -73,7 +75,9 @@ fun TitleLogo() {
     ) {
         Surface(
             color = Color.Gray.copy(alpha = 0.65f),
-            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 120.dp)
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 0.dp, 120.dp)
+                .clip(RoundedCornerShape(8.dp))
         ) {
             Text(
                 text = "Clear Talk RPG",
@@ -102,7 +106,8 @@ fun TapToStartButton(navController: NavController) {
             permissionLauncher.launch(RECORD_AUDIO)
             navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
         },
-        color = Color.Gray.copy(alpha = 0.65f)
+        color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Text(
             text = "tap to start",
@@ -120,7 +125,8 @@ fun ViewResultHistoryButton(navController: NavController) {
         onClick = {
             navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
         },
-        color = Color.Gray.copy(alpha = 0.65f)
+        color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Box(
             modifier = Modifier.padding(16.dp, 0.dp)
