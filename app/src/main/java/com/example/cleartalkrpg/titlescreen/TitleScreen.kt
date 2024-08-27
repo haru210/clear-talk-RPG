@@ -45,7 +45,7 @@ fun TitleScreenMenu(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             TapToStartButton(navController)
-            ViewResultHistoryButton()
+            ViewResultHistoryButton(navController)
         }
     }
 }
@@ -103,8 +103,11 @@ fun TapToStartButton(navController: NavController) {
 }
 
 @Composable
-fun ViewResultHistoryButton() {
+fun ViewResultHistoryButton(navController: NavController) {
     Surface(
+        onClick = {
+            navController.navigate(ClearTalkRPGScreen.HistryScenario.name) // 選択画面へ移動する
+        },
         color = Color.Gray.copy(alpha = 0.65f),
     ) {
         Box(

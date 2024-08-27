@@ -3,17 +3,10 @@ package com.example.cleartalkrpg
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
@@ -23,6 +16,8 @@ import com.example.cleartalkrpg.titlescreen.TitleScreen
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
+import com.example.cleartalkrpg.histryscreen.HistryScenarioScreen
+import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -39,12 +34,15 @@ enum class ClearTalkRPGScreen {
     Title,
     SelectScenario,
     Scenario,
-    Result
+    Result,
+    HistryScenario
 }
 
 @Composable
 fun SceneGenerator() {
     val navController = rememberNavController()
+    val scenarioSelectState = rememberScenarioSelectState() // ここで定義していないためエラー
+
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
@@ -70,6 +68,13 @@ fun SceneGenerator() {
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(navController = navController)
+            }
+            composable(route = ClearTalkRPGScreen.HistryScenario.name) {
+                HistryScenarioScreen(
+                    state = scenarioSelectState, // 状態を渡す
+                    onBackClick = { navController.popBackStack() }, // 戻るボタンの処理を渡す
+                    navController = navController
+                )
             }
         }
     }

@@ -149,8 +149,6 @@ fun ScenarioSelectScreen(
     }
 }
 
-
-
 @Composable
 fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {
     Box(
@@ -170,5 +168,11 @@ data class Scenario(
     val description: String,
     @DrawableRes val imageRes: Int,
     val timeRequired: String,
-    val highScore: Int
+    val highScore: Int,
+    val totalScore: String,  // 追加
+    val clarity: String,      // 追加
+    val speed: String,        // 追加
+    val volume: String,       // 追加
+    val comment: String,      // 追加
+    val playDate: String      // 追加
 )
