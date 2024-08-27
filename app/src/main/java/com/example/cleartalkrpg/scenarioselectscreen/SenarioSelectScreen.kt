@@ -11,6 +11,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
@@ -168,5 +169,11 @@ data class Scenario(
     val description: String,
     @DrawableRes val imageRes: Int,
     val timeRequired: String,
-    val highScore: Int
+    val highScore: Int,
+    val totalScore: String,  // 追加
+    val clarity: String,      // 追加
+    val speed: String,        // 追加
+    val volume: String,       // 追加
+    val comment: String,      // 追加
+    val playDate: String      // 追加
 )

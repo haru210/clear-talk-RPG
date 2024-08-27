@@ -1,6 +1,7 @@
 package com.example.cleartalkrpg.titlescreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,21 +11,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
+import com.example.cleartalkrpg.ClearTalkRPGScreen
 
-/* タイトル画面を表示する関数 */
 @Composable
 fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
@@ -32,44 +32,6 @@ fun TitleScreen(navController: NavController) {
     TitleScreenMenu(navController)
 }
 
-/* タイトル画面の背景を表示する関数 */
-@Composable
-fun TitleScreenBackgroundImage() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
-            contentDescription = "Title screen background image",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize()
-        )
-    }
-}
-
-/* タイトルロゴを表示する関数 */
-@Composable
-fun TitleLogo() {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
-    ) {
-        Surface(
-            color = Color.Gray.copy(alpha = 0.65f),
-            modifier = Modifier
-                .padding(0.dp, 0.dp, 0.dp, 120.dp)
-                .clip(RoundedCornerShape(8.dp))
-        ) {
-            Text(
-                text = "Clear Talk RPG",
-                fontWeight = FontWeight.Bold,
-                fontSize = 48.sp,
-                color = Color.White,
-                modifier = Modifier.padding(36.dp, 12.dp)
-            )
-        }
-    }
-}
-
-/* メニュー (選択画面への移動ボタンと履歴確認画面への移動ボタン) を表示する関数 */
 @Composable
 fun TitleScreenMenu(navController: NavController) {
     Box(
@@ -87,15 +49,47 @@ fun TitleScreenMenu(navController: NavController) {
     }
 }
 
-/* 選択画面への移動ボタンを表示する関数 */
+@Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
+        )
+    }
+}
+
+@Composable
+fun TitleLogo() {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier.fillMaxSize()
+    ) {
+        Surface(
+            color = Color.Gray.copy(alpha = 0.65f),
+            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 120.dp)
+        ) {
+            Text(
+                text = "Clear Talk RPG",
+                fontWeight = FontWeight.Bold,
+                fontSize = 48.sp,
+                color = Color.White,
+                modifier = Modifier.padding(36.dp, 12.dp)
+            )
+
+        }
+    }
+}
+
 @Composable
 fun TapToStartButton(navController: NavController) {
     Surface(
         onClick = {
             navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
         },
-        color = Color.Gray.copy(alpha = 0.65f),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp))
+        color = Color.Gray.copy(alpha = 0.65f)
     ) {
         Text(
             text = "tap to start",
@@ -107,13 +101,10 @@ fun TapToStartButton(navController: NavController) {
     }
 }
 
-/* 履歴確認画面への移動ボタンを表示する関数 */
 @Composable
 fun ViewResultHistoryButton() {
     Surface(
-        onClick = {},
         color = Color.Gray.copy(alpha = 0.65f),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Box(
             modifier = Modifier.padding(16.dp, 0.dp)
@@ -132,3 +123,5 @@ fun ViewResultHistoryButton() {
         }
     }
 }
+
+
