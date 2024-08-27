@@ -1,5 +1,8 @@
 package com.example.cleartalkrpg.titlescreen
 
+import android.Manifest.permission.RECORD_AUDIO
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -15,6 +18,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -85,8 +89,17 @@ fun TitleLogo() {
 
 @Composable
 fun TapToStartButton(navController: NavController) {
+    val context = LocalContext.current
+
+    val permissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+        onResult = { isGranted ->
+
+        }
+    )
     Surface(
         onClick = {
+            permissionLauncher.launch(RECORD_AUDIO)
             navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
         },
         color = Color.Gray.copy(alpha = 0.65f)
