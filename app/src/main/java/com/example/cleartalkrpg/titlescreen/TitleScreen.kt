@@ -25,8 +25,12 @@ import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 
+<<<<<<< HEAD
 @Composable
 fun TitleScreen(navController: NavController) {
+=======
+fun TitleScreen() {
+>>>>>>> develop
     TitleScreenBackgroundImage()
     TitleLogo()
     TitleScreenMenu(navController)
@@ -123,3 +127,14 @@ fun ViewResultHistoryButton() {
         }
     }
 }
+<<<<<<< HEAD
+=======
+
+@Preview(showBackground = true)
+@Composable
+fun TitleScreenPreview() {
+    ClearTalkRPGTheme {
+        TitleScreen()
+    }
+}
+>>>>>>> develop
