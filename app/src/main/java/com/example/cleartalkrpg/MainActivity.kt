@@ -50,8 +50,6 @@ enum class ClearTalkRPGScreen {
 @Composable
 fun SceneGenerator() {
     val navController = rememberNavController()
-    val scenarioSelectState = rememberScenarioSelectState() // ここで定義していないためエラー
-
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,
@@ -62,13 +60,7 @@ fun SceneGenerator() {
                 TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
-                val state = rememberScenarioSelectState()
                 ScenarioSelectScreen(
-                    state = state,
-                    onBackClick = { navController.popBackStack() },
-                    onStartScenarioClick = {
-                        navController.navigate(ClearTalkRPGScreen.Scenario.name)
-                    },
                     navController = navController
                 )
             }
@@ -80,8 +72,6 @@ fun SceneGenerator() {
             }
             composable(route = ClearTalkRPGScreen.HistryScenario.name) {
                 HistryScenarioScreen(
-                    state = scenarioSelectState, // 状態を渡す
-                    onBackClick = { navController.popBackStack() }, // 戻るボタンの処理を渡す
                     navController = navController
                 )
             }

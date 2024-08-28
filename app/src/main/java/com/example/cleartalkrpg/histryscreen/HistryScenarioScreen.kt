@@ -17,8 +17,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.scenarioselectscreen.Scenario
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
+import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 
 @Composable
 fun rememberScenarioHistoryState(): List<Scenario> {
@@ -38,7 +40,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "戻る",
+            text = "タイトル画面へ",
             color = Color.White,
             fontSize = 13.sp,
             modifier = Modifier
@@ -59,14 +61,11 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 
 @Composable
 fun HistryScenarioScreen(
-    state: ScenarioSelectState,
-    onBackClick: () -> Unit,
     navController: NavController
 ) {
-    val scenarioHistory = rememberScenarioHistoryState()
-
+    val scenarioSelectState = rememberScenarioSelectState()
     Column(modifier = Modifier.fillMaxSize()) {
-        CustomTopBar(onBackClick = onBackClick)
+        CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Title.name) })
 
         Spacer(modifier = Modifier.height(8.dp))
 
@@ -77,7 +76,7 @@ fun HistryScenarioScreen(
                     .padding(8.dp)
                     .verticalScroll(rememberScrollState())
             ) {
-                state.selectedScenario?.let { scenario ->
+                scenarioSelectState.selectedScenario?.let { scenario ->
                     // 合計スコアを表示
                     TotalScoreCard(totalScore = scenario.totalScore)
                     Spacer(modifier = Modifier.height(8.dp))
@@ -102,11 +101,11 @@ fun HistryScenarioScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(8.dp)
             ) {
-                state.scenarios.forEach { scenario ->
+                scenarioSelectState.scenarios.forEach { scenario ->
                     ScenarioHistoryButton(
                         title = scenario.title,
                         date = "プレイ日: ${scenario.playDate}",
-                        onClick = { state.onScenarioSelected(scenario) }
+                        onClick = { scenarioSelectState.onScenarioSelected(scenario) }
                     )
                 }
             }

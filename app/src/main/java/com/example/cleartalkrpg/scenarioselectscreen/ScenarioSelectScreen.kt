@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.annotation.DrawableRes
+import com.example.cleartalkrpg.ClearTalkRPGScreen
 
 @Composable
 fun CustomTopBar(onBackClick: () -> Unit) {
@@ -38,7 +39,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "戻る",
+            text = "タイトル画面へ",
             color = Color.White,
             fontSize = 13.sp,
             modifier = Modifier.weight(1f, fill = false) // 左寄せ
@@ -54,17 +55,15 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 
 @Composable
 fun ScenarioSelectScreen(
-    state: ScenarioSelectState,
-    onBackClick: () -> Unit,
-    onStartScenarioClick: () -> Unit, // 追加
     navController: NavController // 追加
 ) {
+    val state = rememberScenarioSelectState()
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            CustomTopBar(onBackClick = onBackClick)
+            CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Title.name) })
             Row(modifier = Modifier.fillMaxSize()) {
                 Column(
                     modifier = Modifier
@@ -137,7 +136,7 @@ fun ScenarioSelectScreen(
                 .padding(16.dp)
                 .size(60.dp) // ボタンのサイズを指定
                 .background(Color.Blue, shape = CircleShape) // 丸型の背景色
-                .clickable(onClick = onStartScenarioClick)
+                .clickable(onClick = { navController.navigate(ClearTalkRPGScreen.Scenario.name) })
                 .border(2.dp, Color.White, CircleShape), // ボタンの枠線
             contentAlignment = Alignment.Center
         ) {
