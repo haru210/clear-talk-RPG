@@ -40,7 +40,7 @@ fun ResultScreen(navController: NavController) {
                 modifier = Modifier.height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color.Cyan)
+                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color(81, 235, 255, 255))
                 Surface(
                     modifier = Modifier.fillMaxHeight()
                 ) {
@@ -56,9 +56,9 @@ fun ResultScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color.Red)
-                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color.Blue)
-                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color.Green)
+                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
+                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
+                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -79,7 +79,7 @@ fun ResultScreen(navController: NavController) {
                 BackToOtherScreenButton(
                     displayName = "履歴確認画面へ",
                     backToOtherScreenClick = {
-                        navController.navigate(ClearTalkRPGScreen.HistryScenario.name)
+                        navController.navigate(ClearTalkRPGScreen.HistoryScenario.name)
                     }
                 )
             }

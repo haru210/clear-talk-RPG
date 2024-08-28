@@ -23,7 +23,7 @@ import com.example.cleartalkrpg.titlescreen.TitleScreen
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
-import com.example.cleartalkrpg.histryscreen.HistryScenarioScreen
+import com.example.cleartalkrpg.historyscreen.HistoryScenarioScreen
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
@@ -44,7 +44,7 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
-    HistryScenario
+    HistoryScenario
 }
 
 @Composable
@@ -60,9 +60,7 @@ fun SceneGenerator() {
                 TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
-                ScenarioSelectScreen(
-                    navController = navController
-                )
+                ScenarioSelectScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
                 ScenarioScreen(navController = navController, selectedScenarioId = 0)
@@ -70,10 +68,8 @@ fun SceneGenerator() {
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(navController = navController)
             }
-            composable(route = ClearTalkRPGScreen.HistryScenario.name) {
-                HistryScenarioScreen(
-                    navController = navController
-                )
+            composable(route = ClearTalkRPGScreen.HistoryScenario.name) {
+                HistoryScenarioScreen(navController = navController)
             }
         }
     }

@@ -1,8 +1,7 @@
 package com.example.cleartalkrpg.scenarioscreen
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -36,26 +35,36 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
             navController.navigate(ClearTalkRPGScreen.Result.name)
         }
     ) {
-        ScenarioScreenBackgroundImage()
-        ScenarioCharacterSprite()
         Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(0.dp, 24.dp),
-            contentAlignment = Alignment.BottomCenter
+            modifier = Modifier.fillMaxSize()
         ) {
-            ScenarioMessageBox(
-                scenarioMessage =
-                        "おう　なつだぜ\n" +
-                        "おれは　げんきだぜ\n" +
-                        "あまり　ちかよるな",
-                scenarioCharacterName = "かまきり"
-            )
+            ScenarioScreenBackgroundImage()
+            ScenarioCharacterSprite()
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp, 24.dp),
+                contentAlignment = Alignment.BottomCenter
+            ) {
+                ScenarioMessageBox(
+                    scenarioMessage =
+                    "おう　なつだぜ\n" +
+                            "おれは　げんきだぜ\n" +
+                            "あまり　ちかよるな",
+                    scenarioCharacterName = "かまきり"
+                )
+            }
+            Box(
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(16.dp)
+            ) {
+                Pause(navController = navController)
+            }
         }
     }
 }
 
-/* タイトル画面の背景を表示する関数 */
 @Composable
 fun ScenarioScreenBackgroundImage() {
     Box(
@@ -86,9 +95,7 @@ fun ScenarioCharacterSprite() {
 
 @Composable
 fun ScenarioMessageBox(scenarioMessage: String, scenarioCharacterName: String) {
-    Column(
-
-    ) {
+    Column {
         ScenarioCharacterNamePlate(characterName = scenarioCharacterName)
         DisplayScenarioMessage(scenarioMessage = scenarioMessage)
     }

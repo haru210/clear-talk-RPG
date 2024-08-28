@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.histryscreen
+package com.example.cleartalkrpg.historyscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,6 +21,7 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.scenarioselectscreen.Scenario
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
+import androidx.compose.ui.text.font.FontWeight
 
 @Composable
 fun rememberScenarioHistoryState(): List<Scenario> {
@@ -29,11 +30,43 @@ fun rememberScenarioHistoryState(): List<Scenario> {
 }
 
 @Composable
+fun ScenarioHistoryDetail(label: String, value: String, maxValue: String, modifier: Modifier = Modifier,cardColor: Color) {
+    Card(
+        modifier = modifier
+            .padding(0.dp)
+            .width(50.dp), // 横幅を適切に設定
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+        colors = CardDefaults.cardColors(containerColor = cardColor)
+
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth(), // 横幅を親コンテナに合わせる
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(
+                text = label,
+                fontSize = 14.sp,
+                color = Color.Black,
+                modifier = Modifier
+                    .weight(1f) // 左側に配置するため
+            )
+            Text(
+                text = "$value 点 / $maxValue 点",
+                fontSize = 16.sp,
+                color = Color.Black
+            )
+        }
+    }
+}
+
+@Composable
 fun CustomTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Gray)
+            .background(Color(182, 135, 112, 255))
             .padding(4.dp)
             .clickable { onBackClick() },
         verticalAlignment = Alignment.CenterVertically,
@@ -41,7 +74,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     ) {
         Text(
             text = "タイトル画面へ",
-            color = Color.White,
+            color = Color(24, 24, 24, 255),
             fontSize = 13.sp,
             modifier = Modifier
                 .padding(start = 8.dp)
@@ -50,7 +83,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
         Spacer(modifier = Modifier.weight(1f)) // 空白を作ってシナリオ選択を右端に寄せる
         Text(
             text = "履歴確認",
-            color = Color.White,
+            color = Color(0,0,0),
             fontSize = 13.sp,
             modifier = Modifier
                 .padding(end = 8.dp)
@@ -60,7 +93,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun HistryScenarioScreen(
+fun HistoryScenarioScreen(
     navController: NavController
 ) {
     val scenarioSelectState = rememberScenarioSelectState()
@@ -70,27 +103,60 @@ fun HistryScenarioScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.weight(1f)) {
-            Column(
+            // 左側のカラム - シナリオ詳細
+            Box(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(8.dp)
-                    .verticalScroll(rememberScrollState())
+                    .padding(8.dp),
+                contentAlignment = Alignment.Center // 中央に配置
             ) {
                 scenarioSelectState.selectedScenario?.let { scenario ->
-                    // 合計スコアを表示
-                    TotalScoreCard(totalScore = scenario.totalScore)
-                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Spacer(modifier = Modifier.weight(0.2f)) // 左側のスペースを追加
 
-                    // 速さ、明瞭さ、大きさを横に並べる
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        ScenarioHistoryDetail(label = "速さ", value = scenario.speed, modifier = Modifier.weight(1f))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ScenarioHistoryDetail(label = "明瞭さ", value = scenario.clarity, modifier = Modifier.weight(1f))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ScenarioHistoryDetail(label = "音量", value = scenario.volume, modifier = Modifier.weight(1f))
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            modifier = Modifier.weight(1f) // 左側の中央に配置
+                        ) {
+                            // 合計スコアを表示
+                            TotalScoreCard(totalScore = scenario.totalScore)
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            // 速さ、明瞭さ、大きさを縦に並べる
+                            Column(modifier = Modifier.fillMaxWidth()) {
+                                ScenarioHistoryDetail(
+                                    label = "音量",
+                                    value = scenario.volume,
+                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    modifier = Modifier.fillMaxWidth(),
+                                    cardColor=Color(244, 67, 54, 255)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                ScenarioHistoryDetail(
+                                    label = "明瞭さ",
+                                    value = scenario.clarity,
+                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    modifier = Modifier.fillMaxWidth() ,
+                                    cardColor=Color(71, 49, 168, 255)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                ScenarioHistoryDetail(
+                                    label = "速さ",
+                                    value = scenario.speed,
+                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    modifier = Modifier.fillMaxWidth(),
+                                    cardColor=Color(95, 253, 101, 255)
+                                )
+                            }
+                            Spacer(modifier = Modifier.height(8.dp))
+                            CommentCard(comment = scenario.comment) // 一言コメント
+                        }
+
+                        Spacer(modifier = Modifier.weight(0.2f)) // 右側のスペースを追加
                     }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    CommentCard(comment = scenario.comment) // 一言コメント
                 }
             }
 
@@ -113,16 +179,25 @@ fun HistryScenarioScreen(
     }
 }
 
+
+
+
+
+
+
 @Composable
 fun TotalScoreCard(totalScore: String) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
             .padding(8.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
+        elevation = CardDefaults.elevatedCardElevation(4.dp),
+                colors = CardDefaults.cardColors(
+                containerColor = Color(81, 235, 255, 255) // ラベンダー色の例
+                )
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(0.dp),
         ) {
             Text(
                 text = "合計スコア",
@@ -133,31 +208,6 @@ fun TotalScoreCard(totalScore: String) {
             Text(
                 text = totalScore,
                 fontSize = 24.sp,
-                color = Color.Black
-            )
-        }
-    }
-}
-
-@Composable
-fun ScenarioHistoryDetail(label: String, value: String, modifier: Modifier = Modifier) {
-    Card(
-        modifier = modifier
-            .padding(4.dp),
-        elevation = CardDefaults.elevatedCardElevation(4.dp)
-    ) {
-        Column(
-            modifier = Modifier.padding(8.dp)
-        ) {
-            Text(
-                text = label,
-                fontSize = 14.sp,
-                color = Color.Black
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Text(
-                text = value,
-                fontSize = 16.sp,
                 color = Color.Black
             )
         }

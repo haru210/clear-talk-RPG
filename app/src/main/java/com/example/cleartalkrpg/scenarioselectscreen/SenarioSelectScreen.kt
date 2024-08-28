@@ -13,6 +13,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.border
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,6 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.annotation.DrawableRes
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.text.font.FontWeight
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 
 @Composable
@@ -31,22 +34,21 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color.Gray) // 背景色を設定
-            .padding(7.dp)
-            .height(16.5.dp)
+            .background(Color(182, 135, 112, 255))
+            .padding(4.dp)
             .clickable { onBackClick() },
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween
-    ) {
+    )  {
         Text(
             text = "タイトル画面へ",
-            color = Color.White,
+            color = Color(0,0,0),
             fontSize = 13.sp,
             modifier = Modifier.weight(1f, fill = false) // 左寄せ
         )
         Text(
             text = "シナリオ選択",
-            color = Color.White,
+            color = Color(0,0,0),
             fontSize = 13.sp,
             modifier = Modifier.weight(1f, fill = false) // 右寄せ
         )
@@ -55,7 +57,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 
 @Composable
 fun ScenarioSelectScreen(
-    navController: NavController // 追加
+    navController: NavController
 ) {
     val state = rememberScenarioSelectState()
     Box(modifier = Modifier.fillMaxSize()) {
@@ -78,11 +80,15 @@ fun ScenarioSelectScreen(
                             .weight(1f),
                         contentScale = ContentScale.Crop
                     )
-                    Card(
+
+                    // 描画用の Box を使用して枠組みを丸くする
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(vertical = 8.dp),
-                        elevation = CardDefaults.elevatedCardElevation(4.dp)
+                            .padding(vertical = 8.dp)
+                            .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                            .background(Color.White, shape = RoundedCornerShape(8.dp))
+                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
                     ) {
                         Text(
                             text = state.selectedScenario.description,
@@ -90,27 +96,32 @@ fun ScenarioSelectScreen(
                             modifier = Modifier.padding(16.dp)
                         )
                     }
+
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        Card(
+                        Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(8.dp),
-                            elevation = CardDefaults.elevatedCardElevation(4.dp)
+                                .padding(8.dp)
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
                         ) {
                             Text(
-                                text = "Time: ${state.selectedScenario.timeRequired}",
+                                text = "所要時間: ${state.selectedScenario.timeRequired}",
                                 fontSize = 14.sp,
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
-                        Card(
+                        Box(
                             modifier = Modifier
                                 .weight(1f)
-                                .padding(8.dp),
-                            elevation = CardDefaults.elevatedCardElevation(4.dp)
+                                .padding(8.dp)
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                                .background(Color.White, shape = RoundedCornerShape(8.dp))
+                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
                         ) {
                             Text(
-                                text = "High Score: ${state.selectedScenario.highScore}",
+                                text = "最高スコア: ${state.selectedScenario.highScore}",
                                 fontSize = 14.sp,
                                 modifier = Modifier.padding(16.dp)
                             )
@@ -137,7 +148,8 @@ fun ScenarioSelectScreen(
                 .size(60.dp) // ボタンのサイズを指定
                 .background(Color.Blue, shape = CircleShape) // 丸型の背景色
                 .clickable(onClick = { navController.navigate(ClearTalkRPGScreen.Scenario.name) })
-                .border(2.dp, Color.White, CircleShape), // ボタンの枠線
+                .border(2.dp, Color.White, CircleShape) // ボタンの枠線
+                .shadow(4.dp, CircleShape), // シャドウを追加
             contentAlignment = Alignment.Center
         ) {
             Text(
@@ -148,6 +160,7 @@ fun ScenarioSelectScreen(
         }
     }
 }
+
 
 @Composable
 fun ScenarioButton(scenario: Scenario, onClick: () -> Unit) {
