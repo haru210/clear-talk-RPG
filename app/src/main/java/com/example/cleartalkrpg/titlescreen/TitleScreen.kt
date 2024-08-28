@@ -25,7 +25,6 @@ import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 
-/* タイトル画面を表示する関数 */
 @Composable
 fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
@@ -45,7 +44,7 @@ fun TitleScreenMenu(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             TapToStartButton(navController)
-            ViewResultHistoryButton(navController)
+            ViewResultHistoryButton()
         }
     }
 }
@@ -103,11 +102,8 @@ fun TapToStartButton(navController: NavController) {
 }
 
 @Composable
-fun ViewResultHistoryButton(navController: NavController) {
+fun ViewResultHistoryButton() {
     Surface(
-        onClick = {
-            navController.navigate(ClearTalkRPGScreen.HistryScenario.name) // 選択画面へ移動する
-        },
         color = Color.Gray.copy(alpha = 0.65f),
     ) {
         Box(
@@ -127,3 +123,5 @@ fun ViewResultHistoryButton(navController: NavController) {
         }
     }
 }
+
+
