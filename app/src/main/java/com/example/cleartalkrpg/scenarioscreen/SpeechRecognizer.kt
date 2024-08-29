@@ -24,9 +24,11 @@ fun SpeechRecognize(context: Context) {
         }
     )
     var target : String = "test"
+    var tar_cnt : Int = 4
     var res : String = speechRecognizerManager.speechResult.value
     val tar_length = target.length
     val res_length = res.length
+
     //編集距離を求める
     var dp = Array(tar_length + 1) { IntArray(res_length + 1) }
 
@@ -48,23 +50,46 @@ fun SpeechRecognize(context: Context) {
         }
     }
     val lev_dis = dp[tar_length][res_length]
-    val clarity : Int = 40 - lev_dis * 2
+    //明瞭さの点数を求める
+    val clarity_score : Int = 40 - lev_dis * 2
 
+    //速さの点数を求める
+    val speed : Double = tar_cnt.toDouble() / (speechRecognizerManager.speechDuration.toDouble() / 1000.0F)
+    //満点となる速度の最大値と最小値
+    val speed_min = 5.5F
+    val speed_max = 7.5F
+
+    var speed_score = 30
+    if(speed < speed_min){
+        speed_score -= Math.round(speed_min - speed).toInt()
+    }
+    else if(speed > speed_max){
+        speed_score -= Math.round(speed - speed_max).toInt()
+    }
 }
 
 class SpeechRecognizerManager(private val context: Context) {
     private var speechRecognizer: SpeechRecognizer? = null
     val speechResult = mutableStateOf("")
 
+    var startTime : Long = 0
+    var endTime : Long = 0
+    var speechDuration : Long = 0
+
     fun startListening() {
         if(SpeechRecognizer.isRecognitionAvailable(context)) {
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             speechRecognizer?.setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {}
-                override fun onBeginningOfSpeech() {}
+                override fun onBeginningOfSpeech() {
+                    startTime = System.currentTimeMillis()
+                }
                 override fun onRmsChanged(rmsdB: Float) {}
                 override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {}
+                override fun onEndOfSpeech() {
+                    endTime = System.currentTimeMillis()
+                    speechDuration = endTime - startTime
+                }
                 override fun onError(error: Int) {
                     speechResult.value = "Error: $error"
                 }
