@@ -24,23 +24,23 @@ fun SpeechRecognize(context: Context) {
         }
     )
     var target : String = "test"
-    var tar_cnt : Int = 4
+    var targetCnt : Int = 4
     var res : String = speechRecognizerManager.speechResult.value
-    val tar_length = target.length
-    val res_length = res.length
+    val targetLength = target.length
+    val resLength = res.length
 
     //編集距離を求める
-    var dp = Array(tar_length + 1) { IntArray(res_length + 1) }
+    var dp = Array(targetLength + 1) { IntArray(resLength + 1) }
 
-    for(i in 0..tar_length) {
+    for(i in 0..targetLength) {
         dp[i][0] = i
     }
-    for(j in 0..res_length) {
+    for(j in 0..resLength) {
         dp[0][j] = j
     }
 
-    for(i in 1..tar_length) {
-        for(j in 1..res_length) {
+    for(i in 1..targetLength) {
+        for(j in 1..resLength) {
             val cost = if(target[i - 1] == res[j - 1]) 0 else 1
             dp[i][j] = minOf(
                 dp[i-1][j] + 1,
@@ -49,22 +49,22 @@ fun SpeechRecognize(context: Context) {
                 )
         }
     }
-    val lev_dis = dp[tar_length][res_length]
+    val levenDis = dp[targetLength][resLength]
     //明瞭さの点数を求める
-    val clarity_score : Int = 40 - lev_dis * 2
+    val clarityScore : Int = 40 - levenDis * 2
 
     //速さの点数を求める
-    val speed : Double = tar_cnt.toDouble() / (speechRecognizerManager.speechDuration.toDouble() / 1000.0F)
+    val speed : Double = targetCnt.toDouble() / (speechRecognizerManager.speechDuration.toDouble() / 1000.0F)
     //満点となる速度の最大値と最小値
-    val speed_min = 5.5F
-    val speed_max = 7.5F
+    val speedMin = 5.5F
+    val speedMax = 7.5F
 
-    var speed_score = 30
-    if(speed < speed_min){
-        speed_score -= Math.round(speed_min - speed).toInt()
+    var speedScore = 30
+    if(speed < speedMin){
+        speedScore -= Math.round(speedMin - speed).toInt()
     }
-    else if(speed > speed_max){
-        speed_score -= Math.round(speed - speed_max).toInt()
+    else if(speed > speedMax){
+        speedScore -= Math.round(speed - speedMax).toInt()
     }
     var volumeAvg : Double = 0.0
     //音量の点数を求める
