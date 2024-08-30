@@ -66,6 +66,12 @@ fun SpeechRecognize(context: Context) {
     else if(speed > speed_max){
         speed_score -= Math.round(speed - speed_max).toInt()
     }
+    var volumeAvg : Double = 0.0
+    //音量の点数を求める
+    for(i in 0..speechRecognizerManager.volumeList.size - 1){
+        volumeAvg += speechRecognizerManager.volumeList[i].second.toDouble() * ((speechRecognizerManager.volumeList[i].first.toDouble() / speechRecognizerManager.speechDuration.toDouble() ) / 1000.0)
+    }
+    val volumeScore = Math.round(volumeAvg * 3.0)
 }
 
 class SpeechRecognizerManager(private val context: Context) {
@@ -75,6 +81,8 @@ class SpeechRecognizerManager(private val context: Context) {
     var startTime : Long = 0
     var endTime : Long = 0
     var speechDuration : Long = 0
+    var beforeTime : Long = 0
+    val volumeList = ArrayList<Pair<Long, Float>>()
 
     fun startListening() {
         if(SpeechRecognizer.isRecognitionAvailable(context)) {
@@ -83,8 +91,12 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onReadyForSpeech(params: Bundle?) {}
                 override fun onBeginningOfSpeech() {
                     startTime = System.currentTimeMillis()
+                    beforeTime = startTime
                 }
-                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onRmsChanged(rmsdB: Float) {
+                    volumeList.add(Pair(beforeTime - System.currentTimeMillis(), rmsdB))
+                    beforeTime = System.currentTimeMillis()
+                }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {
                     endTime = System.currentTimeMillis()
