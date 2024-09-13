@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resultscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +15,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.Card
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import com.example.cleartalkrpg.R
 
 @Composable
 fun ResultScreen(navController: NavController) {
+    TitleScreenBackgroundImage()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -117,7 +123,11 @@ fun TotalScoreBoard(totalScore: Double, backgroundColor: Color) {
 fun CommentBoard(comment: String) {
     Surface(
         color = Color.LightGray.copy(alpha = 0.60f),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp))
+        shape = RoundedCornerShape(8.dp),
+        shadowElevation = 0.dp, // 影や枠線を取り除く]
+        tonalElevation = 0.dp,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
     ) {
         Box(contentAlignment = Alignment.Center) {
             Column(
@@ -168,6 +178,18 @@ fun BackToOtherScreenButton(
         Text(
             text = displayName,
             modifier = Modifier.padding(24.dp)
+        )
+    }
+}
+
+@Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
         )
     }
 }

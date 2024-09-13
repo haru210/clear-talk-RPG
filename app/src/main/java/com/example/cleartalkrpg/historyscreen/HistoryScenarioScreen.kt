@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.historyscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -14,6 +15,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -22,6 +25,7 @@ import com.example.cleartalkrpg.scenarioselectscreen.Scenario
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import androidx.compose.ui.text.font.FontWeight
+import com.example.cleartalkrpg.R
 
 @Composable
 fun rememberScenarioHistoryState(): List<Scenario> {
@@ -66,7 +70,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(182, 135, 112, 255))
+            .background(Color(240, 118, 79, 255))
             .padding(4.dp)
             .clickable { onBackClick() },
         verticalAlignment = Alignment.CenterVertically,
@@ -93,9 +97,22 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 }
 
 @Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
+        )
+    }
+}
+
+@Composable
 fun HistoryScenarioScreen(
     navController: NavController
 ) {
+    TitleScreenBackgroundImage()
     val scenarioSelectState = rememberScenarioSelectState()
     Column(modifier = Modifier.fillMaxSize()) {
         CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Title.name) })
@@ -130,7 +147,7 @@ fun HistoryScenarioScreen(
                                 ScenarioHistoryDetail(
                                     label = "音量",
                                     value = scenario.volume,
-                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    maxValue = "30", // 最大値は必要に応じて設定
                                     modifier = Modifier.fillMaxWidth(),
                                     cardColor=Color(244, 67, 54, 255)
                                 )
@@ -138,7 +155,7 @@ fun HistoryScenarioScreen(
                                 ScenarioHistoryDetail(
                                     label = "明瞭さ",
                                     value = scenario.clarity,
-                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    maxValue = "40", // 最大値は必要に応じて設定
                                     modifier = Modifier.fillMaxWidth() ,
                                     cardColor=Color(71, 49, 168, 255)
                                 )
@@ -146,7 +163,7 @@ fun HistoryScenarioScreen(
                                 ScenarioHistoryDetail(
                                     label = "速さ",
                                     value = scenario.speed,
-                                    maxValue = "100", // 最大値は必要に応じて設定
+                                    maxValue = "30", // 最大値は必要に応じて設定
                                     modifier = Modifier.fillMaxWidth(),
                                     cardColor=Color(95, 253, 101, 255)
                                 )
