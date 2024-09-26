@@ -16,6 +16,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -30,11 +31,18 @@ import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import com.example.cleartalkrpg.database.Result
 
 @Composable
-fun TitleScreen(navController: NavController) {
+fun TitleScreen(navController: NavController/* , resultList: SnapshotStateList<Result> */) {
     TitleScreenBackgroundImage()
     TitleLogo()
+    /* リザルトリストから得点をインデックスで取得し画面上に表示 (デバック) */
+    /*
+    Box {
+        Text(text = resultList[0].toString())
+    }
+    */
     TitleScreenMenu(navController)
 }
 

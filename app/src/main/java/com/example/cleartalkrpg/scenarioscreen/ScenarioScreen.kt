@@ -29,8 +29,11 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
 import kotlinx.coroutines.delay
 
+/* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
 @Composable
 fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
+    var messageDisplaySpeed: Long = 50
+
     Surface(
         onClick = {
             navController.navigate(ClearTalkRPGScreen.Result.name)
@@ -49,7 +52,8 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
                         "おう　なつだぜ\n" +
                         "おれは　げんきだぜ\n" +
                         "あまり　ちかよるな",
-                scenarioCharacterName = "かまきり"
+                scenarioCharacterName = "かまきり",
+                messageDisplaySpeed = messageDisplaySpeed
             )
         }
     }
@@ -70,6 +74,7 @@ fun ScenarioScreenBackgroundImage() {
     }
 }
 
+/* 画面に表示するキャラクターのアバター */
 @Composable
 fun ScenarioCharacterSprite() {
     Box(
@@ -84,16 +89,18 @@ fun ScenarioCharacterSprite() {
     }
 }
 
+/* ネームプレートと表示する文字列をまとめたコンポーネント */
 @Composable
-fun ScenarioMessageBox(scenarioMessage: String, scenarioCharacterName: String) {
+fun ScenarioMessageBox(scenarioMessage: String, scenarioCharacterName: String, messageDisplaySpeed: Long) {
     Column(
 
     ) {
         ScenarioCharacterNamePlate(characterName = scenarioCharacterName)
-        DisplayScenarioMessage(scenarioMessage = scenarioMessage)
+        DisplayScenarioMessage(scenarioMessage = scenarioMessage, speed = messageDisplaySpeed)
     }
 }
 
+/* テキストボックスの上方に設置されるキャラクターのネームプレート */
 @Composable
 fun ScenarioCharacterNamePlate(characterName: String) {
     Surface(
@@ -111,15 +118,16 @@ fun ScenarioCharacterNamePlate(characterName: String) {
     }
 }
 
+/* 渡された文字列を指定された速度で1文字ずつ表示する */
 @Composable
-fun DisplayScenarioMessage(scenarioMessage: String) {
+fun DisplayScenarioMessage(scenarioMessage: String, speed: Long) {
     var displayedMessage by remember { mutableStateOf("") }
 
     // LaunchedEffectで文字を1文字ずつ表示する
     LaunchedEffect(scenarioMessage) {
         displayedMessage = ""
         for (i in scenarioMessage.indices) {
-            delay(50)
+            delay(speed)
             displayedMessage += scenarioMessage[i]
         }
     }

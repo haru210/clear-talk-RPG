@@ -1,9 +1,8 @@
 plugins {
-    alias(libs.plugins.androidApplication)
-    alias(libs.plugins.jetbrainsKotlinAndroid)
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.ksp.gradle.plugin)
     alias(libs.plugins.compose.compiler)
-    alias(libs.plugins.kapt)
-    id("kotlin-kapt")
 }
 
 android {
@@ -65,9 +64,9 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.i18n)
 
-    implementation("androidx.room:room-runtime:2.6.1")
-    implementation("androidx.room:room-ktx:2.6.1")
-    kapt("androidx.room:room-compiler:2.6.1")
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
