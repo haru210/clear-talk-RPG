@@ -8,6 +8,7 @@ import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import java.util.Date
 
 @Database(entities = [Result::class], version = 1, exportSchema = false)
 @TypeConverters(DateTimeConverter::class)
@@ -47,6 +48,26 @@ abstract class ResultDatabase: RoomDatabase() {
 
         suspend fun populateDatabase(resultDao: ResultDao) {
             //TODO: シードデータの挿入
+            val testResult = Result(
+                scenario_title = "A",
+                total_score = 100,
+                volume_score = 30,
+                clarity_score = 40,
+                speed_score = 30,
+                comment = "Good",
+                created_at = Date(100)
+            )
+            val testResult2 = Result(
+                scenario_title = "B",
+                total_score = 0,
+                volume_score = 0,
+                clarity_score = 0,
+                speed_score = 0,
+                comment = "F",
+                created_at = Date(1727429788565)
+            )
+            resultDao.post(testResult)
+            resultDao.post(testResult2)
         }
     }
 }
