@@ -162,6 +162,7 @@ fun SceneGenerator(resultViewModel: ResultViewModel) {
                 ResultHistoryScreen(
                     state = scenarioSelectState, // 状態を渡す
                     onBackClick = { navController.popBackStack() }, // 戻るボタンの処理を渡す
+                    resultViewModel = resultViewModel,
                     navController = navController
                 )
             }

@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.scenarioselectscreen.Scenario
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
+import com.example.cleartalkrpg.viewmodel.ResultViewModel
 
 @Composable
 fun rememberScenarioHistoryState(): List<Scenario> {
@@ -61,6 +62,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 fun ResultHistoryScreen(
     state: ScenarioSelectState,
     onBackClick: () -> Unit,
+    resultViewModel: ResultViewModel,
     navController: NavController
 ) {
     val scenarioHistory = rememberScenarioHistoryState()
