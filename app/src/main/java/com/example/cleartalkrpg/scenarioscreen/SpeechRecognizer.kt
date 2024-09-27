@@ -37,11 +37,15 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onReadyForSpeech(params: Bundle?) {}
                 override fun onBeginningOfSpeech() {
                     startTime = System.currentTimeMillis()
-                    beforeTime = startTime
                 }
                 override fun onRmsChanged(rmsdB: Float) {
-                    volumeList.add(Pair(beforeTime - System.currentTimeMillis(), rmsdB))
-                    beforeTime = System.currentTimeMillis()
+                    if(beforeTime == 0L){
+                        beforeTime = System.currentTimeMillis()
+                    }
+                    else if(rmsdB > 0) {
+                        volumeList.add(Pair(System.currentTimeMillis() - beforeTime, rmsdB))
+                        beforeTime = System.currentTimeMillis()
+                    }
                 }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {
@@ -87,6 +91,7 @@ class SpeechRecognizerManager(private val context: Context) {
         var res: String = speechResult.value
         val targetLength = target.length
         val resLength = res.length
+        speechDuration -= 400
 
         //編集距離を求める
         var dp = Array(targetLength + 1) { IntArray(resLength + 1) }
