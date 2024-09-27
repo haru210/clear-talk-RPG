@@ -5,11 +5,12 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface ResultDao {
     @Query("select * from results order by created_at asc")
-    fun getAll(): MutableList<Result>
+    fun getAll(): Flow<List<Result>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun post(result: Result)
