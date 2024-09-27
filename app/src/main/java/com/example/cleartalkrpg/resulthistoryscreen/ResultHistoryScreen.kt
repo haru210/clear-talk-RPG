@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.histryscreen
+package com.example.cleartalkrpg.resulthistoryscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -58,7 +58,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
 }
 
 @Composable
-fun HistryScenarioScreen(
+fun ResultHistoryScreen(
     state: ScenarioSelectState,
     onBackClick: () -> Unit,
     navController: NavController

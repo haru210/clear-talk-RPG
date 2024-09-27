@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.histryscreen
+package com.example.cleartalkrpg.resulthistoryscreen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
@@ -6,7 +6,6 @@ import androidx.compose.runtime.remember
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.scenarioselectscreen.Scenario
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
-import androidx.annotation.DrawableRes
 import androidx.compose.runtime.mutableStateListOf
 
 val scenarioHistory = mutableStateListOf<Scenario>()

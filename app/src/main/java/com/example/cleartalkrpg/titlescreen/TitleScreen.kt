@@ -14,8 +14,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
 import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
+import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -28,11 +31,18 @@ import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import com.example.cleartalkrpg.database.Result
 
 @Composable
-fun TitleScreen(navController: NavController) {
+fun TitleScreen(navController: NavController/* , resultList: SnapshotStateList<Result> */) {
     TitleScreenBackgroundImage()
     TitleLogo()
+    /* リザルトリストから得点をインデックスで取得し画面上に表示 (デバック) */
+    /*
+    Box {
+        Text(text = resultList[0].toString())
+    }
+    */
     TitleScreenMenu(navController)
 }
 
@@ -48,7 +58,7 @@ fun TitleScreenMenu(navController: NavController) {
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             TapToStartButton(navController)
-            ViewResultHistoryButton()
+            ViewResultHistoryButton(navController)
         }
     }
 }
@@ -73,7 +83,9 @@ fun TitleLogo() {
     ) {
         Surface(
             color = Color.Gray.copy(alpha = 0.65f),
-            modifier = Modifier.padding(0.dp, 0.dp, 0.dp, 120.dp)
+            modifier = Modifier
+                .padding(0.dp, 0.dp, 0.dp, 120.dp)
+                .clip(RoundedCornerShape(8.dp))
         ) {
             Text(
                 text = "Clear Talk RPG",
@@ -102,7 +114,8 @@ fun TapToStartButton(navController: NavController) {
             permissionLauncher.launch(RECORD_AUDIO)
             navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
         },
-        color = Color.Gray.copy(alpha = 0.65f)
+        color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Text(
             text = "tap to start",
@@ -115,9 +128,13 @@ fun TapToStartButton(navController: NavController) {
 }
 
 @Composable
-fun ViewResultHistoryButton() {
+fun ViewResultHistoryButton(navController: NavController) {
     Surface(
+        onClick = {
+            navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
+        },
         color = Color.Gray.copy(alpha = 0.65f),
+        modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Box(
             modifier = Modifier.padding(16.dp, 0.dp)
