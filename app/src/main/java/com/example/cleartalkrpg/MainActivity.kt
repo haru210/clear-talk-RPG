@@ -3,6 +3,7 @@ package com.example.cleartalkrpg
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
@@ -21,6 +22,8 @@ import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
 import com.example.cleartalkrpg.resulthistoryscreen.ResultHistoryScreen
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.viewmodel.ResultViewModel
+import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -31,6 +34,9 @@ class MainActivity : ComponentActivity() {
     // private val dao = RoomApplication.database.resultDao()
     // private var resultList = mutableStateListOf<Result>()
 
+    private val resultViewModel: ResultViewModel by viewModels {
+        ResultViewModelFactory((application as CTRPGApplication).repository)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -47,7 +53,7 @@ class MainActivity : ComponentActivity() {
                 */
                 /* 読み込んだデータを各画面で使用できるように渡す */
                 // SceneGenerator(resultList)
-                SceneGenerator()
+                SceneGenerator(resultViewModel = resultViewModel)
             }
         }
         /* リザルトリストの読み込み */
@@ -119,7 +125,7 @@ enum class ClearTalkRPGScreen {
 }
 
 @Composable
-fun SceneGenerator(/* resultList: SnapshotStateList<Result> */) {
+fun SceneGenerator(resultViewModel: ResultViewModel) {
     val navController = rememberNavController()
     val scenarioSelectState = rememberScenarioSelectState() // ここで定義していないためエラー
 
@@ -131,8 +137,8 @@ fun SceneGenerator(/* resultList: SnapshotStateList<Result> */) {
         ) {
             composable(route = ClearTalkRPGScreen.Title.name) {
                 TitleScreen(
-                    navController = navController//,
-                    // resultList
+                    navController = navController,
+                    resultViewModel = resultViewModel
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {

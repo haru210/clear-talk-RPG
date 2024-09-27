@@ -63,9 +63,10 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.navigation.compose)
     implementation(libs.androidx.core.i18n)
-
+    implementation(libs.androidx.runtime.livedata)
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
+    implementation(libs.androidx.room.common)
     ksp(libs.room.compiler)
 
     testImplementation(libs.junit)

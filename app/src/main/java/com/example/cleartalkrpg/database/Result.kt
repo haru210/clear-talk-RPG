@@ -6,22 +6,23 @@ import java.util.Date
 
 @Entity(tableName = "results")
 data class Result(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val scenario_title: String = "",
-    val total_score: Float,
-    val volume_score: Float,
-    val clarity_score: Float,
-    val speed_score: Float,
+    val total_score: Int,
+    val volume_score: Int,
+    val clarity_score: Int,
+    val speed_score: Int,
     val comment: String = "",
     val created_at: Date = Date()
-) {
+)/* {
     constructor(
         scenario_title: String,
-        total_score: Float,
-        volume_score: Float,
-        clarity_score: Float,
-        speed_score: Float,
-        comment: String
+        total_score: Int,
+        volume_score: Int,
+        clarity_score: Int,
+        speed_score: Int,
+        comment: String,
+        created_at: Date,
     ):
         this(
             Int.MIN_VALUE,
@@ -32,4 +33,4 @@ data class Result(
             speed_score,
             comment
         )
-}
+} */
