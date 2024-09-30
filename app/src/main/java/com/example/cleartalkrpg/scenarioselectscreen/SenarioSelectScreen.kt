@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.*
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import androidx.compose.animation.core.tween
+import androidx.compose.ui.unit.Dp
 
 @Composable
 fun CustomTopBar(onBackClick: () -> Unit) {
@@ -71,13 +73,21 @@ fun TitleScreenBackgroundImage() {
 fun ScenarioSelectScreen(navController: NavController) {
     val state = rememberScenarioSelectState()
     TitleScreenBackgroundImage()
-    // 選択されたシナリオのインデックスを保持
-    var selectedScenarioIndex by remember { mutableStateOf<Int?>(null) }
+
+    // 初期状態で一番上のシナリオが選択されているように selectedScenarioIndex を 0 に設定
+    var selectedScenarioIndex by remember { mutableStateOf(0) }
+    var isScenarioSelected by remember { mutableStateOf(false) } // シナリオ決定後のフラグ
+
+    // 初期シナリオを選択
+    LaunchedEffect(Unit) {
+        state.onScenarioSelected(state.scenarios[selectedScenarioIndex])
+    }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
             CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Title.name) })
             Row(modifier = Modifier.fillMaxSize()) {
+                // シナリオ選択画面
                 Column(
                     modifier = Modifier
                         .weight(1f)
@@ -92,14 +102,13 @@ fun ScenarioSelectScreen(navController: NavController) {
                         contentScale = ContentScale.Crop
                     )
 
-                    // 描画用の Box を使用して枠組みを丸くする
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .padding(vertical = 8.dp)
-                            .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                            .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                             .background(Color.White, shape = RoundedCornerShape(8.dp))
-                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
+                            .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
                     ) {
                         Text(
                             text = state.selectedScenario.description,
@@ -113,9 +122,9 @@ fun ScenarioSelectScreen(navController: NavController) {
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(8.dp)
-                                .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                                 .background(Color.White, shape = RoundedCornerShape(8.dp))
-                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
+                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
                         ) {
                             Text(
                                 text = "所要時間: ${state.selectedScenario.timeRequired}",
@@ -127,9 +136,9 @@ fun ScenarioSelectScreen(navController: NavController) {
                             modifier = Modifier
                                 .weight(1f)
                                 .padding(8.dp)
-                                .shadow(4.dp, shape = RoundedCornerShape(8.dp)) // 影を外側に追加
+                                .shadow(4.dp, shape = RoundedCornerShape(8.dp))
                                 .background(Color.White, shape = RoundedCornerShape(8.dp))
-                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp)) // 枠組みを丸くする
+                                .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
                         ) {
                             Text(
                                 text = "最高スコア: ${state.selectedScenario.highScore}",
@@ -139,12 +148,14 @@ fun ScenarioSelectScreen(navController: NavController) {
                         }
                     }
                 }
+
+                // シナリオボタン
                 Column(
                     modifier = Modifier
                         .weight(1f)
                         .verticalScroll(rememberScrollState())
-                        .padding(8.dp), // カラムの内側にパディングを追加
-                    horizontalAlignment = Alignment.End // ボタンを右寄せに設定
+                        .padding(8.dp),
+                    horizontalAlignment = Alignment.End
                 ) {
                     state.scenarios.forEachIndexed { index, scenario ->
                         ScenarioButton(
@@ -160,30 +171,73 @@ fun ScenarioSelectScreen(navController: NavController) {
             }
         }
 
-        // 丸型のスタートボタンを右下に配置
-        Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .padding(16.dp)
-                .size(60.dp) // ボタンのサイズを指定
-                .background(Color.Blue, shape = CircleShape) // 丸型の背景色
-                .clickable(onClick = { navController.navigate(ClearTalkRPGScreen.Scenario.name) })
-                .border(2.dp, Color.White, CircleShape) // ボタンの枠線
-                .shadow(4.dp, CircleShape), // シャドウを追加
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = "スタート",
-                color = Color.White,
-                fontSize = 14.sp
+        // シナリオ決定ボタン
+        if (!isScenarioSelected) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(16.dp)
+                    .size(60.dp)
+                    .background(Color.Blue, shape = CircleShape)
+                    .clickable {
+                        isScenarioSelected = true // シナリオ決定時にオーバーレイを表示
+                    }
+                    .border(2.dp, Color.White, CircleShape)
+                    .shadow(4.dp, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "決定!",
+                    color = Color.White,
+                    fontSize = 14.sp
+                )
+            }
+        }
+
+        // オーバーレイとスタートボタン
+        if (isScenarioSelected) {
+            // オーバーレイ
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.5f))
+                    .clickable { isScenarioSelected = false}
             )
+
+            // アニメーションでスタートボタンをスライドイン
+            var offsetX by remember { mutableStateOf(300.dp) }
+            LaunchedEffect(Unit) {
+                offsetX = 0.dp // アニメーションでスライドイン
+            }
+
+            Box(
+                modifier = Modifier
+                    .align(Alignment.CenterEnd)
+                    .padding(16.dp)
+                    .width(200.dp)
+                    .offset(x = animateDpAsState(targetValue = offsetX, animationSpec = tween(500)).value) // アニメーション
+                    .size(80.dp)
+                    .background(Color.Red, shape = RoundedCornerShape(30.dp))
+                    .clickable {
+                        navController.navigate(ClearTalkRPGScreen.Scenario.name) // シナリオ画面へ遷移
+                    }
+                    .border(2.dp, Color.White, shape = RoundedCornerShape(30.dp))
+                    .shadow(4.dp, shape = RoundedCornerShape(30.dp)),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(
+                    text = "スタート",
+                    color = Color.White,
+                    fontSize = 16.sp
+                )
+            }
         }
     }
 }
 
+
 @Composable
 fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit) {
-    // アニメーションでボタンの位置を調整
     val offset by animateDpAsState(targetValue = if (isSelected) -100.dp else 0.dp)
     val backgroundColor by animateColorAsState(targetValue = if (isSelected) Color.Red else Color(247, 223, 223, 255))
 
@@ -192,18 +246,16 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
             .width(290.dp)
             .height(65.dp)
             .padding(8.dp)
-            .background(Color.Transparent) // 背景を透明に設定
-            .offset(x = offset) // ボタンの横方向のオフセット
+            .background(Color.Transparent)
+            .offset(x = offset)
             .clickable(onClick = onClick)
     ) {
-        // 背景色のボックスを追加
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(backgroundColor, shape = RoundedCornerShape(8.dp)) // 背景の形状と色を設定
+                .background(backgroundColor, shape = RoundedCornerShape(8.dp))
         )
 
-        // ボタンの内容を表示
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -213,15 +265,12 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
             Text(
                 text = scenario.title,
                 fontSize = 14.sp,
-                color = if (isSelected) Color.White else Color.Black, // テキストの色を選択時に変更
+                color = if (isSelected) Color.White else Color.Black,
                 fontWeight = FontWeight.Bold
             )
         }
     }
 }
-
-
-
 
 data class Scenario(
     val title: String,
