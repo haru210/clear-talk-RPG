@@ -36,7 +36,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(Color(240, 118, 79, 255))
+            .background(Color(255, 142, 127, 255))
             .padding(4.dp)
             .clickable { onBackClick() },
         verticalAlignment = Alignment.CenterVertically,
@@ -112,7 +112,8 @@ fun ScenarioSelectScreen(navController: NavController) {
                     ) {
                         Text(
                             text = state.selectedScenario.description,
-                            fontSize = 16.sp,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(16.dp)
                         )
                     }
@@ -128,7 +129,8 @@ fun ScenarioSelectScreen(navController: NavController) {
                         ) {
                             Text(
                                 text = "所要時間: ${state.selectedScenario.timeRequired}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
@@ -142,7 +144,8 @@ fun ScenarioSelectScreen(navController: NavController) {
                         ) {
                             Text(
                                 text = "最高スコア: ${state.selectedScenario.highScore}",
-                                fontSize = 14.sp,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
                             )
                         }
@@ -178,11 +181,10 @@ fun ScenarioSelectScreen(navController: NavController) {
                     .align(Alignment.BottomEnd)
                     .padding(16.dp)
                     .size(60.dp)
-                    .background(Color.Blue, shape = CircleShape)
+                    .background(Color(0, 127, 211, 255), shape = CircleShape)
                     .clickable {
                         isScenarioSelected = true // シナリオ決定時にオーバーレイを表示
                     }
-                    .border(2.dp, Color.White, CircleShape)
                     .shadow(4.dp, CircleShape),
                 contentAlignment = Alignment.Center
             ) {
@@ -228,7 +230,7 @@ fun ScenarioSelectScreen(navController: NavController) {
                 Text(
                     text = "スタート",
                     color = Color.White,
-                    fontSize = 16.sp
+                    fontSize = 18.sp
                 )
             }
         }
@@ -239,7 +241,13 @@ fun ScenarioSelectScreen(navController: NavController) {
 @Composable
 fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit) {
     val offset by animateDpAsState(targetValue = if (isSelected) -100.dp else 0.dp)
-    val backgroundColor by animateColorAsState(targetValue = if (isSelected) Color.Red else Color(247, 223, 223, 255))
+    val backgroundColor by animateColorAsState(targetValue = if (isSelected) Color(
+        236,
+        36,
+        83,
+        255
+    ) else Color(119, 124, 128, 255)
+    )
 
     Box(
         modifier = Modifier
@@ -264,8 +272,8 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
         ) {
             Text(
                 text = scenario.title,
-                fontSize = 14.sp,
-                color = if (isSelected) Color.White else Color.Black,
+                fontSize = 25.sp,
+                color = Color.White,
                 fontWeight = FontWeight.Bold
             )
         }
