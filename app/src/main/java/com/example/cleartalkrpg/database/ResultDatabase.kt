@@ -47,7 +47,7 @@ abstract class ResultDatabase: RoomDatabase() {
         }
 
         suspend fun populateDatabase(resultDao: ResultDao) {
-            // TODO: シードデータの挿入
+            /* シードデータの挿入 */
             val testResult = Result(
                 scenario_title = "おれはかまきり",
                 total_score = 89,
