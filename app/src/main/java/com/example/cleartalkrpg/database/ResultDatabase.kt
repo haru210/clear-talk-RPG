@@ -47,24 +47,24 @@ abstract class ResultDatabase: RoomDatabase() {
         }
 
         suspend fun populateDatabase(resultDao: ResultDao) {
-            //TODO: シードデータの挿入
+            // TODO: シードデータの挿入
             val testResult = Result(
-                scenario_title = "A",
-                total_score = 100,
-                volume_score = 30,
-                clarity_score = 40,
-                speed_score = 30,
-                comment = "Good",
-                created_at = Date(100)
+                scenario_title = "おれはかまきり",
+                total_score = 89,
+                volume_score = 28,
+                clarity_score = 38,
+                speed_score = 23,
+                comment = "もう少しゆっくり一言一言大切に話してみましょう！",
+                created_at = Date()
             )
             val testResult2 = Result(
-                scenario_title = "B",
-                total_score = 0,
-                volume_score = 0,
-                clarity_score = 0,
-                speed_score = 0,
-                comment = "F",
-                created_at = Date(1727429788565)
+                scenario_title = "テセウスの心臓",
+                total_score = 95,
+                volume_score = 27,
+                clarity_score = 39,
+                speed_score = 29,
+                comment = "とても聞き取りやすい声を出せています。もう一息です！",
+                created_at = Date()
             )
             resultDao.post(testResult)
             resultDao.post(testResult2)

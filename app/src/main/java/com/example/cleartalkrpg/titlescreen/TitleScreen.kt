@@ -65,6 +65,7 @@ fun DebugResults(results: List<Result>) {
         }
     }
 }
+
 @Composable
 fun TitleScreenMenu(navController: NavController) {
     Box(
@@ -131,7 +132,7 @@ fun TapToStartButton(navController: NavController) {
     Surface(
         onClick = {
             permissionLauncher.launch(RECORD_AUDIO)
-            navController.navigate(ClearTalkRPGScreen.SelectScenario.name) // 選択画面へ移動する
+            navController.navigate(ClearTalkRPGScreen.TestResultHistory.name) // 選択画面へ移動する
         },
         color = Color.Gray.copy(alpha = 0.65f),
         modifier = Modifier.clip(RoundedCornerShape(8.dp))
