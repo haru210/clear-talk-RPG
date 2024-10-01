@@ -22,6 +22,8 @@ import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
 import com.example.cleartalkrpg.resulthistoryscreen.ResultHistoryScreen
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.resulthistoryscreen.rememberResultSelectState
+import com.example.cleartalkrpg.testresulthistoryscreen.TestResultHistoryScreen
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import kotlinx.coroutines.CoroutineScope
@@ -121,12 +123,14 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
-    ResultHistory
+    ResultHistory,
+    TestResultHistory
 }
 
 @Composable
 fun SceneGenerator(resultViewModel: ResultViewModel) {
     val navController = rememberNavController()
+    val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState() // ここで定義していないためエラー
 
     Scaffold { innerPadding ->
@@ -142,7 +146,7 @@ fun SceneGenerator(resultViewModel: ResultViewModel) {
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
-                val state = rememberScenarioSelectState()
+                val state = scenarioSelectState
                 ScenarioSelectScreen(
                     state = state,
                     onBackClick = { navController.popBackStack() },
@@ -156,11 +160,14 @@ fun SceneGenerator(resultViewModel: ResultViewModel) {
                 ScenarioScreen(navController = navController, selectedScenarioId = 0)
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
-                ResultScreen(navController = navController)
+                ResultScreen(
+                    navController = navController,
+                    resultViewModel = resultViewModel
+                )
             }
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {
                 ResultHistoryScreen(
-                    state = scenarioSelectState, // 状態を渡す
+                    state = resultSelectState,
                     onBackClick = { navController.popBackStack() }, // 戻るボタンの処理を渡す
                     navController = navController
                 )
