@@ -43,12 +43,6 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModel
 fun TitleScreen(navController: NavController, resultViewModel: ResultViewModel) {
     TitleScreenBackgroundImage()
     TitleLogo()
-    /* リザルトリストから得点をインデックスで取得し画面上に表示 (デバック) */
-    /*
-    Box {
-        Text(text = resultList[0].toString())
-    }
-    */
     val results by resultViewModel.allResults.observeAsState(emptyList())
 
   //  DebugResults(results = results)
