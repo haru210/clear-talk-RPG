@@ -28,6 +28,7 @@ class SpeechRecognizerManager(private val context: Context) {
     var speedScore : Int = 30
     var clarityScore : Int = 40
     var volumeScore : Int = 0
+    var score : Triple<Int, Int, Int> = Triple(0, 0, 0)
 
     private var resultListener:  ((Triple<Int, Int, Int>) -> Unit)? = null
 
@@ -63,7 +64,8 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     speechResult.value = matches?.joinToString(separator = "\n") ?: "No Results"
-                    calcScore()
+                    score = calcScore()
+                    resultListener?.invoke(score)
                 }
 
                 override fun onPartialResults(partialResults: Bundle?) {}
@@ -89,7 +91,7 @@ class SpeechRecognizerManager(private val context: Context) {
         speechRecognizer = null
     }
 
-    fun calcScore(){
+    fun calcScore() : Triple<Int, Int, Int>{
         var target: String = "こんにちは"
         var targetCnt: Int = 5
         var res: String = speechResult.value
@@ -140,6 +142,7 @@ class SpeechRecognizerManager(private val context: Context) {
         }
         volumeScore = Math.round(volumeAvg * 3.0).toInt()
         val result = speechResult.value
+        return Triple(speedScore, clarityScore, volumeScore)
     }
 }
 
