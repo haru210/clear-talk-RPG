@@ -78,8 +78,7 @@ fun SceneGenerator(resultViewModel: ResultViewModel) {
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(
-                    navController = navController,
-                    resultViewModel = resultViewModel
+                    navController = navController
                 )
             }
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {
