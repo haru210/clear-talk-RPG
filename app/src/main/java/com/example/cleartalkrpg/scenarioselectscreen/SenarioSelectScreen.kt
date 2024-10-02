@@ -31,48 +31,14 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.unit.Dp
 import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 
 @Composable
-fun CustomTopBar(onBackClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(255, 142, 127, 255))
-            .padding(4.dp)
-            .clickable { onBackClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "タイトル画面へ",
-            color = Color(0, 0, 0),
-            fontSize = 13.sp,
-            modifier = Modifier.weight(1f, fill = false) // 左寄せ
-        )
-        Text(
-            text = "シナリオ選択",
-            color = Color(0, 0, 0),
-            fontSize = 13.sp,
-            modifier = Modifier.weight(1f, fill = false) // 右寄せ
-        )
-    }
-}
-
-@Composable
-fun TitleScreenBackgroundImage() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
-            contentDescription = "Title screen background image",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize()
-        )
-    }
-}
-
-@Composable
-fun ScenarioSelectScreen(navController: NavController) {
-    val state = rememberScenarioSelectState()
+fun ScenarioSelectScreen(
+    navController: NavController,
+    scenarioViewModel: ScenarioViewModel
+) {
+    val state = rememberScenarioSelectState(scenarioViewModel)
     TitleScreenBackgroundImage()
 
     // 初期状態で一番上のシナリオが選択されているように selectedScenarioIndex を 0 に設定
@@ -238,6 +204,43 @@ fun ScenarioSelectScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun CustomTopBar(onBackClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(255, 142, 127, 255))
+            .padding(4.dp)
+            .clickable { onBackClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "タイトル画面へ",
+            color = Color(0, 0, 0),
+            fontSize = 13.sp,
+            modifier = Modifier.weight(1f, fill = false) // 左寄せ
+        )
+        Text(
+            text = "シナリオ選択",
+            color = Color(0, 0, 0),
+            fontSize = 13.sp,
+            modifier = Modifier.weight(1f, fill = false) // 右寄せ
+        )
+    }
+}
+
+@Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
+        )
+    }
+}
 
 @Composable
 fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit) {

@@ -50,11 +50,9 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
                 contentAlignment = Alignment.BottomCenter
             ) {
                 ScenarioMessageBox(
-                    scenarioMessage =
-                    "おう　なつだぜ\n" +
-                            "おれは　げんきだぜ\n" +
-                            "あまり　ちかよるな",
-                    scenarioCharacterName = "かまきり"
+                    scenarioMessage = "おれはかまきり",
+                    scenarioCharacterName = "かまきり",
+                    messageDisplaySpeed = messageDisplaySpeed
                 )
             }
             Box(
