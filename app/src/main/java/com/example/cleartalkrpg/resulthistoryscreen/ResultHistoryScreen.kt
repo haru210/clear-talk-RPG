@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resulthistoryscreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -18,6 +19,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.scenarioselectscreen.Scenario
+import com.example.cleartalkrpg.utils.formatDateToDateString
+import com.example.cleartalkrpg.utils.formatDateToTimeString
 
 @Composable
 fun ResultHistoryScreen(
@@ -34,10 +37,14 @@ fun ResultHistoryScreen(
         Spacer(modifier = Modifier.height(8.dp))
 
         Row(modifier = Modifier.weight(1f)) {
-            /* 選択中のリザルトの表示 */
-            ResultCard(state = state)
-            /* リザルト履歴の一覧表示 */
-            ResultHistoryList(state = state)
+            Box(modifier = Modifier.weight(1f)) {
+                /* 選択中のリザルトの表示 */
+                ResultCard(state = state)
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                /* リザルト履歴の一覧表示 */
+                ResultHistoryList(state = state)
+            }
         }
     }
 }
@@ -97,15 +104,18 @@ fun ResultCard(
 fun ResultHistoryList(
     state: ResultSelectState
 ) {
+    Log.v("ResultHistoryList", state.results.size.toString())
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .padding(8.dp)
     ) {
         state.results.forEach { result ->
+            val playDate: String = formatDateToDateString(result.created_at)
+            val playTime: String = formatDateToTimeString(result.created_at)
             ScenarioHistoryButton(
                 title = result.scenario_title,
-                date = "プレイ日: ${result.created_at}",
+                date = "プレイ日時: ${playDate} ${playTime}",
                 onClick = { state.onResultSelected(result) }
             )
         }
