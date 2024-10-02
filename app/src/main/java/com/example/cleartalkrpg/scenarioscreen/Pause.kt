@@ -10,15 +10,16 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 
 @Composable
-fun Pause(
-    navController: NavController,
+fun PauseMenu(
+    onBackToScenarioSelectScreenClick: () -> Unit,
+    onRestartClick: () -> Unit,
+    onResumeClick: () -> Unit
 ) {
     Box(
         modifier = Modifier
@@ -33,21 +34,21 @@ fun Pause(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Button(
-                onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
+                onClick = onRestartClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Blue)
             ) {
                 Text(text = "最初からやり直す", color = Color.White, fontSize = 16.sp)
             }
             Button(
-                onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
+                onClick = onBackToScenarioSelectScreenClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Red)
             ) {
                 Text(text = "シナリオ選択へ戻る", color = Color.White, fontSize = 16.sp)
             }
             Button(
-                onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name)},
+                onClick = onResumeClick,
                 modifier = Modifier.fillMaxWidth(),
                 colors = ButtonDefaults.buttonColors(containerColor = Color.Green)
             ) {

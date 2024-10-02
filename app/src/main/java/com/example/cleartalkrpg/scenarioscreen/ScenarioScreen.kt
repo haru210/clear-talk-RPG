@@ -21,17 +21,20 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.PauseIcon
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
 @Composable
 fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
     var messageDisplaySpeed: Long = 50
+    var isPaused by remember { mutableStateOf(false) }
 
     Surface(
         onClick = {
@@ -42,6 +45,7 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
             modifier = Modifier.fillMaxSize()
         ) {
             ScenarioScreenBackgroundImage()
+            PauseButton(onClick = { isPaused = !isPaused })
             ScenarioCharacterSprite()
             Box(
                 modifier = Modifier
@@ -60,12 +64,36 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
                     .align(Alignment.TopEnd)
                     .padding(16.dp)
             ) {
-                Pause(navController = navController)
+                if(isPaused) {
+                    PauseMenu(
+                        onRestartClick = { navController.navigate(ClearTalkRPGScreen.Scenario.name) },
+                        onBackToScenarioSelectScreenClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
+                        onResumeClick = { isPaused = !isPaused }
+                    )
+                }
             }
         }
     }
 }
 
+/* ポーズボタン */
+@Composable
+fun PauseButton(onClick: () -> Unit) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Surface(
+            onClick = onClick,
+            color = Color.Gray,
+            modifier = Modifier
+                .padding(16.dp)
+                .align(alignment = Alignment.TopEnd)
+                .clip(RoundedCornerShape(32.dp))
+        ) {
+            PauseIcon(iconColor = Color.White, iconSize = 48.dp)
+        }
+    }
+}
+
+/* シナリオ本編の背景画面 */
 @Composable
 fun ScenarioScreenBackgroundImage() {
     Box(
