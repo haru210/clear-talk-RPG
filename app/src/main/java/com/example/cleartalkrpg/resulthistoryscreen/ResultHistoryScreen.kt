@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resulthistoryscreen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -9,21 +10,111 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.cleartalkrpg.scenarioselectscreen.Scenario
-import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
+import com.example.cleartalkrpg.utils.formatDateToDateString
+import com.example.cleartalkrpg.utils.formatDateToTimeString
 
 @Composable
-fun rememberScenarioHistoryState(): List<Scenario> {
-    val scenarioHistory = remember { mutableStateListOf<Scenario>() }
-    return scenarioHistory
+fun ResultHistoryScreen(
+    state: ResultSelectState,
+    onBackClick: () -> Unit,
+    navController: NavController
+) {
+    Column(modifier = Modifier.fillMaxSize()) {
+        /* ヘッダー */
+        CustomTopBar(onBackClick = onBackClick)
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(modifier = Modifier.weight(1f)) {
+            Box(modifier = Modifier.weight(1f)) {
+                /* 選択中のリザルトの表示 */
+                ResultCard(state = state)
+            }
+            Box(modifier = Modifier.weight(1f)) {
+                /* リザルト履歴の一覧表示 */
+                ResultHistoryList(state = state)
+            }
+        }
+    }
+}
+
+@Composable
+fun ResultCard(
+    state: ResultSelectState
+) {
+    Column(
+        modifier = Modifier
+            .padding(8.dp)
+            .verticalScroll(rememberScrollState())
+    ) {
+        state.selectedResult?.let { result ->
+            /* 合計スコアを表示 */
+            TotalScoreCard(totalScore = result.total_score.toString())
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            /* 各スコアカードの表示 */
+            Row(modifier = Modifier.fillMaxWidth()) {
+                /* 速さのスコアカード */
+                ScenarioHistoryDetail(
+                    label = "速さ",
+                    value = result.speed_score.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                /* 明瞭さのスコアカード */
+                ScenarioHistoryDetail(
+                    label = "明瞭さ",
+                    value = result.clarity_score.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                /* 音量のスコアカード */
+                ScenarioHistoryDetail(
+                    label = "音量",
+                    value = result.volume_score.toString(),
+                    modifier = Modifier.weight(1f)
+                )
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            /* 一言コメントの表示 */
+            CommentCard(comment = result.comment)
+        }
+    }
+}
+
+@Composable
+fun ResultHistoryList(
+    state: ResultSelectState
+) {
+    Log.v("ResultHistoryList", state.results.size.toString())
+    Column(
+        modifier = Modifier
+            .verticalScroll(rememberScrollState())
+            .padding(8.dp)
+    ) {
+        state.results.forEach { result ->
+            val playDate: String = formatDateToDateString(result.created_at)
+            val playTime: String = formatDateToTimeString(result.created_at)
+            ScenarioHistoryButton(
+                title = result.scenario_title,
+                date = "プレイ日時: ${playDate} ${playTime}",
+                onClick = { state.onResultSelected(result) }
+            )
+        }
+    }
 }
 
 @Composable
@@ -54,63 +145,6 @@ fun CustomTopBar(onBackClick: () -> Unit) {
                 .padding(end = 8.dp)
                 .align(Alignment.CenterVertically) // 中央に寄せる
         )
-    }
-}
-
-@Composable
-fun ResultHistoryScreen(
-    state: ScenarioSelectState,
-    onBackClick: () -> Unit,
-    navController: NavController
-) {
-    val scenarioHistory = rememberScenarioHistoryState()
-
-    Column(modifier = Modifier.fillMaxSize()) {
-        CustomTopBar(onBackClick = onBackClick)
-
-        Spacer(modifier = Modifier.height(8.dp))
-
-        Row(modifier = Modifier.weight(1f)) {
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(8.dp)
-                    .verticalScroll(rememberScrollState())
-            ) {
-                state.selectedScenario?.let { scenario ->
-                    // 合計スコアを表示
-                    TotalScoreCard(totalScore = scenario.totalScore)
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    // 速さ、明瞭さ、大きさを横に並べる
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        ScenarioHistoryDetail(label = "速さ", value = scenario.speed, modifier = Modifier.weight(1f))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ScenarioHistoryDetail(label = "明瞭さ", value = scenario.clarity, modifier = Modifier.weight(1f))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        ScenarioHistoryDetail(label = "音量", value = scenario.volume, modifier = Modifier.weight(1f))
-                    }
-                    Spacer(modifier = Modifier.height(8.dp))
-                    CommentCard(comment = scenario.comment) // 一言コメント
-                }
-            }
-
-            // 右側のカラム - シナリオリスト
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .verticalScroll(rememberScrollState())
-                    .padding(8.dp)
-            ) {
-                state.scenarios.forEach { scenario ->
-                    ScenarioHistoryButton(
-                        title = scenario.title,
-                        date = "プレイ日: ${scenario.playDate}",
-                        onClick = { state.onScenarioSelected(scenario) }
-                    )
-                }
-            }
-        }
     }
 }
 

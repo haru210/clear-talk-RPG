@@ -47,27 +47,57 @@ abstract class ResultDatabase: RoomDatabase() {
         }
 
         suspend fun populateDatabase(resultDao: ResultDao) {
-            //TODO: シードデータの挿入
+            /* シードデータの挿入 */
             val testResult = Result(
-                scenario_title = "A",
-                total_score = 100,
-                volume_score = 30,
-                clarity_score = 40,
-                speed_score = 30,
-                comment = "Good",
-                created_at = Date(100)
+                scenario_title = "おれはかまきり",
+                total_score = 89,
+                volume_score = 28,
+                clarity_score = 38,
+                speed_score = 23,
+                comment = "もう少しゆっくり一言一言大切に話してみましょう！",
+                created_at = Date()
             )
             val testResult2 = Result(
-                scenario_title = "B",
-                total_score = 0,
-                volume_score = 0,
-                clarity_score = 0,
-                speed_score = 0,
-                comment = "F",
-                created_at = Date(1727429788565)
+                scenario_title = "テセウスの心臓",
+                total_score = 95,
+                volume_score = 27,
+                clarity_score = 39,
+                speed_score = 29,
+                comment = "とても聞き取りやすい声を出せています。もう一息です！",
+                created_at = Date()
+            )
+            val testResult3 = Result(
+                scenario_title = "イル＝ペコローネIV 人形劇",
+                total_score = 59,
+                volume_score = 19,
+                clarity_score = 20,
+                speed_score = 20,
+                comment = "高専なら欠点です。息を吐きながら声を届けることを重点的に意識してみましょう。",
+                created_at = Date()
+            )
+            val testResult4 = Result(
+                scenario_title = "リミナルスペースの患者",
+                total_score = 20,
+                volume_score = 30,
+                clarity_score = 35,
+                speed_score = 25,
+                comment = "とても聞き取りやすい声を出せています。もう一息です！",
+                created_at = Date()
+            )
+            val testResult5 = Result(
+                scenario_title = "雨のち小夜曲",
+                total_score = 84,
+                volume_score = 23,
+                clarity_score = 33,
+                speed_score = 28,
+                comment = "もう少しゆっくり一言一言大切に話してみましょう！",
+                created_at = Date()
             )
             resultDao.post(testResult)
             resultDao.post(testResult2)
+            resultDao.post(testResult3)
+            resultDao.post(testResult4)
+            resultDao.post(testResult5)
         }
     }
 }
