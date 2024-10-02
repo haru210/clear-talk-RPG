@@ -1,11 +1,11 @@
 package com.example.cleartalkrpg.viewmodel
 
 import androidx.lifecycle.*
-import com.example.cleartalkrpg.database.repository.ResultRepository
+import com.example.cleartalkrpg.database.repository.UserRepository
 import com.example.cleartalkrpg.database.Result
 import kotlinx.coroutines.launch
 
-class ResultViewModel(private val repository: ResultRepository) : ViewModel() {
+class ResultViewModel(private val repository: UserRepository) : ViewModel() {
 
     val allResults: LiveData<List<Result>> = repository.allResults.asLiveData()
 
@@ -18,7 +18,7 @@ class ResultViewModel(private val repository: ResultRepository) : ViewModel() {
     }
 }
 
-class ResultViewModelFactory(private val repository: ResultRepository) : ViewModelProvider.Factory {
+class ResultViewModelFactory(private val repository: UserRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>) : T {
         if(modelClass.isAssignableFrom(ResultViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")

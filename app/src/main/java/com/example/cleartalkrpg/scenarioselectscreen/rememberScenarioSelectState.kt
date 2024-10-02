@@ -1,28 +1,29 @@
 package com.example.cleartalkrpg.scenarioselectscreen
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 
 @Composable
-fun rememberScenarioSelectState(): ScenarioSelectState {
-    val scenarios = listOf(
-        Scenario(
-            title = "Scenario 1",
-            description = "Description for Scenario 1",
-            imageRes = R.mipmap.scenario1_image,
-            timeRequired = "5 mins",
-            highScore = 1500,
-            playDate = "2024-08-21",
-            totalScore = "1000",
-            volume = "80",
-            clarity = "70",
-            speed = "90",
-            comment = "Good work!"
-        )
-    )
-    val selectedScenario = remember { mutableStateOf(scenarios[0]) }
+fun rememberScenarioSelectState(
+    scenarioViewModel: ScenarioViewModel
+): ScenarioSelectState {
+    val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
+    val selectedScenario = remember {
+        mutableStateOf(if(scenarios.isNotEmpty()) scenarios.first() else null)
+    }
+    LaunchedEffect(scenarios) {
+        if (scenarios.isNotEmpty()) {
+            selectedScenario.value = scenarios.first()
+        } else {
+            selectedScenario.value = null
+        }
+    }
 
     return ScenarioSelectState(
         scenarios = scenarios,
@@ -33,6 +34,6 @@ fun rememberScenarioSelectState(): ScenarioSelectState {
 
 data class ScenarioSelectState(
     val scenarios: List<Scenario>,
-    val selectedScenario: Scenario,
+    val selectedScenario: Scenario?,
     val onScenarioSelected: (Scenario) -> Unit
 )
