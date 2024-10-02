@@ -6,38 +6,52 @@ import android.os.Bundle
 import android.speech.RecognitionListener
 import android.speech.RecognizerIntent
 import android.speech.SpeechRecognizer
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import kotlinx.coroutines.delay
 
 @Composable
 fun SpeechRecognize(context: Context) {
-    val speechRecognizerManager = remember { SpeechRecognizerManager(context) }
-    val permissionLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
-            if(isGranted){
-                speechRecognizerManager.startListening()
-            }
-        }
-    )
+    val speechRecognizerManager = remember { SpeechRecognizerManager(context)}
+    speechRecognizerManager.startListening()
 }
 
 class SpeechRecognizerManager(private val context: Context) {
     private var speechRecognizer: SpeechRecognizer? = null
     val speechResult = mutableStateOf("")
 
+    var startTime : Long = 0
+    var endTime : Long = 0
+    var speechDuration : Long = 0
+    var beforeTime : Long = 0
+    val volumeList = ArrayList<Pair<Long, Float>>()
+
     fun startListening() {
         if(SpeechRecognizer.isRecognitionAvailable(context)) {
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
             speechRecognizer?.setRecognitionListener(object : RecognitionListener {
                 override fun onReadyForSpeech(params: Bundle?) {}
-                override fun onBeginningOfSpeech() {}
-                override fun onRmsChanged(rmsdB: Float) {}
+                override fun onBeginningOfSpeech() {
+                    startTime = System.currentTimeMillis()
+                }
+                override fun onRmsChanged(rmsdB: Float) {
+                    if(beforeTime == 0L){
+                        beforeTime = System.currentTimeMillis()
+                    }
+                    else if(rmsdB > 0) {
+                        volumeList.add(Pair(System.currentTimeMillis() - beforeTime, rmsdB))
+                        beforeTime = System.currentTimeMillis()
+                    }
+                }
                 override fun onBufferReceived(buffer: ByteArray?) {}
-                override fun onEndOfSpeech() {}
+                override fun onEndOfSpeech() {
+                    endTime = System.currentTimeMillis()
+                    speechDuration = endTime - startTime
+                }
                 override fun onError(error: Int) {
                     speechResult.value = "Error: $error"
                 }
@@ -45,6 +59,7 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     speechResult.value = matches?.joinToString(separator = "\n") ?: "No Results"
+                    calcScore()
                 }
 
                 override fun onPartialResults(partialResults: Bundle?) {}
@@ -68,5 +83,65 @@ class SpeechRecognizerManager(private val context: Context) {
         speechRecognizer?.stopListening()
         speechRecognizer?.destroy()
         speechRecognizer = null
+    }
+
+    fun calcScore(){
+        var target: String = "こんにちは"
+        var targetCnt: Int = 5
+        var res: String = speechResult.value
+        val targetLength = target.length
+        val resLength = res.length
+        speechDuration -= 400
+
+        //編集距離を求める
+        var dp = Array(targetLength + 1) { IntArray(resLength + 1) }
+
+        for (i in 0..targetLength) {
+            dp[i][0] = i
+        }
+        for (j in 0..resLength) {
+            dp[0][j] = j
+        }
+
+        for (i in 1..targetLength) {
+            for (j in 1..resLength) {
+                val cost = if (target[i - 1] == res[j - 1]) 0 else 1
+                dp[i][j] = minOf(
+                    dp[i - 1][j] + 1,
+                    dp[i][j - 1] + 1,
+                    dp[i - 1][j - 1] + cost
+                )
+            }
+        }
+        val levenDis = dp[targetLength][resLength]
+        //明瞭さの点数を求める
+        val clarityScore: Int = 40 - levenDis * 2
+
+        //速さの点数を求める
+        val speed: Double =
+            targetCnt.toDouble() / (speechDuration.toDouble() / 1000.0F)
+        //満点となる速度の最大値と最小値
+        val speedMin = 5.5F
+        val speedMax = 7.5F
+
+        var speedScore = 30
+        if (speed < speedMin) {
+            speedScore -= Math.round(speedMin - speed).toInt()
+        } else if (speed > speedMax) {
+            speedScore -= Math.round(speed - speedMax).toInt()
+        }
+        var volumeAvg: Double = 0.0
+        //音量の点数を求める
+        for (i in 0..volumeList.size - 1) {
+            volumeAvg += volumeList[i].second.toDouble() * ((volumeList[i].first.toDouble() / speechDuration.toDouble()) / 1000.0)
+        }
+        val volumeScore = Math.round(volumeAvg * 3.0)
+        val result = speechResult.value
+    }
+}
+
+suspend fun waitForTrue(checkCondition: () -> Boolean) {
+    while(!checkCondition()) {
+        delay(100)
     }
 }

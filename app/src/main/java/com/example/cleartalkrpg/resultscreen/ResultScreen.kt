@@ -86,6 +86,7 @@ fun ResultScreen(navController: NavController) {
                     displayName = "履歴確認画面へ",
                     backToOtherScreenClick = {
                         navController.navigate(ClearTalkRPGScreen.HistoryScenario.name)
+                        navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
                     }
                 )
             }
