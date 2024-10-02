@@ -14,23 +14,4 @@ data class Result(
     val speed_score: Int,
     val comment: String = "",
     val created_at: Date = Date()
-)/* {
-    constructor(
-        scenario_title: String,
-        total_score: Int,
-        volume_score: Int,
-        clarity_score: Int,
-        speed_score: Int,
-        comment: String,
-        created_at: Date,
-    ):
-        this(
-            Int.MIN_VALUE,
-            scenario_title,
-            total_score,
-            volume_score,
-            clarity_score,
-            speed_score,
-            comment
-        )
-} */
+)
