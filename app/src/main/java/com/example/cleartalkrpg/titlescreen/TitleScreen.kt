@@ -145,6 +145,7 @@ fun TapToStartButton(navController: NavController) {
 fun ViewResultHistoryButton(navController: NavController) {
     Surface(
         onClick = {
+            navController.navigate(ClearTalkRPGScreen.HistoryScenario.name)
             navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
         },
         color = Color.Gray.copy(alpha = 0.65f),

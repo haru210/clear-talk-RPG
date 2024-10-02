@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resultscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,18 +15,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.material3.Card
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import com.example.cleartalkrpg.R
 
 @Composable
 fun ResultScreen(navController: NavController) {
+    TitleScreenBackgroundImage()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -40,7 +46,7 @@ fun ResultScreen(navController: NavController) {
                 modifier = Modifier.height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color.Cyan)
+                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color(81, 235, 255, 255))
                 Surface(
                     modifier = Modifier.fillMaxHeight()
                 ) {
@@ -56,9 +62,9 @@ fun ResultScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color.Red)
-                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color.Blue)
-                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color.Green)
+                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
+                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
+                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -79,6 +85,7 @@ fun ResultScreen(navController: NavController) {
                 BackToOtherScreenButton(
                     displayName = "履歴確認画面へ",
                     backToOtherScreenClick = {
+                        navController.navigate(ClearTalkRPGScreen.HistoryScenario.name)
                         navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
                     }
                 )
@@ -117,7 +124,11 @@ fun TotalScoreBoard(totalScore: Double, backgroundColor: Color) {
 fun CommentBoard(comment: String) {
     Surface(
         color = Color.LightGray.copy(alpha = 0.60f),
-        modifier = Modifier.clip(RoundedCornerShape(8.dp))
+        shape = RoundedCornerShape(8.dp),
+        shadowElevation = 0.dp, // 影や枠線を取り除く]
+        tonalElevation = 0.dp,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
     ) {
         Box(contentAlignment = Alignment.Center) {
             Column(
@@ -168,6 +179,18 @@ fun BackToOtherScreenButton(
         Text(
             text = displayName,
             modifier = Modifier.padding(24.dp)
+        )
+    }
+}
+
+@Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
         )
     }
 }

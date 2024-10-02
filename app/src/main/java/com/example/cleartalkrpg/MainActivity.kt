@@ -17,6 +17,10 @@ import com.example.cleartalkrpg.titlescreen.TitleScreen
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
+import com.example.cleartalkrpg.historyscreen.HistoryScenarioScreen
+import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
+import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
+import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
 import com.example.cleartalkrpg.resulthistoryscreen.ResultHistoryScreen
 import com.example.cleartalkrpg.resulthistoryscreen.rememberResultSelectState
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
@@ -49,6 +53,7 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
+    HistoryScenario
     ResultHistory
 }
 
@@ -74,6 +79,7 @@ fun SceneGenerator(
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
+                ScenarioSelectScreen(navController = navController)
                 val state = scenarioSelectState
                 ScenarioSelectScreen(
                     state = state,
@@ -92,6 +98,8 @@ fun SceneGenerator(
                     navController = navController
                 )
             }
+            composable(route = ClearTalkRPGScreen.HistoryScenario.name) {
+                HistoryScenarioScreen(navController = navController)
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {
                 ResultHistoryScreen(
                     state = resultSelectState,
