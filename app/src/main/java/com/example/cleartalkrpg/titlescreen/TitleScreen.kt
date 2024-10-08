@@ -40,7 +40,7 @@ import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 
 @Composable
-fun TitleScreen(navController: NavController, resultViewModel: ResultViewModel) {
+fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
     TitleLogo()
     TitleScreenMenu(navController)
