@@ -68,19 +68,23 @@ fun SceneGenerator(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = ClearTalkRPGScreen.Title.name) {
-                TitleScreen(
-                    navController = navController,
-                    resultViewModel = resultViewModel
-                )
+                TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
                     navController = navController,
-                    scenarioViewModel = scenarioViewModel
+                    scenarioSelectState = scenarioSelectState
                 )
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
-                ScenarioScreen(navController = navController, selectedScenarioId = 0)
+                ScenarioScreen(
+                    navController = navController,
+                    scenarioViewModel = scenarioViewModel,
+                    /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
+                    * リスト等の添字に使用する場合は-1する必要がある。
+                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
+                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1 // 技術的負債
+                )
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(

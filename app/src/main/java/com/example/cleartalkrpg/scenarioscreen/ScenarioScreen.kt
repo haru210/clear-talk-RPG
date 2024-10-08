@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -12,6 +13,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -20,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -27,14 +30,23 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
+import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
 @Composable
-fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
+fun ScenarioScreen(
+    navController: NavController,
+    scenarioViewModel: ScenarioViewModel,
+    selectedScenarioId: Int
+) {
+    val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     var messageDisplaySpeed: Long = 50
     var isPaused by remember { mutableStateOf(false) }
+
+    startListening()
 
     Surface(
         onClick = {
@@ -46,6 +58,10 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
         ) {
             ScenarioScreenBackgroundImage()
             PauseButton(onClick = { isPaused = !isPaused })
+            Text(
+                text = scenarios[selectedScenarioId].title,
+                modifier = Modifier.padding(8.dp)
+            )
             ScenarioCharacterSprite()
             Box(
                 modifier = Modifier
@@ -74,6 +90,18 @@ fun ScenarioScreen(navController: NavController, selectedScenarioId: Int) {
             }
         }
     }
+}
+
+/* 音声録音 */
+@Composable
+fun startListening() {
+    val context = LocalContext.current
+    val recogManager = remember { SpeechRecognizerManager(context) }
+    var result by remember { mutableStateOf("test") }
+    recogManager.setOnResultListener { results ->
+        result = results.second.toString()
+    }
+    recogManager.startListening()
 }
 
 /* ポーズボタン */

@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioselectscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,16 +33,17 @@ import androidx.compose.animation.core.tween
 import androidx.compose.ui.unit.Dp
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
+import kotlinx.coroutines.delay
 
 @Composable
 fun ScenarioSelectScreen(
     navController: NavController,
-    scenarioViewModel: ScenarioViewModel
+    scenarioSelectState: ScenarioSelectState
 ) {
-    val state = rememberScenarioSelectState(scenarioViewModel)
+    val state = scenarioSelectState
     TitleScreenBackgroundImage()
 
-    // 初期状態で一番上のシナリオが選択されているように selectedScenarioIndex を 0 に設定
+    /* 選択しているシナリオによって画面のUIを変更するためのIndex */
     var selectedScenarioIndex by remember { mutableStateOf(0) }
     var isScenarioSelected by remember { mutableStateOf(false) } // シナリオ決定後のフラグ
 
@@ -95,7 +97,7 @@ fun ScenarioSelectScreen(
                                 .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
                         ) {
                             Text(
-                                text = "所要時間: ${state.selectedScenario.timeRequired}",
+                                text = "所要時間: ${state.selectedScenario.timeRequired} 分",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
@@ -170,7 +172,7 @@ fun ScenarioSelectScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .clickable { isScenarioSelected = false}
+                    .clickable { isScenarioSelected = false }
             )
 
             // アニメーションでスタートボタンをスライドイン
@@ -184,7 +186,12 @@ fun ScenarioSelectScreen(
                     .align(Alignment.CenterEnd)
                     .padding(16.dp)
                     .width(200.dp)
-                    .offset(x = animateDpAsState(targetValue = offsetX, animationSpec = tween(500)).value) // アニメーション
+                    .offset(
+                        x = animateDpAsState(
+                            targetValue = offsetX,
+                            animationSpec = tween(500)
+                        ).value
+                    ) // アニメーション
                     .size(80.dp)
                     .background(Color.Red, shape = RoundedCornerShape(30.dp))
                     .clickable {
@@ -276,7 +283,7 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
         ) {
             Text(
                 text = scenario.title,
-                fontSize = 25.sp,
+                fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )
