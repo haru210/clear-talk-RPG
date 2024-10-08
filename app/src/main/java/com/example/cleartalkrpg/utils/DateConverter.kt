@@ -3,14 +3,14 @@ package com.example.cleartalkrpg.utils
 import androidx.room.TypeConverter
 import java.util.Date
 
-class DateTimeConverter {
+class DateConverter {
     @TypeConverter
-    fun fromTimeStamp(value: Long?): Date? {
+    fun fromTimestamp(value: Long?): Date? {
         return value?.let { Date(it) }
     }
 
     @TypeConverter
-    fun dateToTimeStamp(date: Date?): Long? {
+    fun toTimestamp(date: Date?): Long? {
         return date?.time?.toLong()
     }
 }

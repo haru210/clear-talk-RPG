@@ -2,16 +2,17 @@ package com.example.cleartalkrpg.database
 
 import android.content.Context
 import androidx.room.Database
+import androidx.room.TypeConverters
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import androidx.room.TypeConverters
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.example.cleartalkrpg.utils.DateConverter
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import java.util.Date
 
 @Database(entities = [Result::class], version = 1, exportSchema = false)
-@TypeConverters(DateTimeConverter::class)
+@TypeConverters(DateConverter::class)
 abstract class ResultDatabase: RoomDatabase() {
     abstract fun resultDao(): ResultDao
 
@@ -48,7 +49,8 @@ abstract class ResultDatabase: RoomDatabase() {
 
         suspend fun populateDatabase(resultDao: ResultDao) {
             /* シードデータの挿入 */
-            val testResult = Result(
+            val results = mutableListOf<Result>()
+            results.add(0, Result(
                 scenario_title = "おれはかまきり",
                 total_score = 89,
                 volume_score = 28,
@@ -56,8 +58,8 @@ abstract class ResultDatabase: RoomDatabase() {
                 speed_score = 23,
                 comment = "もう少しゆっくり一言一言大切に話してみましょう！",
                 created_at = Date()
-            )
-            val testResult2 = Result(
+            ))
+            results.add(1, Result(
                 scenario_title = "テセウスの心臓",
                 total_score = 95,
                 volume_score = 27,
@@ -65,8 +67,8 @@ abstract class ResultDatabase: RoomDatabase() {
                 speed_score = 29,
                 comment = "とても聞き取りやすい声を出せています。もう一息です！",
                 created_at = Date()
-            )
-            val testResult3 = Result(
+            ))
+            results.add(2, Result(
                 scenario_title = "イル＝ペコローネIV 人形劇",
                 total_score = 59,
                 volume_score = 19,
@@ -74,8 +76,8 @@ abstract class ResultDatabase: RoomDatabase() {
                 speed_score = 20,
                 comment = "高専なら欠点です。息を吐きながら声を届けることを重点的に意識してみましょう。",
                 created_at = Date()
-            )
-            val testResult4 = Result(
+            ))
+            results.add(3, Result(
                 scenario_title = "リミナルスペースの患者",
                 total_score = 20,
                 volume_score = 30,
@@ -83,8 +85,8 @@ abstract class ResultDatabase: RoomDatabase() {
                 speed_score = 25,
                 comment = "とても聞き取りやすい声を出せています。もう一息です！",
                 created_at = Date()
-            )
-            val testResult5 = Result(
+            ))
+            results.add(4, Result(
                 scenario_title = "雨のち小夜曲",
                 total_score = 84,
                 volume_score = 23,
@@ -92,12 +94,10 @@ abstract class ResultDatabase: RoomDatabase() {
                 speed_score = 28,
                 comment = "もう少しゆっくり一言一言大切に話してみましょう！",
                 created_at = Date()
-            )
-            resultDao.post(testResult)
-            resultDao.post(testResult2)
-            resultDao.post(testResult3)
-            resultDao.post(testResult4)
-            resultDao.post(testResult5)
+            ))
+            results.forEach { result ->
+                resultDao.post(result)
+            }
         }
     }
 }
