@@ -28,7 +28,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
-import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import kotlinx.coroutines.delay
@@ -47,8 +47,8 @@ fun ScenarioScreen(
     var displayMessage by remember { mutableStateOf("") }
     var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableStateOf(0) }
-
-    startListening()
+    
+    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario)
 
     Surface(
         onClick = {
@@ -103,12 +103,15 @@ fun ScenarioScreen(
 
 /* 音声録音 */
 @Composable
-fun startListening() {
+fun startListening(currentScenarioIndex: Int, currentScenario: Scenario) {
     val context = LocalContext.current
     val recogManager = remember { SpeechRecognizerManager(context) }
     var result by remember { mutableStateOf("test") }
-    recogManager.setOnResultListener { results ->
-        result = results.second.toString()
+    LaunchedEffect(currentScenarioIndex) {
+        recogManager.setOnResultListener { results ->
+            result = results.second.toString()
+            Log.v("音声認識の動作確認", result)
+        }
     }
     recogManager.startListening()
 }
