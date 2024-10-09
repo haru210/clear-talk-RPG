@@ -40,24 +40,10 @@ import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 
 @Composable
-fun TitleScreen(navController: NavController, resultViewModel: ResultViewModel) {
+fun TitleScreen(navController: NavController) {
     TitleScreenBackgroundImage()
     TitleLogo()
-    val results by resultViewModel.allResults.observeAsState(emptyList())
-
-  //  DebugResults(results = results)
     TitleScreenMenu(navController)
-}
-
-@Composable
-fun DebugResults(results: List<Result>) {
-    Log.d("debug", "results = ${results.size}")
-    Row {
-        results.forEach {result ->
-            Text(text = result.scenario_title,
-                fontSize = 30.sp)
-        }
-    }
 }
 
 @Composable
@@ -145,7 +131,6 @@ fun TapToStartButton(navController: NavController) {
 fun ViewResultHistoryButton(navController: NavController) {
     Surface(
         onClick = {
-            navController.navigate(ClearTalkRPGScreen.HistoryScenario.name)
             navController.navigate(ClearTalkRPGScreen.ResultHistory.name)
         },
         color = Color.Gray.copy(alpha = 0.65f),

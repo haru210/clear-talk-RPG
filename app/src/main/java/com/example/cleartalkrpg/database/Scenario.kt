@@ -2,6 +2,7 @@ package com.example.cleartalkrpg.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.example.cleartalkrpg.R
 
 @Entity(tableName = "scenarios")
 data class Scenario(
@@ -10,5 +11,16 @@ data class Scenario(
     val description: String,
     val jacketImage: Int,
     val timeRequired: Int,
-    val highScore: Int = 0
+    val highScore: Int = 0,
+    val screens: MutableList<Screen>
+)
+
+data class Screen(
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val characterName: String = "かまきり",
+    val characterSprite: Int = R.drawable.kamakiri,
+    val backgroundImage: Int = R.mipmap.scenario1_image,
+    val voiceOver: Int = 0,
+    val line: String = "セリフを入力してください",
+    val lineLength: Int = 0
 )

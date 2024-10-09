@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioselectscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -31,51 +32,18 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import androidx.compose.animation.core.tween
 import androidx.compose.ui.unit.Dp
 import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
+import kotlinx.coroutines.delay
 
 @Composable
-fun CustomTopBar(onBackClick: () -> Unit) {
-    Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Color(255, 142, 127, 255))
-            .padding(4.dp)
-            .clickable { onBackClick() },
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
-    ) {
-        Text(
-            text = "タイトル画面へ",
-            color = Color(0, 0, 0),
-            fontSize = 13.sp,
-            modifier = Modifier.weight(1f, fill = false) // 左寄せ
-        )
-        Text(
-            text = "シナリオ選択",
-            color = Color(0, 0, 0),
-            fontSize = 13.sp,
-            modifier = Modifier.weight(1f, fill = false) // 右寄せ
-        )
-    }
-}
-
-@Composable
-fun TitleScreenBackgroundImage() {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
-            contentDescription = "Title screen background image",
-            contentScale = ContentScale.FillBounds,
-            modifier = Modifier.matchParentSize()
-        )
-    }
-}
-
-@Composable
-fun ScenarioSelectScreen(navController: NavController) {
-    val state = rememberScenarioSelectState()
+fun ScenarioSelectScreen(
+    navController: NavController,
+    scenarioSelectState: ScenarioSelectState
+) {
+    val state = scenarioSelectState
     TitleScreenBackgroundImage()
 
-    // 初期状態で一番上のシナリオが選択されているように selectedScenarioIndex を 0 に設定
+    /* 選択しているシナリオによって画面のUIを変更するためのIndex */
     var selectedScenarioIndex by remember { mutableStateOf(0) }
     var isScenarioSelected by remember { mutableStateOf(false) } // シナリオ決定後のフラグ
 
@@ -129,7 +97,7 @@ fun ScenarioSelectScreen(navController: NavController) {
                                 .border(1.dp, Color.Black, RoundedCornerShape(8.dp))
                         ) {
                             Text(
-                                text = "所要時間: ${state.selectedScenario.timeRequired}",
+                                text = "所要時間: ${state.selectedScenario.timeRequired} 分",
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
@@ -204,7 +172,7 @@ fun ScenarioSelectScreen(navController: NavController) {
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .clickable { isScenarioSelected = false}
+                    .clickable { isScenarioSelected = false }
             )
 
             // アニメーションでスタートボタンをスライドイン
@@ -218,7 +186,12 @@ fun ScenarioSelectScreen(navController: NavController) {
                     .align(Alignment.CenterEnd)
                     .padding(16.dp)
                     .width(200.dp)
-                    .offset(x = animateDpAsState(targetValue = offsetX, animationSpec = tween(500)).value) // アニメーション
+                    .offset(
+                        x = animateDpAsState(
+                            targetValue = offsetX,
+                            animationSpec = tween(500)
+                        ).value
+                    ) // アニメーション
                     .size(80.dp)
                     .background(Color.Red, shape = RoundedCornerShape(30.dp))
                     .clickable {
@@ -238,6 +211,43 @@ fun ScenarioSelectScreen(navController: NavController) {
     }
 }
 
+@Composable
+fun CustomTopBar(onBackClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color(255, 142, 127, 255))
+            .padding(4.dp)
+            .clickable { onBackClick() },
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Text(
+            text = "タイトル画面へ",
+            color = Color(0, 0, 0),
+            fontSize = 13.sp,
+            modifier = Modifier.weight(1f, fill = false) // 左寄せ
+        )
+        Text(
+            text = "シナリオ選択",
+            color = Color(0, 0, 0),
+            fontSize = 13.sp,
+            modifier = Modifier.weight(1f, fill = false) // 右寄せ
+        )
+    }
+}
+
+@Composable
+fun TitleScreenBackgroundImage() {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Image(
+            painter = painterResource(id = R.drawable.title_screen_background_image),
+            contentDescription = "Title screen background image",
+            contentScale = ContentScale.FillBounds,
+            modifier = Modifier.matchParentSize()
+        )
+    }
+}
 
 @Composable
 fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit) {
@@ -273,7 +283,7 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
         ) {
             Text(
                 text = scenario.title,
-                fontSize = 25.sp,
+                fontSize = 20.sp,
                 color = Color.White,
                 fontWeight = FontWeight.Bold
             )

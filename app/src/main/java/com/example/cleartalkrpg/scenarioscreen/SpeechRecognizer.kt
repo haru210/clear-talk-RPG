@@ -10,15 +10,11 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
 
-@Composable
-fun SpeechRecognize(context: Context) {
-    val speechRecognizerManager = remember { SpeechRecognizerManager(context)}
-    speechRecognizerManager.startListening()
-}
 
 class SpeechRecognizerManager(private val context: Context) {
     private var speechRecognizer: SpeechRecognizer? = null
@@ -29,7 +25,16 @@ class SpeechRecognizerManager(private val context: Context) {
     var speechDuration : Long = 0
     var beforeTime : Long = 0
     val volumeList = ArrayList<Pair<Long, Float>>()
+    var speedScore : Int = 30
+    var clarityScore : Int = 40
+    var volumeScore : Int = 0
+    var score : Triple<Int, Int, Int> = Triple(0, 0, 0)
 
+    private var resultListener:  ((Triple<Int, Int, Int>) -> Unit)? = null
+
+    fun setOnResultListener(listener: (Triple<Int, Int, Int>) -> Unit) {
+        resultListener = listener
+    }
     fun startListening() {
         if(SpeechRecognizer.isRecognitionAvailable(context)) {
             speechRecognizer = SpeechRecognizer.createSpeechRecognizer(context)
@@ -59,7 +64,8 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     speechResult.value = matches?.joinToString(separator = "\n") ?: "No Results"
-                    calcScore()
+                    score = calcScore()
+                    resultListener?.invoke(score)
                 }
 
                 override fun onPartialResults(partialResults: Bundle?) {}
@@ -85,9 +91,9 @@ class SpeechRecognizerManager(private val context: Context) {
         speechRecognizer = null
     }
 
-    fun calcScore(){
-        var target: String = "こんにちは"
-        var targetCnt: Int = 5
+    fun calcScore() : Triple<Int, Int, Int>{
+        var target: String = "おれはかまきり"
+        var targetCnt: Int = 7
         var res: String = speechResult.value
         val targetLength = target.length
         val resLength = res.length
@@ -115,7 +121,7 @@ class SpeechRecognizerManager(private val context: Context) {
         }
         val levenDis = dp[targetLength][resLength]
         //明瞭さの点数を求める
-        val clarityScore: Int = 40 - levenDis * 2
+        clarityScore -= levenDis * 2
 
         //速さの点数を求める
         val speed: Double =
@@ -124,7 +130,6 @@ class SpeechRecognizerManager(private val context: Context) {
         val speedMin = 5.5F
         val speedMax = 7.5F
 
-        var speedScore = 30
         if (speed < speedMin) {
             speedScore -= Math.round(speedMin - speed).toInt()
         } else if (speed > speedMax) {
@@ -135,8 +140,9 @@ class SpeechRecognizerManager(private val context: Context) {
         for (i in 0..volumeList.size - 1) {
             volumeAvg += volumeList[i].second.toDouble() * ((volumeList[i].first.toDouble() / speechDuration.toDouble()) / 1000.0)
         }
-        val volumeScore = Math.round(volumeAvg * 3.0)
+        volumeScore = Math.round(volumeAvg * 3.0).toInt()
         val result = speechResult.value
+        return Triple(speedScore, clarityScore, volumeScore)
     }
 }
 

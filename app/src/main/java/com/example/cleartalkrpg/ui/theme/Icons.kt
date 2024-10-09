@@ -18,3 +18,13 @@ fun HistoryIcon(iconColor: Color, iconSize: Dp) {
         modifier = Modifier.size(iconSize)
     )
 }
+
+@Composable
+fun PauseIcon(iconColor: Color, iconSize: Dp) {
+    Icon(
+        painter = painterResource(id = R.drawable.pause_circle),
+        contentDescription = "Pause Icon",
+        tint = iconColor,
+        modifier = Modifier.size(iconSize)
+    )
+}

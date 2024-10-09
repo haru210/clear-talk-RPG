@@ -17,10 +17,6 @@ import com.example.cleartalkrpg.titlescreen.TitleScreen
 import com.example.cleartalkrpg.ui.theme.ClearTalkRPGTheme
 import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
 import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
-import com.example.cleartalkrpg.historyscreen.HistoryScenarioScreen
-import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectState
-import com.example.cleartalkrpg.scenarioselectscreen.rememberScenarioSelectState
-import com.example.cleartalkrpg.scenarioselectscreen.ScenarioSelectScreen
 import com.example.cleartalkrpg.resulthistoryscreen.ResultHistoryScreen
 import com.example.cleartalkrpg.resulthistoryscreen.rememberResultSelectState
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
@@ -53,7 +49,6 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
-    HistoryScenario
     ResultHistory
 }
 
@@ -73,33 +68,29 @@ fun SceneGenerator(
             modifier = Modifier.padding(innerPadding)
         ) {
             composable(route = ClearTalkRPGScreen.Title.name) {
-                TitleScreen(
-                    navController = navController,
-                    resultViewModel = resultViewModel
-                )
+                TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
-                ScenarioSelectScreen(navController = navController)
-                val state = scenarioSelectState
                 ScenarioSelectScreen(
-                    state = state,
-                    onBackClick = { navController.popBackStack() },
-                    onStartScenarioClick = {
-                        navController.navigate(ClearTalkRPGScreen.Scenario.name)
-                    },
-                    navController = navController
+                    navController = navController,
+                    scenarioSelectState = scenarioSelectState
                 )
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
-                ScenarioScreen(navController = navController, selectedScenarioId = 0)
+                ScenarioScreen(
+                    navController = navController,
+                    scenarioViewModel = scenarioViewModel,
+                    /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
+                    * リスト等の添字に使用する場合は-1する必要がある。
+                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
+                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1 // 技術的負債
+                )
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(
                     navController = navController
                 )
             }
-            composable(route = ClearTalkRPGScreen.HistoryScenario.name) {
-                HistoryScenarioScreen(navController = navController)
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {
                 ResultHistoryScreen(
                     state = resultSelectState,
