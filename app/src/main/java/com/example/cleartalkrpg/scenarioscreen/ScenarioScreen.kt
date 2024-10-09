@@ -24,13 +24,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
-import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import kotlinx.coroutines.delay
@@ -43,26 +41,33 @@ fun ScenarioScreen(
     selectedScenarioId: Int
 ) {
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
-    var messageDisplaySpeed: Long = 50
+    val currentScenario = scenarios[selectedScenarioId]
     var isPaused by remember { mutableStateOf(false) }
+    var messageDisplaySpeed: Long = 50
+    var displayMessage by remember { mutableStateOf("") }
+    var isMessageComplete by remember { mutableStateOf(false) }
+    var currentScreenIndex by remember { mutableStateOf(0) }
 
     startListening()
 
     Surface(
         onClick = {
-            navController.navigate(ClearTalkRPGScreen.Result.name)
+            if (isMessageComplete) {
+                if (currentScreenIndex < currentScenario.screens.size - 1) {
+                    currentScreenIndex++
+                } else {
+                    navController.navigate(ClearTalkRPGScreen.Result.name)
+                }
+            }
         }
     ) {
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            ScenarioScreenBackgroundImage()
+            Text(text = currentScenario.title, modifier = Modifier.padding(8.dp))
+            ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
+            ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
             PauseButton(onClick = { isPaused = !isPaused })
-            Text(
-                text = scenarios[selectedScenarioId].title,
-                modifier = Modifier.padding(8.dp)
-            )
-            ScenarioCharacterSprite()
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -70,9 +75,13 @@ fun ScenarioScreen(
                 contentAlignment = Alignment.BottomCenter
             ) {
                 ScenarioMessageBox(
-                    scenarioMessage = "おれはかまきり",
-                    scenarioCharacterName = "かまきり",
-                    messageDisplaySpeed = messageDisplaySpeed
+                    scenarioMessage = if (currentScreenIndex < currentScenario.screens.size) {
+                        currentScenario.screens[currentScreenIndex].line
+                    } else { "" },
+                    scenarioCharacterName = currentScenario.screens[currentScreenIndex].characterName,
+                    messageDisplaySpeed = messageDisplaySpeed,
+                    onMessageComplete = { isMessageComplete = true },
+                    isMessageDisplayed = displayMessage
                 )
             }
             Box(
@@ -123,12 +132,12 @@ fun PauseButton(onClick: () -> Unit) {
 
 /* シナリオ本編の背景画面 */
 @Composable
-fun ScenarioScreenBackgroundImage() {
+fun ScenarioScreenBackgroundImage(backgroundImageId: Int) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
+            painter = painterResource(id = backgroundImageId),
             contentDescription = "Title screen background image",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
@@ -138,14 +147,14 @@ fun ScenarioScreenBackgroundImage() {
 
 /* 画面に表示するキャラクターのアバター */
 @Composable
-fun ScenarioCharacterSprite() {
+fun ScenarioCharacterSprite(characterSpriteId: Int) {
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier.fillMaxSize()
     ) {
         Image(
-            painter = painterResource(id = R.drawable.kamakiri),
-            contentDescription = "Kamakiri sprite",
+            painter = painterResource(id = characterSpriteId),
+            contentDescription = "Character Sprite",
             contentScale = ContentScale.FillBounds
         )
     }
@@ -153,13 +162,30 @@ fun ScenarioCharacterSprite() {
 
 /* ネームプレートと表示する文字列をまとめたコンポーネント */
 @Composable
-fun ScenarioMessageBox(scenarioMessage: String, scenarioCharacterName: String, messageDisplaySpeed: Long) {
+fun ScenarioMessageBox(
+    scenarioMessage: String,
+    scenarioCharacterName: String,
+    messageDisplaySpeed: Long,
+    onMessageComplete: () -> Unit,
+    isMessageDisplayed: String
+) {
     Column(
 
     ) {
         ScenarioCharacterNamePlate(characterName = scenarioCharacterName)
-        DisplayScenarioMessage(scenarioMessage = scenarioMessage, speed = messageDisplaySpeed)
+        DisplayScenarioMessage(
+            scenarioMessage = scenarioMessage,
+            messageDisplaySpeed = messageDisplaySpeed,
+            onMessageComplete = onMessageComplete,
+            isMessageDisplayed = isMessageDisplayed
+        )
     }
+}
+
+/* テキストボックスの右下に表示される逆三角形のアニメーション */
+@Composable
+fun AnimatedTriangleIndicator(isMessageComplete: Boolean) {
+
 }
 
 /* テキストボックスの上方に設置されるキャラクターのネームプレート */
@@ -182,15 +208,23 @@ fun ScenarioCharacterNamePlate(characterName: String) {
 
 /* 渡された文字列を指定された速度で1文字ずつ表示する */
 @Composable
-fun DisplayScenarioMessage(scenarioMessage: String, speed: Long) {
+fun DisplayScenarioMessage(
+    scenarioMessage: String,
+    messageDisplaySpeed: Long,
+    onMessageComplete: () -> Unit,
+    isMessageDisplayed: String
+) {
     var displayedMessage by remember { mutableStateOf("") }
 
     // LaunchedEffectで文字を1文字ずつ表示する
     LaunchedEffect(scenarioMessage) {
-        displayedMessage = ""
-        for (i in scenarioMessage.indices) {
-            delay(speed)
-            displayedMessage += scenarioMessage[i]
+        if (scenarioMessage.isNotEmpty()) {
+            displayedMessage = ""
+            for (i in scenarioMessage.indices) {
+                delay(messageDisplaySpeed)
+                displayedMessage += scenarioMessage[i]
+            }
+            onMessageComplete()
         }
     }
 

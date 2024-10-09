@@ -68,7 +68,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     Screen(
                         characterName = "かまきり",
                         characterSprite = R.drawable.kamakiri,
-                        backgroundImage = R.drawable.title_screen_background_image,
+                        backgroundImage = R.mipmap.scenario1_image,
                         line = "おれの　こころも　かまも\n" +
                                 "どきどきするほど\n" +
                                 "ひかっているぜ",
@@ -86,7 +86,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     Screen(
                         characterName = "かまきり",
                         characterSprite = R.drawable.kamakiri,
-                        backgroundImage = R.drawable.title_screen_background_image,
+                        backgroundImage = R.mipmap.scenario1_image,
                         line = "かまを　ふりかざす　すがた\n" +
                                 "わくわくするほど\n" +
                                 "きまってるぜ",
