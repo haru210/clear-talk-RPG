@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.scenarioscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -12,6 +11,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.mutableStateOf
@@ -38,7 +38,8 @@ import kotlinx.coroutines.delay
 fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
-    selectedScenarioId: Int
+    selectedScenarioId: Int,
+    resultScoresState: MutableState<Map<String, Double>>
 ) {
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     val currentScenario = scenarios[selectedScenarioId]
@@ -58,12 +59,17 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
-                    val overallScores = mapOf(
-                        Pair<String, Int>("overallScore", 1),
-                        Pair<String, Int>("speedScore", 1),
-                        Pair<String, Int>("clarityScore", 1),
-                        Pair<String, Int>("volumeScore", 1)
+                    val averageSpeedScore = partialScores.first.average()
+                    val averageClarityScore = partialScores.second.average()
+                    val averageVolumeScore = partialScores.third.average()
+                    val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
+                    val scores = mapOf(
+                        Pair("overallScore", totalScore),
+                        Pair("speedScore", averageSpeedScore),
+                        Pair("clarityScore", averageClarityScore),
+                        Pair("volumeScore", averageVolumeScore)
                     )
+                    resultScoresState.value = scores
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
             }
