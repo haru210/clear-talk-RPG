@@ -96,7 +96,7 @@ fun ResultScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 PartialScoreBoard(typeName = "音量", score = volumeScore, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
-                PartialScoreBoard(typeName = "明瞭さ", score = clarityScore, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
+                PartialScoreBoard(typeName = "明瞭さ", score = clarityScore, maxScore = 40, backgroundColor = Color(0xFFB3E5FC))
                 PartialScoreBoard(typeName = "速さ", score = speedScore, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
