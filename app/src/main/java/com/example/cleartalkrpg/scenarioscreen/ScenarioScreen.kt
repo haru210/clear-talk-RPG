@@ -47,9 +47,10 @@ fun ScenarioScreen(
     var displayMessage by remember { mutableStateOf("") }
     var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableStateOf(0) }
-    val partialGrades = Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>(mutableListOf(), mutableListOf(), mutableListOf())
+    /* speedScore, clarityScore, volumeScore格納用のTriple */
+    val partialScores = Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>(mutableListOf(), mutableListOf(), mutableListOf())
 
-    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialGrades = partialGrades)
+    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
 
     Surface(
         onClick = {
@@ -57,6 +58,12 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
+                    val overallScores = mapOf(
+                        Pair<String, Int>("overallScore", 1),
+                        Pair<String, Int>("speedScore", 1),
+                        Pair<String, Int>("clarityScore", 1),
+                        Pair<String, Int>("volumeScore", 1)
+                    )
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
             }
@@ -107,16 +114,16 @@ fun ScenarioScreen(
 fun startListening(
     currentScenarioIndex: Int,
     currentScenario: Scenario,
-    partialGrades: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
+    partialScores: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
 ) {
     val context = LocalContext.current
     val recogManager = remember { SpeechRecognizerManager(context) }
     var result by remember { mutableStateOf("test") }
     LaunchedEffect(currentScenarioIndex) {
         recogManager.setOnResultListener { results ->
-            partialGrades.first.add(results.first)
-            partialGrades.second.add(results.second)
-            partialGrades.third.add(results.third)
+            partialScores.first.add(results.first)
+            partialScores.second.add(results.second)
+            partialScores.third.add(results.third)
             /*
             result = results.second.toString()
             Log.v("音声認識の動作確認", result)
