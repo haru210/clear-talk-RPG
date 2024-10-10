@@ -69,7 +69,7 @@ fun ScenarioScreen(
                     val averageVolumeScore = partialScores.third.average()
                     val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
                     val scores = mapOf(
-                        Pair("overallScore", totalScore),
+                        Pair("totalScore", totalScore),
                         Pair("speedScore", averageSpeedScore),
                         Pair("clarityScore", averageClarityScore),
                         Pair("volumeScore", averageVolumeScore)
