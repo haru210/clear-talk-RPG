@@ -47,8 +47,9 @@ fun ScenarioScreen(
     var displayMessage by remember { mutableStateOf("") }
     var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableStateOf(0) }
-    
-    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario)
+    val partialGrades = Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>(mutableListOf(), mutableListOf(), mutableListOf())
+
+    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialGrades = partialGrades)
 
     Surface(
         onClick = {
@@ -103,14 +104,23 @@ fun ScenarioScreen(
 
 /* 音声録音 */
 @Composable
-fun startListening(currentScenarioIndex: Int, currentScenario: Scenario) {
+fun startListening(
+    currentScenarioIndex: Int,
+    currentScenario: Scenario,
+    partialGrades: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
+) {
     val context = LocalContext.current
     val recogManager = remember { SpeechRecognizerManager(context) }
     var result by remember { mutableStateOf("test") }
     LaunchedEffect(currentScenarioIndex) {
         recogManager.setOnResultListener { results ->
+            partialGrades.first.add(results.first)
+            partialGrades.second.add(results.second)
+            partialGrades.third.add(results.third)
+            /*
             result = results.second.toString()
             Log.v("音声認識の動作確認", result)
+            */
         }
     }
     recogManager.startListening()
