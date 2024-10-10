@@ -7,6 +7,8 @@ import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -60,6 +62,7 @@ fun SceneGenerator(
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
+    var resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
 
     Scaffold { innerPadding ->
         NavHost(
@@ -83,12 +86,14 @@ fun SceneGenerator(
                     /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
                     * リスト等の添字に使用する場合は-1する必要がある。
                     * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
-                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1 // 技術的負債
+                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
+                    resultScoresState = resultScoresState
                 )
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(
-                    navController = navController
+                    navController = navController,
+                    resultScores = resultScoresState.value
                 )
             }
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {

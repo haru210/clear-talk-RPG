@@ -15,7 +15,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.Card
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,7 +29,12 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
 
 @Composable
-fun ResultScreen(navController: NavController) {
+fun ResultScreen(navController: NavController, resultScores: Map<String, Double>) {
+    val totalScore = resultScores["totalScore"]?:0
+    val volumeScore = resultScores["volumeScore"]?:0
+    val clarityScore = resultScores["clarityScore"]?:0
+    val speedScore = resultScores["speedScore"]?:0
+
     TitleScreenBackgroundImage()
     Box(
         modifier = Modifier
@@ -46,7 +50,7 @@ fun ResultScreen(navController: NavController) {
                 modifier = Modifier.height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color(81, 235, 255, 255))
+                TotalScoreBoard(totalScore = totalScore, backgroundColor = Color(81, 235, 255, 255))
                 Surface(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -64,9 +68,9 @@ fun ResultScreen(navController: NavController) {
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
-                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
-                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
+                PartialScoreBoard(typeName = "音量", score = volumeScore, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
+                PartialScoreBoard(typeName = "明瞭さ", score = clarityScore, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
+                PartialScoreBoard(typeName = "速さ", score = speedScore, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -96,7 +100,7 @@ fun ResultScreen(navController: NavController) {
 }
 
 @Composable
-fun TotalScoreBoard(totalScore: Double, backgroundColor: Color) {
+fun TotalScoreBoard(totalScore: Number, backgroundColor: Color) {
     Surface(
         color = backgroundColor,
         modifier = Modifier.clip(RoundedCornerShape(8.dp)),
@@ -144,7 +148,7 @@ fun CommentBoard(comment: String) {
 }
 
 @Composable
-fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, backgroundColor: Color) {
+fun PartialScoreBoard(typeName: String, score: Number, maxScore: Int, backgroundColor: Color) {
     Surface(
         color = backgroundColor,
         modifier = Modifier
