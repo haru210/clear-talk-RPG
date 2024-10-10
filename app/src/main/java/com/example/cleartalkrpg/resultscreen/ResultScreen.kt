@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resultscreen
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -36,6 +37,7 @@ import com.example.cleartalkrpg.ui.theme.n_GoldGradient
 import com.example.cleartalkrpg.ui.theme.n_GreenGradient
 import com.example.cleartalkrpg.ui.theme.n_OrangeGradient
 import com.example.cleartalkrpg.ui.theme.n_Yellow
+import java.util.Locale
 
 @Composable
 fun ResultScreen(
@@ -145,7 +147,7 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundC
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Text(
-                text = totalScore.toString(),
+                text = String.format(Locale.US, "%.1f", totalScore),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
                 color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color }
@@ -200,7 +202,7 @@ fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, background
                 text = typeName
             )
             Text(
-                text = score.toString().plus('/').plus(maxScore),
+                text = String.format(Locale.US, "%.1f", score).plus('/').plus(maxScore),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
