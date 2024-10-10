@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.background
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,15 +28,39 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.n_BackgroundColor
+import com.example.cleartalkrpg.ui.theme.n_FontColor
+import com.example.cleartalkrpg.ui.theme.n_BlueGradient
+import com.example.cleartalkrpg.ui.theme.n_DarkGrayGradient
+import com.example.cleartalkrpg.ui.theme.n_GoldGradient
+import com.example.cleartalkrpg.ui.theme.n_GreenGradient
+import com.example.cleartalkrpg.ui.theme.n_OrangeGradient
+import com.example.cleartalkrpg.ui.theme.n_Yellow
 
 @Composable
-fun ResultScreen(navController: NavController, resultScores: Map<String, Double>, resultComment: String) {
-    val totalScore = resultScores["totalScore"]?:0
-    val volumeScore = resultScores["volumeScore"]?:0
-    val clarityScore = resultScores["clarityScore"]?:0
-    val speedScore = resultScores["speedScore"]?:0
+fun ResultScreen(
+    navController: NavController,
+    resultScores: Map<String, Double>,
+    resultComment: String
+) {
+    /* 総合得点とそれぞれの項目の得点を各々の変数に格納 */
+    val totalScore = resultScores["totalScore"]?:0.0
+    val volumeScore = resultScores["volumeScore"]?:0.0
+    val clarityScore = resultScores["clarityScore"]?:0.0
+    val speedScore = resultScores["speedScore"]?:0.0
 
+    /* 総合得点に応じてTotalScoreBoardの背景色とフォントの色を変更 (first: 背景色, second: フォントの色) */
+    val totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor> = when {
+        totalScore >= 90.0 -> Pair(n_BackgroundColor.Gradient(n_GoldGradient), n_FontColor.SolidColor(Color.White))
+        totalScore >= 80.0 -> Pair(n_BackgroundColor.Gradient(n_GreenGradient), n_FontColor.SolidColor(Color.White))
+        totalScore >= 70.0 -> Pair(n_BackgroundColor.Gradient(n_BlueGradient), n_FontColor.SolidColor(Color.White))
+        totalScore >= 60.0 -> Pair(n_BackgroundColor.Gradient(n_OrangeGradient), n_FontColor.SolidColor(Color.Black))
+        else -> Pair(n_BackgroundColor.Gradient(n_DarkGrayGradient), n_FontColor.SolidColor(n_Yellow))
+    }
+
+    /* 背景を表示 */
     TitleScreenBackgroundImage()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -50,7 +75,7 @@ fun ResultScreen(navController: NavController, resultScores: Map<String, Double>
                 modifier = Modifier.height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TotalScoreBoard(totalScore = totalScore, backgroundColor = Color(81, 235, 255, 255))
+                TotalScoreBoard(totalScore = totalScore, totalScoreBoardColor = totalScoreBoardColor)
                 Surface(
                     modifier = Modifier
                         .fillMaxHeight()
@@ -99,11 +124,21 @@ fun ResultScreen(navController: NavController, resultScores: Map<String, Double>
     }
 }
 
+/* 総合得点のスコアボード */
 @Composable
-fun TotalScoreBoard(totalScore: Number, backgroundColor: Color) {
+fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor>) {
+    val backgroundColor = totalScoreBoardColor.first
+    val fontColor = totalScoreBoardColor.second
+
     Surface(
-        color = backgroundColor,
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .then(
+                when (backgroundColor) {
+                    is n_BackgroundColor.SolidColor -> Modifier.background(backgroundColor.color)
+                    is n_BackgroundColor.Gradient -> Modifier.background(backgroundColor.brush)
+                }
+            )
     ) {
         Row(
             modifier = Modifier.padding(24.dp),
@@ -113,18 +148,19 @@ fun TotalScoreBoard(totalScore: Number, backgroundColor: Color) {
                 text = totalScore.toString(),
                 fontSize = 48.sp,
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color }
             )
             Text(
                 text = "点",
                 fontWeight = FontWeight.Bold,
-                color = Color.Black,
+                color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
                 modifier = Modifier.align(Alignment.Bottom)
             )
         }
     }
 }
 
+/* 一言コメントボード */
 @Composable
 fun CommentBoard(comment: String) {
     Surface(
@@ -147,8 +183,9 @@ fun CommentBoard(comment: String) {
     }
 }
 
+/* 各項目の得点ボード用コンポーネント */
 @Composable
-fun PartialScoreBoard(typeName: String, score: Number, maxScore: Int, backgroundColor: Color) {
+fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, backgroundColor: Color) {
     Surface(
         color = backgroundColor,
         modifier = Modifier
@@ -171,6 +208,7 @@ fun PartialScoreBoard(typeName: String, score: Number, maxScore: Int, background
     }
 }
 
+/* 別の画面に移動するボタン用コンポーネント */
 @Composable
 fun BackToOtherScreenButton(
     displayName: String,
@@ -188,12 +226,13 @@ fun BackToOtherScreenButton(
     }
 }
 
+/* 背景画像 */
 @Composable
-fun TitleScreenBackgroundImage() {
+fun TitleScreenBackgroundImage(titleScreenBackGroundImage: Int = R.drawable.title_screen_background_image) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
-            contentDescription = "Title screen background image",
+            painter = painterResource(id = titleScreenBackGroundImage),
+            contentDescription = "Title Screen Background Image",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
         )
