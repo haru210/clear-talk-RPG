@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -50,7 +51,9 @@ fun ScenarioScreen(
     var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableStateOf(0) }
     /* speedScore, clarityScore, volumeScore格納用のTriple */
-    val partialScores = Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>(mutableListOf(), mutableListOf(), mutableListOf())
+    val partialScores by remember { mutableStateOf<Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>>(Triple(
+        mutableListOf(), mutableListOf(), mutableListOf()
+    ))}
 
     startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
 
@@ -60,6 +63,7 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
+                    Log.v("最終的なMutableListの内容確認", partialScores.second.toString())
                     val averageSpeedScore = partialScores.first.average()
                     val averageClarityScore = partialScores.second.average()
                     val averageVolumeScore = partialScores.third.average()
@@ -125,18 +129,28 @@ fun startListening(
 ) {
     val context = LocalContext.current
     val recogManager = remember { SpeechRecognizerManager(context) }
-    var result by remember { mutableStateOf("test") }
+
+    var result by remember { mutableStateOf("test") } // Debug
+
+    var speedScore by remember { mutableStateOf(0) }
+    var clarityScore by remember { mutableStateOf(0) }
+    var volumeScore by remember { mutableStateOf(0) }
+
     LaunchedEffect(currentScenarioIndex) {
         recogManager.setOnResultListener { results ->
-            partialScores.first.add(results.first)
-            partialScores.second.add(results.second)
-            partialScores.third.add(results.third)
-            /*
-            result = results.second.toString()
-            Log.v("音声認識の動作確認", result)
-            */
+            speedScore = results.first
+            clarityScore = results.second
+            volumeScore = results.third
+            partialScores.first.add(speedScore)
+            partialScores.second.add(clarityScore)
+            partialScores.third.add(volumeScore)
+            /* デバック */
+            partialScores.second.forEach { score ->
+                Log.v("DEBUG", score.toString())
+            }
         }
     }
+
     recogManager.startListening()
 }
 
