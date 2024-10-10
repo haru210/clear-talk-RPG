@@ -48,7 +48,9 @@ fun ResultScreen(navController: NavController) {
             ) {
                 TotalScoreBoard(totalScore = 88.8, backgroundColor = Color(81, 235, 255, 255))
                 Surface(
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
                 ) {
                     CommentBoard(comment = "もう少しゆっくり一言一言大切に話してみましょう！")
                 }
