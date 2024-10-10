@@ -29,7 +29,7 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
 
 @Composable
-fun ResultScreen(navController: NavController, resultScores: Map<String, Double>) {
+fun ResultScreen(navController: NavController, resultScores: Map<String, Double>, resultComment: String) {
     val totalScore = resultScores["totalScore"]?:0
     val volumeScore = resultScores["volumeScore"]?:0
     val clarityScore = resultScores["clarityScore"]?:0
@@ -56,7 +56,7 @@ fun ResultScreen(navController: NavController, resultScores: Map<String, Double>
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(8.dp))
                 ) {
-                    CommentBoard(comment = "もう少しゆっくり一言一言大切に話してみましょう！")
+                    CommentBoard(comment = resultComment)
                 }
             }
             Text(

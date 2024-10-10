@@ -39,7 +39,8 @@ fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
     selectedScenarioId: Int,
-    resultScoresState: MutableState<Map<String, Double>>
+    resultScoresState: MutableState<Map<String, Double>>,
+    resultCommentState: MutableState<String>
 ) {
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     val currentScenario = scenarios[selectedScenarioId]
