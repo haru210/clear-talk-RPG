@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.resulthistoryscreen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -13,11 +12,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.utils.formatDateToDateString
 import com.example.cleartalkrpg.utils.formatDateToTimeString
+import com.example.cleartalkrpg.R
 
 @Composable
 fun ResultHistoryScreen(
@@ -99,7 +101,6 @@ fun ResultCard(
 fun ResultHistoryList(
     state: ResultSelectState
 ) {
-    Log.v("ResultHistoryList", state.results.size.toString())
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
@@ -130,6 +131,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     ) {
         Text(
             text = "戻る",
+            fontFamily = FontFamily(Font(R.font.koruri_regular)),
             color = Color.White,
             fontSize = 13.sp,
             modifier = Modifier
@@ -139,6 +141,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
         Spacer(modifier = Modifier.weight(1f)) // 空白を作ってシナリオ選択を右端に寄せる
         Text(
             text = "履歴確認",
+            fontFamily = FontFamily(Font(R.font.koruri_regular)),
             color = Color.White,
             fontSize = 13.sp,
             modifier = Modifier
@@ -161,6 +164,7 @@ fun TotalScoreCard(totalScore: String) {
         ) {
             Text(
                 text = "合計スコア",
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
                 fontSize = 16.sp,
                 color = Color.Black
             )
@@ -186,6 +190,7 @@ fun ScenarioHistoryDetail(label: String, value: String, modifier: Modifier = Mod
         ) {
             Text(
                 text = label,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
                 fontSize = 14.sp,
                 color = Color.Black
             )
@@ -212,6 +217,7 @@ fun CommentCard(comment: String) {
         ) {
             Text(
                 text = "コメント",
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
                 fontSize = 14.sp,
                 color = Color.Black
             )
@@ -239,12 +245,14 @@ fun ScenarioHistoryButton(title: String, date: String, onClick: () -> Unit) {
         ) {
             Text(
                 text = title,
+                fontFamily = FontFamily(Font(R.font.koruri_regular)),
                 fontSize = 14.sp,
                 color = Color.Black
             )
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = date,
+                fontFamily = FontFamily(Font(R.font.koruri_regular)),
                 fontSize = 12.sp,
                 color = Color.Gray
             )

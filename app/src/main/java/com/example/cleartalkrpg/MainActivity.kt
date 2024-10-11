@@ -65,6 +65,7 @@ fun SceneGenerator(
     var resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
     var resultCommentState = remember { mutableStateOf("もう少しゆっくり一言一言大切に話してみましょう！") }
 
+
     Scaffold { innerPadding ->
         NavHost(
             navController = navController,

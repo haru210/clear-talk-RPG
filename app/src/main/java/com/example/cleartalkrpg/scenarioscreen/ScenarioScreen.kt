@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.scenarioscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -25,6 +24,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -32,6 +34,7 @@ import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
+import com.example.cleartalkrpg.R
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -63,7 +66,6 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
-                    Log.v("最終的なMutableListの内容確認", partialScores.second.toString())
                     val averageSpeedScore = partialScores.first.average()
                     val averageClarityScore = partialScores.second.average()
                     val averageVolumeScore = partialScores.third.average()
@@ -130,8 +132,6 @@ fun startListening(
     val context = LocalContext.current
     val recogManager = remember { SpeechRecognizerManager(context) }
 
-    var result by remember { mutableStateOf("test") } // Debug
-
     var speedScore by remember { mutableStateOf(0) }
     var clarityScore by remember { mutableStateOf(0) }
     var volumeScore by remember { mutableStateOf(0) }
@@ -144,13 +144,8 @@ fun startListening(
             partialScores.first.add(speedScore)
             partialScores.second.add(clarityScore)
             partialScores.third.add(volumeScore)
-            /* デバック */
-            partialScores.second.forEach { score ->
-                Log.v("DEBUG", score.toString())
-            }
         }
     }
-
     recogManager.startListening()
 }
 
@@ -241,6 +236,7 @@ fun ScenarioCharacterNamePlate(characterName: String) {
         Text(
             text = characterName,
             color = Color.White,
+            fontFamily = FontFamily(Font(R.font.koruri_bold)),
             fontSize = 18.sp,
             modifier = Modifier.padding(16.dp, 4.dp)
         )
@@ -279,6 +275,7 @@ fun DisplayScenarioMessage(
         Text(
             text = displayedMessage,
             color = Color.White,
+            fontFamily = FontFamily(Font(R.font.grsgor_r_web, FontWeight.Bold)),
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp)
         )

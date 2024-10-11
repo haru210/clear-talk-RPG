@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.scenarioselectscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -15,25 +14,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import androidx.annotation.DrawableRes
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.runtime.*
-import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import androidx.compose.animation.core.tween
-import androidx.compose.ui.unit.Dp
 import com.example.cleartalkrpg.database.Scenario
-import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
-import kotlinx.coroutines.delay
+import com.example.cleartalkrpg.R
 
 @Composable
 fun ScenarioSelectScreen(
@@ -81,6 +77,7 @@ fun ScenarioSelectScreen(
                     ) {
                         Text(
                             text = state.selectedScenario.description,
+                            fontFamily = FontFamily(Font(R.font.koruri_regular)),
                             fontSize = 18.sp,
                             fontWeight = FontWeight.Medium,
                             modifier = Modifier.padding(16.dp)
@@ -98,6 +95,7 @@ fun ScenarioSelectScreen(
                         ) {
                             Text(
                                 text = "所要時間: ${state.selectedScenario.timeRequired} 分",
+                                fontFamily = FontFamily(Font(R.font.koruri_regular)),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
@@ -113,6 +111,7 @@ fun ScenarioSelectScreen(
                         ) {
                             Text(
                                 text = "最高スコア: ${state.selectedScenario.highScore}",
+                                fontFamily = FontFamily(Font(R.font.koruri_regular)),
                                 fontSize = 18.sp,
                                 fontWeight = FontWeight.Medium,
                                 modifier = Modifier.padding(16.dp)
@@ -159,6 +158,7 @@ fun ScenarioSelectScreen(
             ) {
                 Text(
                     text = "決定!",
+                    fontFamily = FontFamily(Font(R.font.koruri_regular)),
                     color = Color.White,
                     fontSize = 14.sp
                 )
@@ -172,7 +172,7 @@ fun ScenarioSelectScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(Color.Black.copy(alpha = 0.5f))
-                    .clickable { isScenarioSelected = false }
+                    .clickable { isScenarioSelected = false } // スタートボタンを除く画面全体をキャンセル判定に
             )
 
             // アニメーションでスタートボタンをスライドイン
@@ -201,11 +201,11 @@ fun ScenarioSelectScreen(
                     .shadow(4.dp, shape = RoundedCornerShape(30.dp)),
                 contentAlignment = Alignment.Center
             ) {
-                Text(
-                    text = "スタート",
-                    color = Color.White,
-                    fontSize = 18.sp
-                )
+//                Text(
+//                    text = "スタート",
+//                    color = Color.White,
+//                    fontSize = 18.sp
+//                )
             }
         }
     }
@@ -224,12 +224,14 @@ fun CustomTopBar(onBackClick: () -> Unit) {
     ) {
         Text(
             text = "タイトル画面へ",
+            fontFamily = FontFamily(Font(R.font.koruri_regular)),
             color = Color(0, 0, 0),
             fontSize = 13.sp,
             modifier = Modifier.weight(1f, fill = false) // 左寄せ
         )
         Text(
             text = "シナリオ選択",
+            fontFamily = FontFamily(Font(R.font.koruri_regular)),
             color = Color(0, 0, 0),
             fontSize = 13.sp,
             modifier = Modifier.weight(1f, fill = false) // 右寄せ
@@ -262,12 +264,13 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
 
     Box(
         modifier = Modifier
-            .width(290.dp)
+            .width(300.dp)
             .height(65.dp)
             .padding(8.dp)
             .background(Color.Transparent)
             .offset(x = offset)
             .clickable(onClick = onClick)
+            .shadow(elevation = 8.dp, shape = RoundedCornerShape(8.dp), spotColor = Color.Black)
     ) {
         Box(
             modifier = Modifier
@@ -283,9 +286,9 @@ fun ScenarioButton(scenario: Scenario, isSelected: Boolean, onClick: () -> Unit)
         ) {
             Text(
                 text = scenario.title,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
                 fontSize = 20.sp,
-                color = Color.White,
-                fontWeight = FontWeight.Bold
+                color = Color.White
             )
         }
     }

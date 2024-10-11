@@ -14,15 +14,21 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,8 +94,8 @@ fun ResultScreen(
             }
             Text(
                 text = "詳細評価",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                fontSize = 22.sp
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -132,7 +138,7 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundC
     val backgroundColor = totalScoreBoardColor.first
     val fontColor = totalScoreBoardColor.second
 
-    Surface(
+    Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .then(
@@ -146,16 +152,32 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundC
             modifier = Modifier.padding(24.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = String.format(Locale.US, "%.1f", totalScore),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color }
-            )
+            Box {
+                Text(
+                    text = String.format(Locale.US, "%.1f", totalScore),
+                    fontSize = 56.sp,
+                    fontFamily = FontFamily.Serif,
+                    fontWeight = FontWeight.Bold,
+                    color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                    modifier = Modifier
+                        .offset(
+                            x = 4.dp,
+                            y = 2.dp
+                        )
+                        .alpha(0.75f)
+                )
+                Text(
+                    text = String.format(Locale.US, "%.1f", totalScore),
+                    fontSize = 56.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                )
+            }
             Text(
                 text = "点",
-                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
                 color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                fontSize = 22.sp,
                 modifier = Modifier.align(Alignment.Bottom)
             )
         }
@@ -178,8 +200,15 @@ fun CommentBoard(comment: String) {
                 verticalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.padding(12.dp, 8.dp)
             ) {
-                Text(text = "【一言コメント】")
-                Text(text = comment)
+                Text(
+                    text = "【一言コメント】",
+                    fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = comment,
+                    fontFamily = FontFamily(Font(R.font.koruri_regular, FontWeight.Bold))
+                )
             }
         }
     }
@@ -199,7 +228,9 @@ fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, background
             modifier = Modifier.padding(16.dp, 8.dp)
         ) {
             Text(
-                text = typeName
+                text = typeName,
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                fontSize = 18.sp
             )
             Text(
                 text = String.format(Locale.US, "%.1f", score).plus('/').plus(maxScore),
@@ -223,6 +254,8 @@ fun BackToOtherScreenButton(
     ) {
         Text(
             text = displayName,
+            fontSize = 18.sp,
+            fontFamily = FontFamily(Font(R.font.koruri_bold)),
             modifier = Modifier.padding(24.dp)
         )
     }
