@@ -57,6 +57,8 @@ fun ResultScreen(
     val clarityScore = resultScores["clarityScore"]?:0.0
     val speedScore = resultScores["speedScore"]?:0.0
 
+    /* TODO: 満点の場合の特殊なテーマも実装 */
+    /* TODO: フォントにもグラデーションを実装 */
     /* 総合得点に応じてTotalScoreBoardの背景色とフォントの色を変更 (first: 背景色, second: フォントの色) */
     val totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor> = when {
         totalScore >= 90.0 -> Pair(n_BackgroundColor.Gradient(n_GoldGradient), n_FontColor.SolidColor(Color.White))
@@ -132,6 +134,7 @@ fun ResultScreen(
     }
 }
 
+/* TODO: 点数が手前から現れるアニメーションの実装 */
 /* 総合得点のスコアボード */
 @Composable
 fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor>) {
@@ -156,7 +159,6 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundC
                 Text(
                     text = String.format(Locale.US, "%.1f", totalScore),
                     fontSize = 56.sp,
-                    fontFamily = FontFamily.Serif,
                     fontWeight = FontWeight.Bold,
                     color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
                     modifier = Modifier

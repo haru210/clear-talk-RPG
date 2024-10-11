@@ -1,6 +1,8 @@
 package com.example.cleartalkrpg.scenarioscreen
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
 import androidx.compose.foundation.layout.fillMaxSize
@@ -48,6 +50,7 @@ fun ScenarioScreen(
 ) {
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     val currentScenario = scenarios[selectedScenarioId]
+
     var isPaused by remember { mutableStateOf(false) }
     var messageDisplaySpeed: Long = 50
     var displayMessage by remember { mutableStateOf("") }
@@ -58,6 +61,14 @@ fun ScenarioScreen(
         mutableListOf(), mutableListOf(), mutableListOf()
     ))}
 
+    /* TODO: シナリオに画面がない場合のエラー処理。非同期処理によって上手く動作しない。非同期でthrow-catchをする方法を模索する */
+    if (currentScenario.screens.isEmpty()) {
+        val errorMessage = "Fatal Error: シナリオに画面が挿入されていません。"
+        ScenarioHasNoScreenError(onClick = {
+            navController.navigate(ClearTalkRPGScreen.SelectScenario.name)
+        }, errorMessage = errorMessage)
+    }
+
     startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
 
     Surface(
@@ -66,6 +77,7 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
+                    /* TODO: 録音に失敗しても最終的な値がNaNにならないような処理を行う */
                     val averageSpeedScore = partialScores.first.average()
                     val averageClarityScore = partialScores.second.average()
                     val averageVolumeScore = partialScores.third.average()
@@ -118,6 +130,30 @@ fun ScenarioScreen(
                     )
                 }
             }
+        }
+    }
+}
+
+/* シナリオに問題がある場合のエラー画面 */
+@Composable
+fun ScenarioHasNoScreenError(onClick: () -> Unit, errorMessage: String) {
+    Box(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable { onClick() }
+    ) {
+        Box(
+            modifier = Modifier
+                .size(300.dp, 200.dp)
+                .align(Alignment.Center)
+                .background(Color.White)
+        ) {
+            Text(
+                text = errorMessage,
+                fontFamily = FontFamily(Font(R.font.koruri_regular)),
+                color = Color.Black
+            )
         }
     }
 }
