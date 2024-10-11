@@ -124,10 +124,11 @@ class SpeechRecognizerManager(private val context: Context) {
         val speedMax = 7.5F
 
         if (speed < speedMin) {
-            speedScore -= Math.round(speedMin - speed).toInt()
+            speedScore -= Math.round((speedMin - speed) / 1.5).toInt()
         } else if (speed > speedMax) {
-            speedScore -= Math.round(speed - speedMax).toInt()
+            speedScore -= Math.round((speed - speedMax) / 1.5).toInt()
         }
+        if(speedScore < 0) speedScore = 0
         var volumeAvg: Double = 0.0
         //音量の点数を求める
         for (i in 0..volumeList.size - 1) {
