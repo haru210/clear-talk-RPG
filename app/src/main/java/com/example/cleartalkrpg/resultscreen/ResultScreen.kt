@@ -25,6 +25,8 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -35,13 +37,21 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.darken
 import com.example.cleartalkrpg.ui.theme.n_BackgroundColor
+import com.example.cleartalkrpg.ui.theme.n_Blue
 import com.example.cleartalkrpg.ui.theme.n_FontColor
 import com.example.cleartalkrpg.ui.theme.n_BlueGradient
+import com.example.cleartalkrpg.ui.theme.n_BorderColor
+import com.example.cleartalkrpg.ui.theme.n_DarkGray
 import com.example.cleartalkrpg.ui.theme.n_DarkGrayGradient
+import com.example.cleartalkrpg.ui.theme.n_Gold
 import com.example.cleartalkrpg.ui.theme.n_GoldGradient
+import com.example.cleartalkrpg.ui.theme.n_Green
 import com.example.cleartalkrpg.ui.theme.n_GreenGradient
+import com.example.cleartalkrpg.ui.theme.n_Orange
 import com.example.cleartalkrpg.ui.theme.n_OrangeGradient
+import com.example.cleartalkrpg.ui.theme.n_RainbowGradient
 import com.example.cleartalkrpg.ui.theme.n_Yellow
 import java.util.Locale
 
@@ -52,20 +62,19 @@ fun ResultScreen(
     resultComment: String
 ) {
     /* 総合得点とそれぞれの項目の得点を各々の変数に格納 */
-    val totalScore = resultScores["totalScore"]?:0.0
+    val totalScore = 80.0//resultScores["totalScore"]?:0.0
     val volumeScore = resultScores["volumeScore"]?:0.0
     val clarityScore = resultScores["clarityScore"]?:0.0
     val speedScore = resultScores["speedScore"]?:0.0
 
-    /* TODO: 満点の場合の特殊なテーマも実装 */
-    /* TODO: フォントにもグラデーションを実装 */
     /* 総合得点に応じてTotalScoreBoardの背景色とフォントの色を変更 (first: 背景色, second: フォントの色) */
-    val totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor> = when {
-        totalScore >= 90.0 -> Pair(n_BackgroundColor.Gradient(n_GoldGradient), n_FontColor.SolidColor(Color.White))
-        totalScore >= 80.0 -> Pair(n_BackgroundColor.Gradient(n_GreenGradient), n_FontColor.SolidColor(Color.White))
-        totalScore >= 70.0 -> Pair(n_BackgroundColor.Gradient(n_BlueGradient), n_FontColor.SolidColor(Color.White))
-        totalScore >= 60.0 -> Pair(n_BackgroundColor.Gradient(n_OrangeGradient), n_FontColor.SolidColor(Color.Black))
-        else -> Pair(n_BackgroundColor.Gradient(n_DarkGrayGradient), n_FontColor.SolidColor(n_Yellow))
+    val totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor> = when {
+        totalScore == 100.0 -> Triple(n_BackgroundColor.Gradient(n_RainbowGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(Color.White))
+        totalScore >= 90.0 -> Triple(n_BackgroundColor.Gradient(n_GoldGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Gold))
+        totalScore >= 80.0 -> Triple(n_BackgroundColor.Gradient(n_GreenGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Green))
+        totalScore >= 70.0 -> Triple(n_BackgroundColor.Gradient(n_BlueGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Blue))
+        totalScore >= 60.0 -> Triple(n_BackgroundColor.Gradient(n_OrangeGradient), n_FontColor.SolidColor(Color.Black), n_BorderColor.SolidColor(n_Orange))
+        else -> Triple(n_BackgroundColor.Gradient(n_DarkGrayGradient), n_FontColor.SolidColor(n_Yellow), n_BorderColor.SolidColor(n_DarkGray))
     }
 
     /* 背景を表示 */
@@ -137,9 +146,10 @@ fun ResultScreen(
 /* TODO: 点数が手前から現れるアニメーションの実装 */
 /* 総合得点のスコアボード */
 @Composable
-fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundColor, n_FontColor>) {
+fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor>) {
     val backgroundColor = totalScoreBoardColor.first
     val fontColor = totalScoreBoardColor.second
+    val borderColor = totalScoreBoardColor.third
 
     Box(
         modifier = Modifier
@@ -150,6 +160,9 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Pair<n_BackgroundC
                     is n_BackgroundColor.Gradient -> Modifier.background(backgroundColor.brush)
                 }
             )
+            .border(4.dp, when (borderColor) {
+                is n_BorderColor.SolidColor -> borderColor.color
+            } , shape = RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier.padding(24.dp),
@@ -196,6 +209,7 @@ fun CommentBoard(comment: String) {
         tonalElevation = 0.dp,
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
+            .border(2.dp, Color.LightGray.darken(0.8f), RoundedCornerShape(8.dp))
     ) {
         Box(contentAlignment = Alignment.Center) {
             Column(
@@ -224,6 +238,7 @@ fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, background
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .height(IntrinsicSize.Max)
+            .border(2.dp, backgroundColor.darken(0.8f), RoundedCornerShape(8.dp))
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -250,9 +265,11 @@ fun BackToOtherScreenButton(
     backToOtherScreenClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
         onClick = backToOtherScreenClick,
         color = Color.LightGray,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .border(2.dp, Color.LightGray.darken(0.8f), RoundedCornerShape(8.dp)),
     ) {
         Text(
             text = displayName,

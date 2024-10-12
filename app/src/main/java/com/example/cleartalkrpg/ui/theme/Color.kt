@@ -24,6 +24,7 @@ val n_GreenGradient = Brush.horizontalGradient(colors = listOf(n_Green, Color(0x
 val n_BlueGradient = Brush.horizontalGradient(colors = listOf(n_Blue, Color(0xFF1976D2)))
 val n_OrangeGradient = Brush.horizontalGradient(colors = listOf(n_Orange, Color(0xFFF57C00)))
 val n_DarkGrayGradient = Brush.horizontalGradient(colors = listOf(n_DarkGray, Color.Black))
+val n_RainbowGradient = Brush.horizontalGradient(colors = listOf(Color.Red, n_Orange, n_Yellow, n_Green, n_Blue, Color(0xFF4B0082)))
 
 sealed class n_BackgroundColor {
     data class SolidColor(val color: Color) : n_BackgroundColor()
@@ -32,4 +33,17 @@ sealed class n_BackgroundColor {
 
 sealed class n_FontColor {
     data class SolidColor(val color: Color) : n_FontColor()
+}
+
+sealed class n_BorderColor {
+    data class SolidColor(val color: Color) : n_BorderColor()
+}
+
+/* functions created by nash */
+fun Color.darken(factor: Float): Color {
+    return this.copy(
+        red = this.red * factor,
+        green = this.green * factor,
+        blue = this.blue * factor
+    )
 }
