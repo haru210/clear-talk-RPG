@@ -1,6 +1,8 @@
 package com.example.cleartalkrpg.resultscreen
 
-import android.annotation.SuppressLint
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,17 +18,23 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
-import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
@@ -53,6 +61,7 @@ import com.example.cleartalkrpg.ui.theme.n_Orange
 import com.example.cleartalkrpg.ui.theme.n_OrangeGradient
 import com.example.cleartalkrpg.ui.theme.n_RainbowGradient
 import com.example.cleartalkrpg.ui.theme.n_Yellow
+import kotlinx.coroutines.delay
 import java.util.Locale
 
 @Composable
@@ -106,7 +115,8 @@ fun ResultScreen(
             Text(
                 text = "詳細評価",
                 fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
-                fontSize = 22.sp
+                fontSize = 22.sp,
+                modifier = Modifier.padding(48.dp, 0.dp)
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -143,7 +153,6 @@ fun ResultScreen(
     }
 }
 
-/* TODO: 点数が手前から現れるアニメーションの実装 */
 /* 総合得点のスコアボード */
 @Composable
 fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor>) {
@@ -151,49 +160,71 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
     val fontColor = totalScoreBoardColor.second
     val borderColor = totalScoreBoardColor.third
 
+    /* アニメーション用の文字列のスケール状態 (最初は非表示) */
+    var scale by remember { mutableStateOf(0f) }
+    var isVisible by remember { mutableStateOf(false) }
+
+    /* 画面表示0.5秒後にアニメーション開始 */
+    LaunchedEffect(Unit) {
+        delay(300)
+        isVisible = true
+        scale = 1f
+    }
+
+    val animatedScale by animateFloatAsState(targetValue = scale, animationSpec = tween(durationMillis = 300))
+
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
+            .size(200.dp, 120.dp)
+            .border(
+                4.dp, when (borderColor) {
+                    is n_BorderColor.SolidColor -> borderColor.color
+                }, shape = RoundedCornerShape(8.dp)
+            )
             .then(
                 when (backgroundColor) {
                     is n_BackgroundColor.SolidColor -> Modifier.background(backgroundColor.color)
                     is n_BackgroundColor.Gradient -> Modifier.background(backgroundColor.brush)
                 }
             )
-            .border(4.dp, when (borderColor) {
-                is n_BorderColor.SolidColor -> borderColor.color
-            } , shape = RoundedCornerShape(8.dp))
     ) {
         Row(
             modifier = Modifier.padding(24.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box {
-                Text(
-                    text = String.format(Locale.US, "%.1f", totalScore),
-                    fontSize = 56.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
-                    modifier = Modifier
-                        .offset(
-                            x = 4.dp,
-                            y = 2.dp
-                        )
-                        .alpha(0.75f)
-                )
-                Text(
-                    text = String.format(Locale.US, "%.1f", totalScore),
-                    fontSize = 56.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
-                )
+                if (isVisible) {
+                    Text(
+                        text = String.format(Locale.US, "%.1f", totalScore),
+                        fontSize = 56.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                        modifier = Modifier
+                            .offset(
+                                x = 4.dp,
+                                y = 2.dp
+                            )
+                            .alpha(0.75f)
+                            .scale(animatedScale)
+                    )
+                    Text(
+                        text = String.format(Locale.US, "%.1f", totalScore),
+                        fontSize = 56.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                        modifier = Modifier.scale(animatedScale)
+                    )
+                }
             }
             Text(
                 text = "点",
                 fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
                 color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
                 fontSize = 22.sp,
-                modifier = Modifier.align(Alignment.Bottom)
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .scale(animatedScale)
             )
         }
     }
@@ -230,6 +261,7 @@ fun CommentBoard(comment: String) {
     }
 }
 
+/* TODO: 点数がスロット形式のアニメーションで表示されるようにする */
 /* 各項目の得点ボード用コンポーネント */
 @Composable
 fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, backgroundColor: Color) {
