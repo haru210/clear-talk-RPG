@@ -77,10 +77,18 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
-                    /* TODO: 録音に失敗しても最終的な値がNaNにならないような処理を行う */
-                    val averageSpeedScore = partialScores.first.average()
-                    val averageClarityScore = partialScores.second.average()
-                    val averageVolumeScore = partialScores.third.average()
+                    val averageSpeedScore = when {
+                        partialScores.first.average().isNaN() -> 0.0
+                        else -> partialScores.first.average()
+                    }
+                    val averageClarityScore = when {
+                        partialScores.second.average().isNaN() -> 0.0
+                        else -> partialScores.second.average()
+                    }
+                    val averageVolumeScore = when {
+                        partialScores.third.average().isNaN() -> 0.0
+                        else -> partialScores.third.average()
+                    }
                     val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
                     val scores = mapOf(
                         Pair("totalScore", totalScore),

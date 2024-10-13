@@ -78,7 +78,7 @@ fun ResultScreen(
     resultComment: String
 ) {
     /* 総合得点とそれぞれの項目の得点を各々の変数に格納 */
-    val totalScore = 80.0//resultScores["totalScore"]?:0.0
+    val totalScore = resultScores["totalScore"]?:0.0
     val volumeScore = resultScores["volumeScore"]?:0.0
     val clarityScore = resultScores["clarityScore"]?:0.0
     val speedScore = resultScores["speedScore"]?:0.0
