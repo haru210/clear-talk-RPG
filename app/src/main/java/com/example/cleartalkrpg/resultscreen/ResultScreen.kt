@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
@@ -193,12 +194,17 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
         scale = 1f
     }
 
-    val animatedScale by animateFloatAsState(targetValue = scale, animationSpec = tween(durationMillis = 300))
+    val animatedScale by animateFloatAsState(
+        targetValue = scale,
+        animationSpec = tween(durationMillis = 300),
+        label = "FloatAnimation"
+    )
 
     Box(
+        contentAlignment = Alignment.Center,
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
-            .size(200.dp, 120.dp)
+            .defaultMinSize(200.dp, 120.dp)
             .border(
                 4.dp, when (borderColor) {
                     is n_BorderColor.SolidColor -> borderColor.color
