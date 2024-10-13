@@ -16,6 +16,7 @@ room = "2.6.1"
 roomCommon = "2.6.1"
 runtimeLivedata = "1.7.2"
 gson = "2.11.0"
+media3 = "1.4.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -41,6 +42,10 @@ room-ktx = { module = "androidx.room:room-ktx", version.ref = "room" }
 room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-common = { group = "androidx.room", name = "room-common", version.ref = "roomCommon" }
 code-gson = { group = "com.google.code.gson", name = "gson", version.ref = "gson" }
+media3-exoplayer = { module = "androidx.media3:media3-exoplayer", name="exoplayer", version.ref = "media3" }
+media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", name="exoplayer-dash", version.ref = "media3" }
+media3-ui = { module = "androidx.media3:media3-ui", name="ui", version.ref = "media3" }
+media3-common = { module = "androidx.media3:media3-common", name="common", version.ref = "media3" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

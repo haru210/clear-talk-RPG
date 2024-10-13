@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.ir.backend.js.compile
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
@@ -65,10 +67,18 @@ dependencies {
     implementation(libs.androidx.animation)
     implementation(libs.androidx.core.i18n)
     implementation(libs.androidx.runtime.livedata)
+
     implementation(libs.room.runtime)
     implementation(libs.room.ktx)
     implementation(libs.androidx.room.common)
+
     implementation(libs.code.gson)
+
+    implementation(libs.media3.exoplayer)
+    implementation(libs.media3.exoplayer.dash)
+    implementation(libs.media3.ui)
+    implementation(libs.media3.common)
+
     ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
@@ -77,6 +87,4 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
-
-
 }
