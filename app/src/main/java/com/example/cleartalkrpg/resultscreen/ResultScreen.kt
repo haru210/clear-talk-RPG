@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.resultscreen
 
+import android.content.Context
 import android.media.MediaPlayer
 import android.net.Uri
 import android.widget.VideoView
@@ -24,6 +25,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -36,6 +38,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
@@ -44,6 +47,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
@@ -159,9 +164,23 @@ fun ResultScreen(
 /* 総合得点のスコアボード */
 @Composable
 fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor>) {
+    val context = LocalContext.current
+
     val backgroundColor = totalScoreBoardColor.first
     val fontColor = totalScoreBoardColor.second
     val borderColor = totalScoreBoardColor.third
+
+//    /* エフェクト用プレイヤーを用意 */
+//    val effectPlayer = remember {
+//        ExoPlayer.Builder(context).build().apply {
+//            val mediaItem = MediaItem.fromUri(Uri.parse("\"android.resource://${context.packageName}/raw/effect_sparkles_vp9"))
+//            setMediaItem(mediaItem)
+//            prepare()
+//        }
+//    }
+//
+//    /* エフェクト用プレイヤーの再生停止状態の管理 */
+//    var isPlaying by remember { mutableStateOf(false) }
 
     /* アニメーション用の文字列のスケール状態 (最初は非表示) */
     var scale by remember { mutableStateOf(0f) }
@@ -197,16 +216,6 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box {
-                AndroidView(factory = { context ->
-                    VideoView(context).apply {
-                        val videoUri = Uri.parse("android.resource://${context.packageName}/raw/effect_sparkles_vp9")
-                        setVideoURI(videoUri)
-                        setOnPreparedListener { mediaPlayer: MediaPlayer ->
-                            mediaPlayer.isLooping = true
-                            start()
-                        }
-                    }
-                }, modifier = Modifier.fillMaxSize())
                 if (isVisible) {
                     Text(
                         text = String.format(Locale.US, "%.1f", totalScore),
@@ -241,6 +250,13 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
             )
         }
     }
+
+//    /* Disposeのタイミングでプレイヤーのリソースを解放 */
+//    DisposableEffect(effectPlayer) {
+//        onDispose {
+//            effectPlayer.release()
+//        }
+//    }
 }
 
 /* 一言コメントボード */
