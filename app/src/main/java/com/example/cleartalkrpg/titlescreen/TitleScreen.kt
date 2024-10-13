@@ -29,6 +29,7 @@ import androidx.navigation.NavController
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ClearTalkRPGScreen
+import com.example.cleartalkrpg.ui.theme.TapEffectScreen
 
 @Composable
 fun TitleScreen(navController: NavController) {
@@ -39,6 +40,7 @@ fun TitleScreen(navController: NavController) {
 
 @Composable
 fun TitleScreenMenu(navController: NavController) {
+    // TapEffectScreen() // deprecated (because of slowdown)
     Box(
         contentAlignment = Alignment.Center,
         modifier = Modifier
@@ -109,7 +111,8 @@ fun TapToStartButton(navController: NavController) {
         modifier = Modifier.clip(RoundedCornerShape(8.dp))
     ) {
         Text(
-            text = "tap to start",
+            text = "スタート",
+            fontFamily = FontFamily(Font(R.font.koruri_bold)),
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             color = Color.White,
@@ -145,5 +148,3 @@ fun ViewResultHistoryButton(navController: NavController) {
         }
     }
 }
-
-
