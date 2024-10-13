@@ -77,6 +77,7 @@ fun ScenarioScreen(
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
+                    /* 録音に失敗したときの点数がNaNにならないよう排除する */
                     val averageSpeedScore = when {
                         partialScores.first.average().isNaN() -> 0.0
                         else -> partialScores.first.average()
