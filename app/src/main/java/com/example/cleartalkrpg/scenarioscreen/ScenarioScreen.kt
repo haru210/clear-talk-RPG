@@ -2,6 +2,7 @@ package com.example.cleartalkrpg.scenarioscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -48,31 +50,47 @@ fun ScenarioScreen(
     resultScoresState: MutableState<Map<String, Double>>,
     resultCommentState: MutableState<String>
 ) {
+    /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
-    val currentScenario = scenarios[selectedScenarioId]
+    val currentScenario = scenarios.getOrNull(selectedScenarioId)
+
+    var isScenarioError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
 
     var isPaused by remember { mutableStateOf(false) }
-    var messageDisplaySpeed: Long = 50
-    var displayMessage by remember { mutableStateOf("") }
+    val messageDisplaySpeed: Long = 50
     var isMessageComplete by remember { mutableStateOf(false) }
-    var currentScreenIndex by remember { mutableStateOf(0) }
+    var currentScreenIndex by remember { mutableIntStateOf(0) }
+
     /* speedScore, clarityScore, volumeScore格納用のTriple */
     val partialScores by remember { mutableStateOf<Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>>(Triple(
         mutableListOf(), mutableListOf(), mutableListOf()
     ))}
 
-    /* TODO: シナリオに画面がない場合のエラー処理。非同期処理によって上手く動作しない。非同期でthrow-catchをする方法を模索する */
-    if (currentScenario.screens.isEmpty()) {
-        val errorMessage = "Fatal Error: シナリオに画面が挿入されていません。"
-        ScenarioHasNoScreenError(onClick = {
-            navController.navigate(ClearTalkRPGScreen.SelectScenario.name)
-        }, errorMessage = errorMessage)
+    /* エラーハンドリング */
+    if (currentScenario == null) {
+        ScenarioError(
+            onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
+            errorMessage = "Fatal Error: The scenario you selected doesn't exist."
+        )
+        return
     }
 
-    startListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
+    if (currentScenario.screens.isEmpty()) {
+        ScenarioError(
+            onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
+            errorMessage = "Fatal Error: There are no screens inserted in the selected scenario."
+        )
+        return
+    }
+
+    StartListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
 
     Surface(
         onClick = {
+            if (isScenarioError) {
+                return@Surface
+            }
             if (isMessageComplete) {
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
@@ -107,8 +125,13 @@ fun ScenarioScreen(
             modifier = Modifier.fillMaxSize()
         ) {
             Text(text = currentScenario.title, modifier = Modifier.padding(8.dp))
-            ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
-            ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
+            if (currentScreenIndex < currentScenario.screens.size) {
+                ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
+                ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
+            } else {
+                isScenarioError = true
+                errorMessage = "There are no screens inserted in the selected scenario."
+            }
             PauseButton(onClick = { isPaused = !isPaused })
             Box(
                 modifier = Modifier
@@ -122,8 +145,7 @@ fun ScenarioScreen(
                     } else { "" },
                     scenarioCharacterName = currentScenario.screens[currentScreenIndex].characterName,
                     messageDisplaySpeed = messageDisplaySpeed,
-                    onMessageComplete = { isMessageComplete = true },
-                    isMessageDisplayed = displayMessage
+                    onMessageComplete = { isMessageComplete = true }
                 )
             }
             Box(
@@ -141,35 +163,18 @@ fun ScenarioScreen(
             }
         }
     }
-}
 
-/* シナリオに問題がある場合のエラー画面 */
-@Composable
-fun ScenarioHasNoScreenError(onClick: () -> Unit, errorMessage: String) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f))
-            .clickable { onClick() }
-    ) {
-        Box(
-            modifier = Modifier
-                .size(300.dp, 200.dp)
-                .align(Alignment.Center)
-                .background(Color.White)
-        ) {
-            Text(
-                text = errorMessage,
-                fontFamily = FontFamily(Font(R.font.koruri_regular)),
-                color = Color.Black
-            )
-        }
+    /* エラーが発生している場合にエラー画面を表示する */
+    if (isScenarioError) {
+        ScenarioError(onClick = {
+            navController.navigate(ClearTalkRPGScreen.SelectScenario.name)
+        }, errorMessage = errorMessage)
     }
 }
 
 /* 音声録音 */
 @Composable
-fun startListening(
+fun StartListening(
     currentScenarioIndex: Int,
     currentScenario: Scenario,
     partialScores: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
@@ -247,8 +252,7 @@ fun ScenarioMessageBox(
     scenarioMessage: String,
     scenarioCharacterName: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit,
-    isMessageDisplayed: String
+    onMessageComplete: () -> Unit
 ) {
     Column(
 
@@ -257,8 +261,7 @@ fun ScenarioMessageBox(
         DisplayScenarioMessage(
             scenarioMessage = scenarioMessage,
             messageDisplaySpeed = messageDisplaySpeed,
-            onMessageComplete = onMessageComplete,
-            isMessageDisplayed = isMessageDisplayed
+            onMessageComplete = onMessageComplete
         )
     }
 }
@@ -293,8 +296,7 @@ fun ScenarioCharacterNamePlate(characterName: String) {
 fun DisplayScenarioMessage(
     scenarioMessage: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit,
-    isMessageDisplayed: String
+    onMessageComplete: () -> Unit
 ) {
     var displayedMessage by remember { mutableStateOf("") }
 
@@ -324,5 +326,47 @@ fun DisplayScenarioMessage(
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp)
         )
+    }
+}
+
+/* シナリオに問題がある場合のエラー画面 */
+@Composable
+fun ScenarioError(onClick: () -> Unit, errorMessage: String) {
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Black.copy(alpha = 0.5f))
+            .clickable { onClick() }
+    ) {
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .defaultMinSize(500.dp, 150.dp)
+                .clip(RoundedCornerShape(8.dp))
+                .background(Color.White)
+                .border(2.dp, Color.Black, RoundedCornerShape(8.dp))
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp, 32.dp)
+            ) {
+                Text(
+                    text = errorMessage,
+                    fontFamily = FontFamily(Font(R.font.koruri_regular)),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+                Text(
+                    text = "Click to return to scenario select screen." ,
+                    fontFamily = FontFamily(Font(R.font.koruri_regular)),
+                    fontSize = 18.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Red,
+                    modifier = Modifier.align(Alignment.CenterHorizontally)
+                )
+            }
+        }
     }
 }
