@@ -1,8 +1,10 @@
 package com.example.cleartalkrpg.resultscreen
 
+import android.media.MediaPlayer
+import android.net.Uri
+import android.widget.VideoView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,17 +33,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
@@ -153,6 +155,7 @@ fun ResultScreen(
     }
 }
 
+/* TODO: 総得点表示アニメーション終了後にキラキラエフェクトを追加 */
 /* 総合得点のスコアボード */
 @Composable
 fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor>) {
@@ -194,6 +197,16 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             Box {
+                AndroidView(factory = { context ->
+                    VideoView(context).apply {
+                        val videoUri = Uri.parse("android.resource://${context.packageName}/raw/effect_sparkles_vp9")
+                        setVideoURI(videoUri)
+                        setOnPreparedListener { mediaPlayer: MediaPlayer ->
+                            mediaPlayer.isLooping = true
+                            start()
+                        }
+                    }
+                }, modifier = Modifier.fillMaxSize())
                 if (isVisible) {
                     Text(
                         text = String.format(Locale.US, "%.1f", totalScore),
