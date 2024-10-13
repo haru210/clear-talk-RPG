@@ -277,10 +277,12 @@ fun CommentBoard(comment: String) {
             .clip(RoundedCornerShape(8.dp))
             .border(2.dp, Color.LightGray.darken(0.8f), RoundedCornerShape(8.dp))
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(12.dp, 8.dp)
+                modifier = Modifier.padding(24.dp, 8.dp)
             ) {
                 Text(
                     text = "【一言コメント】",
@@ -289,7 +291,9 @@ fun CommentBoard(comment: String) {
                 )
                 Text(
                     text = comment,
-                    fontFamily = FontFamily(Font(R.font.koruri_regular, FontWeight.Bold))
+                    fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                    fontSize = 17.sp,
+                    modifier = Modifier.width(350.dp)
                 )
             }
         }

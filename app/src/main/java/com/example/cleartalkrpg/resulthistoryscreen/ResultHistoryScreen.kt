@@ -224,6 +224,7 @@ fun CommentCard(comment: String) {
             Spacer(modifier = Modifier.height(4.dp))
             Text(
                 text = comment,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
                 fontSize = 14.sp,
                 color = Color.Gray
             )
