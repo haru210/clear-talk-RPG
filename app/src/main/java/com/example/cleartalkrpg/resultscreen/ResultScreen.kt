@@ -187,7 +187,7 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
     var scale by remember { mutableStateOf(0f) }
     var isVisible by remember { mutableStateOf(false) }
 
-    /* 画面表示0.5秒後にアニメーション開始 */
+    /* 画面表示数百ミリ秒後にアニメーション開始 */
     LaunchedEffect(Unit) {
         delay(300)
         isVisible = true
