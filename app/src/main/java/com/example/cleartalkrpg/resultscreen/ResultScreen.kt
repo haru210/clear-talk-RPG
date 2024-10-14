@@ -1,5 +1,7 @@
 package com.example.cleartalkrpg.resultscreen
 
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -12,26 +14,79 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.defaultMinSize
+import androidx.compose.foundation.layout.offset
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.material3.Card
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.ui.theme.darken
+import com.example.cleartalkrpg.ui.theme.n_BackgroundColor
+import com.example.cleartalkrpg.ui.theme.n_Blue
+import com.example.cleartalkrpg.ui.theme.n_FontColor
+import com.example.cleartalkrpg.ui.theme.n_BlueGradient
+import com.example.cleartalkrpg.ui.theme.n_BorderColor
+import com.example.cleartalkrpg.ui.theme.n_DarkGray
+import com.example.cleartalkrpg.ui.theme.n_DarkGrayGradient
+import com.example.cleartalkrpg.ui.theme.n_Gold
+import com.example.cleartalkrpg.ui.theme.n_GoldGradient
+import com.example.cleartalkrpg.ui.theme.n_Green
+import com.example.cleartalkrpg.ui.theme.n_GreenGradient
+import com.example.cleartalkrpg.ui.theme.n_Orange
+import com.example.cleartalkrpg.ui.theme.n_OrangeGradient
+import com.example.cleartalkrpg.ui.theme.n_RainbowGradient
+import com.example.cleartalkrpg.ui.theme.n_Yellow
+import kotlinx.coroutines.delay
+import java.util.Locale
 
 @Composable
-fun ResultScreen(navController: NavController) {
+fun ResultScreen(
+    navController: NavController,
+    scores: Map<String, Double>,
+    comment: String
+) {
+    /* 総合得点とそれぞれの項目の得点を各々の変数に格納 */
+    val totalScore = scores["totalScore"]?:0.0
+    val volumeScore = scores["volumeScore"]?:0.0
+    val clarityScore = scores["clarityScore"]?:0.0
+    val speedScore = scores["speedScore"]?:0.0
+
+    /* 総合得点に応じてTotalScoreBoardの背景色とフォントの色を変更 (first: 背景色, second: フォントの色) */
+    val totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor> = when {
+        totalScore == 100.0 -> Triple(n_BackgroundColor.Gradient(n_RainbowGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(Color.White))
+        totalScore >= 90.0 -> Triple(n_BackgroundColor.Gradient(n_GoldGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Gold))
+        totalScore >= 80.0 -> Triple(n_BackgroundColor.Gradient(n_GreenGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Green))
+        totalScore >= 70.0 -> Triple(n_BackgroundColor.Gradient(n_BlueGradient), n_FontColor.SolidColor(Color.White), n_BorderColor.SolidColor(n_Blue))
+        totalScore >= 60.0 -> Triple(n_BackgroundColor.Gradient(n_OrangeGradient), n_FontColor.SolidColor(Color.Black), n_BorderColor.SolidColor(n_Orange))
+        else -> Triple(n_BackgroundColor.Gradient(n_DarkGrayGradient), n_FontColor.SolidColor(n_Yellow), n_BorderColor.SolidColor(n_DarkGray))
+    }
+
+    /* 背景を表示 */
     TitleScreenBackgroundImage()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -46,25 +101,28 @@ fun ResultScreen(navController: NavController) {
                 modifier = Modifier.height(IntrinsicSize.Max),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                TotalScoreBoard(totalScore = 88.8, backgroundColor = Color(81, 235, 255, 255))
+                TotalScoreBoard(totalScore = totalScore, totalScoreBoardColor = totalScoreBoardColor)
                 Surface(
-                    modifier = Modifier.fillMaxHeight()
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(8.dp))
                 ) {
-                    CommentBoard(comment = "もう少しゆっくり一言一言大切に話してみましょう！")
+                    CommentBoard(comment = comment)
                 }
             }
             Text(
                 text = "詳細評価",
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                fontSize = 22.sp,
+                modifier = Modifier.padding(48.dp, 0.dp)
             )
             Row(
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
-                PartialScoreBoard(typeName = "音量", score = 28.1, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
-                PartialScoreBoard(typeName = "明瞭さ", score = 38.2, maxScore = 40, backgroundColor = Color(71, 49, 168, 255))
-                PartialScoreBoard(typeName = "速さ", score = 22.5, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
+                PartialScoreBoard(typeName = "音量", score = volumeScore, maxScore = 30, backgroundColor = Color(244, 67, 54, 255))
+                PartialScoreBoard(typeName = "明瞭さ", score = clarityScore, maxScore = 40, backgroundColor = Color(0xFFB3E5FC))
+                PartialScoreBoard(typeName = "速さ", score = speedScore, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
                 horizontalArrangement = Arrangement.spacedBy(24.dp),
@@ -93,32 +151,111 @@ fun ResultScreen(navController: NavController) {
     }
 }
 
+/* TODO: 総得点表示アニメーション終了後にキラキラエフェクトを追加 */
+/* 総合得点のスコアボード */
 @Composable
-fun TotalScoreBoard(totalScore: Double, backgroundColor: Color) {
-    Surface(
-        color = backgroundColor,
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
+fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor>) {
+    val context = LocalContext.current
+
+    val backgroundColor = totalScoreBoardColor.first
+    val fontColor = totalScoreBoardColor.second
+    val borderColor = totalScoreBoardColor.third
+
+//    /* エフェクト用プレイヤーを用意 */
+//    val effectPlayer = remember {
+//        ExoPlayer.Builder(context).build().apply {
+//            val mediaItem = MediaItem.fromUri(Uri.parse("\"android.resource://${context.packageName}/raw/effect_sparkles_vp9"))
+//            setMediaItem(mediaItem)
+//            prepare()
+//        }
+//    }
+//
+//    /* エフェクト用プレイヤーの再生停止状態の管理 */
+//    var isPlaying by remember { mutableStateOf(false) }
+
+    /* アニメーション用の文字列のスケール状態 (最初は非表示) */
+    var scale by remember { mutableStateOf(0f) }
+    var isVisible by remember { mutableStateOf(false) }
+
+    /* 画面表示数百ミリ秒後にアニメーション開始 */
+    LaunchedEffect(Unit) {
+        delay(300)
+        isVisible = true
+        scale = 1f
+    }
+
+    val animatedScale by animateFloatAsState(
+        targetValue = scale,
+        animationSpec = tween(durationMillis = 300),
+        label = "FloatAnimation"
+    )
+
+    Box(
+        contentAlignment = Alignment.Center,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .defaultMinSize(200.dp, 120.dp)
+            .border(
+                4.dp, when (borderColor) {
+                    is n_BorderColor.SolidColor -> borderColor.color
+                }, shape = RoundedCornerShape(8.dp)
+            )
+            .then(
+                when (backgroundColor) {
+                    is n_BackgroundColor.SolidColor -> Modifier.background(backgroundColor.color)
+                    is n_BackgroundColor.Gradient -> Modifier.background(backgroundColor.brush)
+                }
+            )
     ) {
         Row(
             modifier = Modifier.padding(24.dp),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            Text(
-                text = totalScore.toString(),
-                fontSize = 48.sp,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-            )
+            Box {
+                if (isVisible) {
+                    Text(
+                        text = String.format(Locale.US, "%.1f", totalScore),
+                        fontSize = 56.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                        modifier = Modifier
+                            .offset(
+                                x = 4.dp,
+                                y = 2.dp
+                            )
+                            .alpha(0.75f)
+                            .scale(animatedScale)
+                    )
+                    Text(
+                        text = String.format(Locale.US, "%.1f", totalScore),
+                        fontSize = 56.sp,
+                        fontWeight = FontWeight.Bold,
+                        color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                        modifier = Modifier.scale(animatedScale)
+                    )
+                }
+            }
             Text(
                 text = "点",
-                fontWeight = FontWeight.Bold,
-                color = Color.Black,
-                modifier = Modifier.align(Alignment.Bottom)
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                color = when(fontColor){ is n_FontColor.SolidColor -> fontColor.color },
+                fontSize = 22.sp,
+                modifier = Modifier
+                    .align(Alignment.Bottom)
+                    .scale(animatedScale)
             )
         }
     }
+
+//    /* Disposeのタイミングでプレイヤーのリソースを解放 */
+//    DisposableEffect(effectPlayer) {
+//        onDispose {
+//            effectPlayer.release()
+//        }
+//    }
 }
 
+/* 一言コメントボード */
 @Composable
 fun CommentBoard(comment: String) {
     Surface(
@@ -128,19 +265,33 @@ fun CommentBoard(comment: String) {
         tonalElevation = 0.dp,
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
+            .border(2.dp, Color.LightGray.darken(0.8f), RoundedCornerShape(8.dp))
     ) {
-        Box(contentAlignment = Alignment.Center) {
+        Box(
+            contentAlignment = Alignment.Center
+        ) {
             Column(
                 verticalArrangement = Arrangement.spacedBy(4.dp),
-                modifier = Modifier.padding(12.dp, 8.dp)
+                modifier = Modifier.padding(24.dp, 8.dp)
             ) {
-                Text(text = "【一言コメント】")
-                Text(text = comment)
+                Text(
+                    text = "【一言コメント】",
+                    fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                    fontSize = 18.sp
+                )
+                Text(
+                    text = comment,
+                    fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                    fontSize = 17.sp,
+                    modifier = Modifier.width(350.dp)
+                )
             }
         }
     }
 }
 
+/* TODO: 点数がスロット形式のアニメーションで表示されるようにする */
+/* 各項目の得点ボード用コンポーネント */
 @Composable
 fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, backgroundColor: Color) {
     Surface(
@@ -148,16 +299,19 @@ fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, background
         modifier = Modifier
             .clip(RoundedCornerShape(8.dp))
             .height(IntrinsicSize.Max)
+            .border(2.dp, backgroundColor.darken(0.8f), RoundedCornerShape(8.dp))
     ) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.padding(16.dp, 8.dp)
         ) {
             Text(
-                text = typeName
+                text = typeName,
+                fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
+                fontSize = 18.sp
             )
             Text(
-                text = score.toString().plus('/').plus(maxScore),
+                text = String.format(Locale.US, "%.1f", score).plus('/').plus(maxScore),
                 fontWeight = FontWeight.Bold,
                 fontSize = 20.sp
             )
@@ -165,29 +319,35 @@ fun PartialScoreBoard(typeName: String, score: Double, maxScore: Int, background
     }
 }
 
+/* 別の画面に移動するボタン用コンポーネント */
 @Composable
 fun BackToOtherScreenButton(
     displayName: String,
     backToOtherScreenClick: () -> Unit
 ) {
     Surface(
-        modifier = Modifier.clip(RoundedCornerShape(8.dp)),
         onClick = backToOtherScreenClick,
         color = Color.LightGray,
+        modifier = Modifier
+            .clip(RoundedCornerShape(8.dp))
+            .border(2.dp, Color.LightGray.darken(0.8f), RoundedCornerShape(8.dp)),
     ) {
         Text(
             text = displayName,
+            fontSize = 18.sp,
+            fontFamily = FontFamily(Font(R.font.koruri_bold)),
             modifier = Modifier.padding(24.dp)
         )
     }
 }
 
+/* 背景画像 */
 @Composable
-fun TitleScreenBackgroundImage() {
+fun TitleScreenBackgroundImage(titleScreenBackGroundImage: Int = R.drawable.title_screen_background_image) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
-            painter = painterResource(id = R.drawable.title_screen_background_image),
-            contentDescription = "Title screen background image",
+            painter = painterResource(id = titleScreenBackGroundImage),
+            contentDescription = "Title Screen Background Image",
             contentScale = ContentScale.FillBounds,
             modifier = Modifier.matchParentSize()
         )
