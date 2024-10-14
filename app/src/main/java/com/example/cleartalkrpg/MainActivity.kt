@@ -1,12 +1,14 @@
 package com.example.cleartalkrpg
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -27,6 +29,7 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
+import com.example.cleartalkrpg.database.Result
 
 class MainActivity : ComponentActivity() {
     private val resultViewModel: ResultViewModel by viewModels {
@@ -64,9 +67,16 @@ fun SceneGenerator(
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
-    var resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
-    var resultCommentState = remember { mutableStateOf("") }
+    val resultState = remember { mutableStateOf<Result?>(null) }
+    val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
+    val resultCommentState = remember { mutableStateOf("") }
 
+//    LaunchedEffect(resultState.value) {
+//        if (resultState.value != null) {
+//            resultViewModel.post(resultState.value!!)
+//        }
+//        resultState.value = null
+//    }
 
     Scaffold { innerPadding ->
         NavHost(
@@ -87,6 +97,7 @@ fun SceneGenerator(
                 ScenarioScreen(
                     navController = navController,
                     scenarioViewModel = scenarioViewModel,
+                    resultState = resultState,
                     /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
                     * リスト等の添字に使用する場合は-1する必要がある。
                     * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */

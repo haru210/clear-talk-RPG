@@ -39,14 +39,16 @@ import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.viewmodel.ResultViewModel
+import com.example.cleartalkrpg.database.Result
 import kotlinx.coroutines.delay
 
-/* TODO: シナリオ終了時にデータベースにリザルトを保存する */
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
 @Composable
 fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
+    resultState: MutableState<Result?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
     resultCommentState: MutableState<String>
@@ -120,6 +122,19 @@ fun ScenarioScreen(
                     )
                     resultScoresState.value = scores
                     resultCommentState.value = comment
+
+                    /* リザルトテーブルにリザルトを挿入 */
+                    val result = Result(
+                        scenario_title = currentScenario.title,
+                        total_score = totalScore.toInt(),
+                        volume_score = averageVolumeScore.toInt(),
+                        clarity_score = averageClarityScore.toInt(),
+                        speed_score = averageSpeedScore.toInt(),
+                        comment = comment
+                    )
+                    resultState.value = result
+
+                    /* リザルト画面に遷移 */
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
             }
