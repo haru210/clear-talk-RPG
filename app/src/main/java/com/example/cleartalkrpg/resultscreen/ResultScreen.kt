@@ -1,9 +1,5 @@
 package com.example.cleartalkrpg.resultscreen
 
-import android.content.Context
-import android.media.MediaPlayer
-import android.net.Uri
-import android.widget.VideoView
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -22,11 +18,9 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,15 +35,11 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.ui.viewinterop.AndroidView
-import androidx.media3.common.MediaItem
-import androidx.media3.exoplayer.ExoPlayer
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
@@ -75,14 +65,16 @@ import java.util.Locale
 @Composable
 fun ResultScreen(
     navController: NavController,
-    resultScores: Map<String, Double>,
-    resultComment: String
+    resultScores: Map<String, Double>
 ) {
     /* 総合得点とそれぞれの項目の得点を各々の変数に格納 */
     val totalScore = resultScores["totalScore"]?:0.0
     val volumeScore = resultScores["volumeScore"]?:0.0
     val clarityScore = resultScores["clarityScore"]?:0.0
     val speedScore = resultScores["speedScore"]?:0.0
+
+    /* 総評コメントを取得 */
+    val comment = getComment(Triple(speedScore.toInt(), clarityScore.toInt(), volumeScore.toInt()))
 
     /* 総合得点に応じてTotalScoreBoardの背景色とフォントの色を変更 (first: 背景色, second: フォントの色) */
     val totalScoreBoardColor: Triple<n_BackgroundColor, n_FontColor, n_BorderColor> = when {
@@ -117,7 +109,7 @@ fun ResultScreen(
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(8.dp))
                 ) {
-                    CommentBoard(comment = resultComment)
+                    CommentBoard(comment = comment)
                 }
             }
             Text(
@@ -362,4 +354,32 @@ fun TitleScreenBackgroundImage(titleScreenBackGroundImage: Int = R.drawable.titl
             modifier = Modifier.matchParentSize()
         )
     }
+}
+
+/* 総評コメント */
+fun getComment(scores : Triple<Int, Int, Int>) : String {
+    val (speedScore, clarityScore, volumeScore) = scores
+    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+    val comment = when {
+        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
+            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
+        }
+        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
+            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+        }
+        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
+            "悪くはありませんが、自信を持って落ち着いて話してみましょう"
+        }
+        (speedScore < maxSpeedScore - 20) -> {
+            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
+        }
+        (clarityScore < maxClarityScore - 30) -> {
+            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
+        }
+        (volumeScore < maxVolumeScore - 20) -> {
+            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
+        }
+        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
+    }
+    return comment
 }
