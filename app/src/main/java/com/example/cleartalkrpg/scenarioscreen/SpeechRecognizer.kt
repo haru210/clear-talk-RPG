@@ -23,8 +23,7 @@ class SpeechRecognizerManager(private val context: Context) {
     var startTime : Long = 0
     var endTime : Long = 0
     var speechDuration : Long = 0
-    var beforeTime : Long = 0
-    val volumeList = ArrayList<Pair<Long, Float>>()
+    val volumeList = ArrayList<Float>()
     var speedScore : Int = 30
     var clarityScore : Int = 40
     var volumeScore : Int = 0
@@ -44,13 +43,7 @@ class SpeechRecognizerManager(private val context: Context) {
                     startTime = System.currentTimeMillis()
                 }
                 override fun onRmsChanged(rmsdB: Float) {
-                    if(beforeTime == 0L){
-                        beforeTime = System.currentTimeMillis()
-                    }
-                    else if(rmsdB > 0) {
-                        volumeList.add(Pair(System.currentTimeMillis() - beforeTime, rmsdB))
-                        beforeTime = System.currentTimeMillis()
-                    }
+                    volumeList.add(rmsdB)
                 }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {
@@ -131,16 +124,19 @@ class SpeechRecognizerManager(private val context: Context) {
         val speedMax = 7.5F
 
         if (speed < speedMin) {
-            speedScore -= Math.round(speedMin - speed).toInt()
+            speedScore -= Math.round((speedMin - speed) / 1.5).toInt()
         } else if (speed > speedMax) {
-            speedScore -= Math.round(speed - speedMax).toInt()
+            speedScore -= Math.round((speed - speedMax) / 1.5).toInt()
         }
+        if(speedScore < 0) speedScore = 0
         var volumeAvg: Double = 0.0
         //音量の点数を求める
         for (i in 0..volumeList.size - 1) {
-            volumeAvg += volumeList[i].second.toDouble() * ((volumeList[i].first.toDouble() / speechDuration.toDouble()) / 1000.0)
+            volumeAvg += volumeList[i].toDouble()
         }
-        volumeScore = Math.round(volumeAvg * 3.0).toInt()
+        volumeAvg /= volumeList.size
+        if(volumeAvg > 10.0) volumeAvg = 10.0
+        volumeScore = Math.round(volumeAvg).toInt()
         val result = speechResult.value
         return Triple(speedScore, clarityScore, volumeScore)
     }
