@@ -85,8 +85,8 @@ class SpeechRecognizerManager(private val context: Context) {
     }
 
     fun calcScore() : Triple<Int, Int, Int>{
-        var target: String = "おれはかまきり"
-        var targetCnt: Int = 7
+        var target: String = "こんにちは"
+        var targetCnt: Int = 5
         var res: String = speechResult.value
         val targetLength = target.length
         val resLength = res.length
