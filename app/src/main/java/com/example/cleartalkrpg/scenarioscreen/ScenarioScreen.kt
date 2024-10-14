@@ -39,7 +39,6 @@ import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
-import com.example.cleartalkrpg.resultscreen.getComment
 import kotlinx.coroutines.delay
 
 /* TODO: シナリオ終了時にデータベースにリザルトを保存する */
@@ -374,4 +373,31 @@ fun ScenarioError(onClick: () -> Unit, errorMessage: String) {
             }
         }
     }
+}
+
+fun getComment(scores : Triple<Int, Int, Int>) : String {
+    val (speedScore, clarityScore, volumeScore) = scores
+    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+    val comment = when {
+        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
+            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
+        }
+        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
+            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+        }
+        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
+            "悪くはありませんが、自信を持って落ち着いて話してみましょう"
+        }
+        (speedScore < maxSpeedScore - 20) -> {
+            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
+        }
+        (clarityScore < maxClarityScore - 30) -> {
+            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
+        }
+        (volumeScore < maxVolumeScore - 20) -> {
+            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
+        }
+        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
+    }
+    return comment
 }
