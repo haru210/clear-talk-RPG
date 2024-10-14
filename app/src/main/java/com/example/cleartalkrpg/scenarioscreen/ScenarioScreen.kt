@@ -39,15 +39,18 @@ import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.resultscreen.getComment
 import kotlinx.coroutines.delay
 
+/* TODO: シナリオ終了時にデータベースにリザルトを保存する */
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
 @Composable
 fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
     selectedScenarioId: Int,
-    resultScoresState: MutableState<Map<String, Double>>
+    resultScoresState: MutableState<Map<String, Double>>,
+    resultCommentState: MutableState<String>
 ) {
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
@@ -107,6 +110,8 @@ fun ScenarioScreen(
                         partialScores.third.average().isNaN() -> 0.0
                         else -> partialScores.third.average()
                     }
+                    /* 総評コメントを取得 */
+                    val comment = getComment(Triple(averageSpeedScore.toInt(), averageClarityScore.toInt(), averageVolumeScore.toInt()))
                     val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
                     val scores = mapOf(
                         Pair("totalScore", totalScore),
@@ -115,6 +120,7 @@ fun ScenarioScreen(
                         Pair("volumeScore", averageVolumeScore)
                     )
                     resultScoresState.value = scores
+                    resultCommentState.value = comment
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
             }
