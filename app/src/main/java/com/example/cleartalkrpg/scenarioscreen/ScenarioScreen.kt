@@ -56,14 +56,16 @@ fun ScenarioScreen(
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     val currentScenario = scenarios.getOrNull(selectedScenarioId)
-
-    var isScenarioError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    var isPaused by remember { mutableStateOf(false) }
-    val messageDisplaySpeed: Long = 50
-    var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableIntStateOf(0) }
+
+    /* ポーズ画面の状態管理 */
+    var isPaused by remember { mutableStateOf(false) }
+
+    /* メッセージの表示速度 */
+    val messageDisplaySpeed: Long = 50
+
+    /* メッセージが表示しきっているかどうか */
+    var isMessageComplete by remember { mutableStateOf(false) }
 
     /* speedScore, clarityScore, volumeScore格納用のTriple */
     val partialScores by remember { mutableStateOf<Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>>(Triple(
@@ -71,6 +73,8 @@ fun ScenarioScreen(
     ))}
 
     /* エラーハンドリング */
+    var isScenarioError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     if (currentScenario == null) {
         ScenarioError(
             onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
@@ -95,6 +99,7 @@ fun ScenarioScreen(
                 return@Surface
             }
             if (isMessageComplete) {
+                isMessageComplete = false
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
@@ -137,6 +142,8 @@ fun ScenarioScreen(
                     /* リザルト画面に遷移 */
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
+            } else {
+                isMessageComplete = true
             }
         }
     ) {
@@ -164,7 +171,8 @@ fun ScenarioScreen(
                     } else { "" },
                     scenarioCharacterName = currentScenario.screens[currentScreenIndex].characterName,
                     messageDisplaySpeed = messageDisplaySpeed,
-                    onMessageComplete = { isMessageComplete = true }
+                    onMessageComplete = { isMessageComplete = true },
+                    isMessageComplete = isMessageComplete
                 )
             }
             Box(
@@ -271,7 +279,8 @@ fun ScenarioMessageBox(
     scenarioMessage: String,
     scenarioCharacterName: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit
+    onMessageComplete: () -> Unit,
+    isMessageComplete: Boolean
 ) {
     Column(
 
@@ -280,7 +289,8 @@ fun ScenarioMessageBox(
         DisplayScenarioMessage(
             scenarioMessage = scenarioMessage,
             messageDisplaySpeed = messageDisplaySpeed,
-            onMessageComplete = onMessageComplete
+            onMessageComplete = onMessageComplete,
+            isMessageComplete = isMessageComplete
         )
     }
 }
@@ -315,13 +325,17 @@ fun ScenarioCharacterNamePlate(characterName: String) {
 fun DisplayScenarioMessage(
     scenarioMessage: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit
+    onMessageComplete: () -> Unit,
+    isMessageComplete: Boolean
 ) {
     var displayedMessage by remember { mutableStateOf("") }
 
     // LaunchedEffectで文字を1文字ずつ表示する
-    LaunchedEffect(scenarioMessage) {
-        if (scenarioMessage.isNotEmpty()) {
+    LaunchedEffect(scenarioMessage, isMessageComplete) {
+        /* もしクリックされた場合にメッセージを即座に表示する */
+        if (isMessageComplete) {
+            displayedMessage = scenarioMessage
+        } else if (scenarioMessage.isNotEmpty()) {
             displayedMessage = ""
             for (i in scenarioMessage.indices) {
                 delay(messageDisplaySpeed)
