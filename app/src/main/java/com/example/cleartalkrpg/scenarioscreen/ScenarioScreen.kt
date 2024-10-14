@@ -47,8 +47,7 @@ fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
     selectedScenarioId: Int,
-    resultScoresState: MutableState<Map<String, Double>>,
-    resultCommentState: MutableState<String>
+    resultScoresState: MutableState<Map<String, Double>>
 ) {
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())

@@ -63,7 +63,6 @@ fun SceneGenerator(
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
     var resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
-    var resultCommentState = remember { mutableStateOf("もう少しゆっくり一言一言大切に話してみましょう！") }
 
 
     Scaffold { innerPadding ->
@@ -89,15 +88,13 @@ fun SceneGenerator(
                     * リスト等の添字に使用する場合は-1する必要がある。
                     * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
                     selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
-                    resultScoresState = resultScoresState,
-                    resultCommentState = resultCommentState
+                    resultScoresState = resultScoresState
                 )
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(
                     navController = navController,
-                    resultScores = resultScoresState.value,
-                    resultComment = resultCommentState.value
+                    resultScores = resultScoresState.value
                 )
             }
             composable(route = ClearTalkRPGScreen.ResultHistory.name) {
