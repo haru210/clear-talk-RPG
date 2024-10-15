@@ -44,7 +44,9 @@ class SpeechRecognizerManager(private val context: Context, private val screen: 
                     startTime = System.currentTimeMillis()
                 }
                 override fun onRmsChanged(rmsdB: Float) {
-                    volumeList.add(rmsdB)
+                    if(rmsdB > 1.0){
+                        volumeList.add(rmsdB)
+                    }
                 }
                 override fun onBufferReceived(buffer: ByteArray?) {}
                 override fun onEndOfSpeech() {
@@ -136,7 +138,8 @@ class SpeechRecognizerManager(private val context: Context, private val screen: 
             volumeAvg += volumeList[i].toDouble()
         }
         volumeAvg /= volumeList.size
-        if(volumeAvg > 10.0) volumeAvg = 10.0
+        volumeAvg *= 3
+        if(volumeAvg > 30.0) volumeAvg = 30.0
         volumeScore = Math.round(volumeAvg).toInt()
         val result = speechResult.value
         return Triple(speedScore, clarityScore, volumeScore)
