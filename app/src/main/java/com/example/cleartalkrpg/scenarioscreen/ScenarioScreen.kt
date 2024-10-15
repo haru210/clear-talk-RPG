@@ -41,6 +41,7 @@ import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.database.Screen
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -91,7 +92,7 @@ fun ScenarioScreen(
         return
     }
 
-    StartListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
+    StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
 
     Surface(
         onClick = {
@@ -203,11 +204,11 @@ fun ScenarioScreen(
 @Composable
 fun StartListening(
     currentScenarioIndex: Int,
-    currentScenario: Scenario,
+    currentScreen: Screen,
     partialScores: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
 ) {
     val context = LocalContext.current
-    val recogManager = remember { SpeechRecognizerManager(context) }
+    val recogManager = remember { SpeechRecognizerManager(context, currentScreen) }
 
     var speedScore by remember { mutableStateOf(0) }
     var clarityScore by remember { mutableStateOf(0) }
@@ -415,7 +416,7 @@ fun getComment(scores : Triple<Int, Int, Int>) : String {
             "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
         }
         (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
-            "悪くはありませんが、自信を持って落ち着いて話してみましょう"
+            "悪くはありません。自信を持って落ち着いて話してみましょう"
         }
         (speedScore < maxSpeedScore - 20) -> {
             "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
