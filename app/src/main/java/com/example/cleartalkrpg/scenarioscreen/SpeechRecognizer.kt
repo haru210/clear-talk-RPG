@@ -14,9 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import kotlinx.coroutines.delay
+import com.example.cleartalkrpg.database.Screen
 
 
-class SpeechRecognizerManager(private val context: Context) {
+class SpeechRecognizerManager(private val context: Context, private val screen: Screen) {
     private var speechRecognizer: SpeechRecognizer? = null
     val speechResult = mutableStateOf("")
 
@@ -57,7 +58,7 @@ class SpeechRecognizerManager(private val context: Context) {
                 override fun onResults(results: Bundle?) {
                     val matches = results?.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION)
                     speechResult.value = matches?.joinToString(separator = "\n") ?: "No Results"
-                    score = calcScore()
+                    score = calcScore(screen)
                     resultListener?.invoke(score)
                 }
 
@@ -84,9 +85,9 @@ class SpeechRecognizerManager(private val context: Context) {
         speechRecognizer = null
     }
 
-    fun calcScore() : Triple<Int, Int, Int>{
-        var target: String = "こんにちは"
-        var targetCnt: Int = 5
+    fun calcScore(screen: Screen) : Triple<Int, Int, Int>{
+        var target: String = screen.line
+        var targetCnt: Int = screen.lineLength
         var res: String = speechResult.value
         val targetLength = target.length
         val resLength = res.length
