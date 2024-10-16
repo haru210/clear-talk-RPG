@@ -118,7 +118,7 @@ class SpeechRecognizerManager(private val context: Context, private val screen: 
         val levenDis = dp[targetLength][resLength]
         //明瞭さの点数を求める
         clarityScore -= levenDis * 2
-
+        if(clarityScore < 0) clarityScore = 0
         //速さの点数を求める
         val speed: Double =
             targetCnt.toDouble() / (speechDuration.toDouble() / 1000.0F)
