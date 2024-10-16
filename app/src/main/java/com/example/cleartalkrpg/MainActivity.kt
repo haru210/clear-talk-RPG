@@ -30,6 +30,9 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
     private val resultViewModel: ResultViewModel by viewModels {
@@ -71,12 +74,14 @@ fun SceneGenerator(
     val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
     val resultCommentState = remember { mutableStateOf("") }
 
-//    LaunchedEffect(resultState.value) {
-//        if (resultState.value != null) {
-//            resultViewModel.post(resultState.value!!)
-//        }
-//        resultState.value = null
-//    }
+    LaunchedEffect(resultState.value) {
+        resultState.value?.let { result ->
+                withContext(Dispatchers.IO) {
+                    resultViewModel.post(result)
+                }
+            resultState.value = null
+        }
+    }
 
     Scaffold { innerPadding ->
         NavHost(

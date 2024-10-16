@@ -19,6 +19,15 @@ val n_Orange = Color(0xFFFF9800)
 val n_DarkGray = Color(0xFF424242)
 val n_Yellow = Color(0xFFFFEB3B)
 
+val n_PastelColors = listOf(
+    Color(0xFFBFD3C1), // PastelGreen
+    Color(0xFFE8B4C1), // PastelPink
+    Color(0xFFD5D2BB), // PastelYellow
+    Color(0xFFC1D3E8), // PastelBlue
+    Color(0xFFE8D3C1), // PastelOrange
+    Color(0xFFD3E8C1)  // PastelMint
+)
+
 val n_GoldGradient = Brush.horizontalGradient(colors = listOf(n_Gold, Color(0xFFFFA500)))
 val n_GreenGradient = Brush.horizontalGradient(colors = listOf(n_Green, Color(0xFF2E7D32)))
 val n_BlueGradient = Brush.horizontalGradient(colors = listOf(n_Blue, Color(0xFF1976D2)))

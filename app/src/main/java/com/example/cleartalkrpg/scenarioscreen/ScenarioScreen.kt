@@ -41,6 +41,7 @@ import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.database.Screen
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -56,14 +57,16 @@ fun ScenarioScreen(
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
     val currentScenario = scenarios.getOrNull(selectedScenarioId)
-
-    var isScenarioError by remember { mutableStateOf(false) }
-    var errorMessage by remember { mutableStateOf("") }
-
-    var isPaused by remember { mutableStateOf(false) }
-    val messageDisplaySpeed: Long = 50
-    var isMessageComplete by remember { mutableStateOf(false) }
     var currentScreenIndex by remember { mutableIntStateOf(0) }
+
+    /* ポーズ画面の状態管理 */
+    var isPaused by remember { mutableStateOf(false) }
+
+    /* メッセージの表示速度 */
+    val messageDisplaySpeed: Long = 50
+
+    /* メッセージが表示しきっているかどうか */
+    var isMessageComplete by remember { mutableStateOf(false) }
 
     /* speedScore, clarityScore, volumeScore格納用のTriple */
     val partialScores by remember { mutableStateOf<Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>>(Triple(
@@ -71,6 +74,8 @@ fun ScenarioScreen(
     ))}
 
     /* エラーハンドリング */
+    var isScenarioError by remember { mutableStateOf(false) }
+    var errorMessage by remember { mutableStateOf("") }
     if (currentScenario == null) {
         ScenarioError(
             onClick = { navController.navigate(ClearTalkRPGScreen.SelectScenario.name) },
@@ -87,7 +92,7 @@ fun ScenarioScreen(
         return
     }
 
-    StartListening(currentScenarioIndex = currentScreenIndex, currentScenario = currentScenario, partialScores = partialScores)
+    StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
 
     Surface(
         onClick = {
@@ -95,6 +100,7 @@ fun ScenarioScreen(
                 return@Surface
             }
             if (isMessageComplete) {
+                isMessageComplete = false
                 if (currentScreenIndex < currentScenario.screens.size - 1) {
                     currentScreenIndex++
                 } else {
@@ -137,6 +143,8 @@ fun ScenarioScreen(
                     /* リザルト画面に遷移 */
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
+            } else {
+                isMessageComplete = true
             }
         }
     ) {
@@ -164,7 +172,8 @@ fun ScenarioScreen(
                     } else { "" },
                     scenarioCharacterName = currentScenario.screens[currentScreenIndex].characterName,
                     messageDisplaySpeed = messageDisplaySpeed,
-                    onMessageComplete = { isMessageComplete = true }
+                    onMessageComplete = { isMessageComplete = true },
+                    isMessageComplete = isMessageComplete
                 )
             }
             Box(
@@ -195,11 +204,11 @@ fun ScenarioScreen(
 @Composable
 fun StartListening(
     currentScenarioIndex: Int,
-    currentScenario: Scenario,
+    currentScreen: Screen,
     partialScores: Triple<MutableList<Int>, MutableList<Int>, MutableList<Int>>
 ) {
     val context = LocalContext.current
-    val recogManager = remember { SpeechRecognizerManager(context) }
+    val recogManager = remember { SpeechRecognizerManager(context, currentScreen) }
 
     var speedScore by remember { mutableStateOf(0) }
     var clarityScore by remember { mutableStateOf(0) }
@@ -271,7 +280,8 @@ fun ScenarioMessageBox(
     scenarioMessage: String,
     scenarioCharacterName: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit
+    onMessageComplete: () -> Unit,
+    isMessageComplete: Boolean
 ) {
     Column(
 
@@ -280,7 +290,8 @@ fun ScenarioMessageBox(
         DisplayScenarioMessage(
             scenarioMessage = scenarioMessage,
             messageDisplaySpeed = messageDisplaySpeed,
-            onMessageComplete = onMessageComplete
+            onMessageComplete = onMessageComplete,
+            isMessageComplete = isMessageComplete
         )
     }
 }
@@ -315,13 +326,17 @@ fun ScenarioCharacterNamePlate(characterName: String) {
 fun DisplayScenarioMessage(
     scenarioMessage: String,
     messageDisplaySpeed: Long,
-    onMessageComplete: () -> Unit
+    onMessageComplete: () -> Unit,
+    isMessageComplete: Boolean
 ) {
     var displayedMessage by remember { mutableStateOf("") }
 
     // LaunchedEffectで文字を1文字ずつ表示する
-    LaunchedEffect(scenarioMessage) {
-        if (scenarioMessage.isNotEmpty()) {
+    LaunchedEffect(scenarioMessage, isMessageComplete) {
+        /* もしクリックされた場合にメッセージを即座に表示する */
+        if (isMessageComplete) {
+            displayedMessage = scenarioMessage
+        } else if (scenarioMessage.isNotEmpty()) {
             displayedMessage = ""
             for (i in scenarioMessage.indices) {
                 delay(messageDisplaySpeed)
@@ -401,7 +416,7 @@ fun getComment(scores : Triple<Int, Int, Int>) : String {
             "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
         }
         (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
-            "悪くはありませんが、自信を持って落ち着いて話してみましょう"
+            "悪くはありません。自信を持って落ち着いて話してみましょう"
         }
         (speedScore < maxSpeedScore - 20) -> {
             "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
