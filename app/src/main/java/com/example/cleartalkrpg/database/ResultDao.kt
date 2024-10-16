@@ -13,8 +13,8 @@ interface ResultDao {
     fun getAll(): Flow<List<Result>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun post(result: Result)
+    suspend fun post(result: Result)
 
     @Delete
-    fun delete(result: Result)
+    suspend fun delete(result: Result)
 }
