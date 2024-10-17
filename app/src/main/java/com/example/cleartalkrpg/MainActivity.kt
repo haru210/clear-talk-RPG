@@ -102,6 +102,7 @@ fun SceneGenerator(
                 ScenarioScreen(
                     navController = navController,
                     scenarioViewModel = scenarioViewModel,
+                    resultViewModel = resultViewModel,
                     resultState = resultState,
                     /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
                     * リスト等の添字に使用する場合は-1する必要がある。

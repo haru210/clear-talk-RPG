@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -49,6 +50,7 @@ import kotlinx.coroutines.delay
 fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
+    resultViewModel: ResultViewModel,
     resultState: MutableState<Result?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
@@ -117,15 +119,22 @@ fun ScenarioScreen(
                         partialScores.third.average().isNaN() -> 0.0
                         else -> partialScores.third.average()
                     }
-                    /* 総評コメントを取得 */
-                    val comment = getComment(Triple(averageSpeedScore.toInt(), averageClarityScore.toInt(), averageVolumeScore.toInt()))
                     val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
+
                     val scores = mapOf(
                         Pair("totalScore", totalScore),
                         Pair("speedScore", averageSpeedScore),
                         Pair("clarityScore", averageClarityScore),
                         Pair("volumeScore", averageVolumeScore)
                     )
+
+                    /* 総評コメントを取得 */
+                    val comment = getComment(
+                        scores = scores,
+                        resultViewModel = resultViewModel,
+                        scenarioTitle = currentScenario.title
+                    )
+
                     resultScoresState.value = scores
                     resultCommentState.value = comment
 
@@ -405,10 +414,29 @@ fun ScenarioError(onClick: () -> Unit, errorMessage: String) {
     }
 }
 
-fun getComment(scores : Triple<Int, Int, Int>) : String {
-    val (speedScore, clarityScore, volumeScore) = scores
+fun getComment(
+    scores : Map<String, Double>,
+    resultViewModel: ResultViewModel,
+    scenarioTitle: String
+) : String {
+    /* リザルトのそれぞれのスコアを取得 */
+    val (totalScore, speedScore, clarityScore, volumeScore) = intArrayOf(scores["totalScore"]!!.toInt(), scores["speedScore"]!!.toInt(), scores["clarityScore"]!!.toInt(), scores["volumeScore"]!!.toInt())
     val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+
+    /* 過去のリザルトと比較して評価できるようにする */
+    val results = resultViewModel.allResults.value
+    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }
+    val latestSameScenarioResult = sameScenarioResults?.last()
+
     val comment = when {
+        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+            when {
+                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+            }
+        }
         (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
             "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
         }
