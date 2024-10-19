@@ -35,6 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
@@ -43,6 +47,7 @@ import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
+import com.example.cleartalkrpg.ui.theme.DownpointingTriangleAnimation
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -305,12 +310,6 @@ fun ScenarioMessageBox(
     }
 }
 
-/* テキストボックスの右下に表示される逆三角形のアニメーション */
-@Composable
-fun AnimatedTriangleIndicator(isMessageComplete: Boolean) {
-
-}
-
 /* テキストボックスの上方に設置されるキャラクターのネームプレート */
 @Composable
 fun ScenarioCharacterNamePlate(characterName: String) {
@@ -369,6 +368,17 @@ fun DisplayScenarioMessage(
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp),
         )
+        /* メッセージが全て表示されたあと、逆三角形のアニメーションを表示 */
+        if (isMessageComplete) {
+            Box(
+                contentAlignment = Alignment.BottomEnd,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Box(modifier = Modifier.size(18.dp)) {
+                    DownpointingTriangleAnimation()
+                }
+            }
+        }
     }
 }
 
