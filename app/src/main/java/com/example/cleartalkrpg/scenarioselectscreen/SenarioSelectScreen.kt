@@ -34,7 +34,8 @@ import com.example.cleartalkrpg.R
 @Composable
 fun ScenarioSelectScreen(
     navController: NavController,
-    scenarioSelectState: ScenarioSelectState
+    scenarioSelectState: ScenarioSelectState,
+    navigationState: MutableState<String?>
 ) {
     val state = scenarioSelectState
     TitleScreenBackgroundImage()
@@ -195,7 +196,8 @@ fun ScenarioSelectScreen(
                     .size(80.dp)
                     .background(Color.Red, shape = RoundedCornerShape(30.dp))
                     .clickable {
-                        navController.navigate(ClearTalkRPGScreen.Scenario.name) // シナリオ画面へ遷移
+                        navigationState.value = ClearTalkRPGScreen.Scenario.name
+                        navController.navigate(ClearTalkRPGScreen.Loading.name) // シナリオ画面へ遷移
                     }
                     .border(2.dp, Color.White, shape = RoundedCornerShape(30.dp))
                     .shadow(4.dp, shape = RoundedCornerShape(30.dp)),

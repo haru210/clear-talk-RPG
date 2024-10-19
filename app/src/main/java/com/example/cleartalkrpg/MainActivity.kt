@@ -30,6 +30,7 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.loadingscreen.LoadingScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,7 +60,8 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
-    ResultHistory
+    ResultHistory,
+    Loading
 }
 
 @Composable
@@ -73,6 +75,7 @@ fun SceneGenerator(
     val resultState = remember { mutableStateOf<Result?>(null) }
     val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
     val resultCommentState = remember { mutableStateOf("") }
+    val navigationState = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(resultState.value) {
         resultState.value?.let { result ->
@@ -95,8 +98,12 @@ fun SceneGenerator(
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
                     navController = navController,
-                    scenarioSelectState = scenarioSelectState
+                    scenarioSelectState = scenarioSelectState,
+                    navigationState = navigationState
                 )
+            }
+            composable(route = ClearTalkRPGScreen.Loading.name) {
+                LoadingScreen(navigation = { navController.navigate(navigationState.value!!) })
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
                 ScenarioScreen(
