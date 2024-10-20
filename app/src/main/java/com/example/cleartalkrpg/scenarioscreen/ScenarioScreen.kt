@@ -165,7 +165,6 @@ fun ScenarioScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(text = currentScenario.title, modifier = Modifier.padding(8.dp))
             if (currentScreenIndex < currentScenario.screens.size) {
                 ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
                 ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
@@ -203,6 +202,13 @@ fun ScenarioScreen(
                     )
                 }
             }
+            Text(
+                text = currentScenario.title,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                fontSize = 16.sp,
+                color = Color.DarkGray,
+                modifier = Modifier.padding(16.dp, 8.dp)
+            )
         }
     }
 
