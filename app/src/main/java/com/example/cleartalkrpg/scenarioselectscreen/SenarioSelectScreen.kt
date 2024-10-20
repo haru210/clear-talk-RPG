@@ -61,7 +61,7 @@ fun ScenarioSelectScreen(
                 ) {
                     Image(
                         painter = painterResource(id = state.selectedScenario!!.jacketImage),
-                        contentDescription = state.selectedScenario?.title,
+                        contentDescription = state.selectedScenario.title,
                         modifier = Modifier
                             .fillMaxWidth()
                             .weight(1f),
