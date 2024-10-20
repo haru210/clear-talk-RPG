@@ -37,7 +37,7 @@ fun LoadingScreen(navigation: () -> Unit) {
 
     LaunchedEffect(loading) {
         if (loading) {
-            delay(5000)
+            delay(3000)
             loading = false
             navigation()
         }
