@@ -154,6 +154,11 @@ fun ScenarioScreen(
                     )
                     resultState.value = result
 
+                    /* ハイスコアならばシナリオのハイスコアとして設定 */
+                    if (isHighScore(totalScore, currentScenario)) {
+                        // データベースの値を変更するためのコードを記述
+                    }
+
                     /* リザルト画面に遷移 */
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
@@ -474,4 +479,17 @@ fun getComment(
         else -> "もう少しゆっくり一言一言大切に話してみましょう！"
     }
     return comment
+}
+
+/* 総得点がハイスコアかどうか判定する */
+fun isHighScore(
+    totalScore: Double,
+    currentScenario: Scenario
+): Boolean {
+    val isHighScore: Boolean = when {
+        currentScenario.highScore == 0 -> true
+        currentScenario.highScore < totalScore -> true
+        else -> false
+    }
+    return isHighScore
 }
