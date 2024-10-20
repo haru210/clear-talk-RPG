@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import androidx.room.Update
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -13,8 +14,11 @@ interface ScenarioDao {
     fun getAll(): Flow<List<Scenario>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun post(scenario: Scenario)
+    suspend fun post(scenario: Scenario)
+
+    @Update
+    suspend fun update(scenario: Scenario)
 
     @Delete
-    fun delete(scenario: Scenario)
+    suspend fun delete(scenario: Scenario)
 }

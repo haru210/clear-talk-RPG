@@ -57,6 +57,7 @@ fun ScenarioScreen(
     scenarioViewModel: ScenarioViewModel,
     resultViewModel: ResultViewModel,
     resultState: MutableState<Result?>,
+    scenarioUpdateState: MutableState<Scenario?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
     resultCommentState: MutableState<String>
@@ -156,7 +157,8 @@ fun ScenarioScreen(
 
                     /* ハイスコアならばシナリオのハイスコアとして設定 */
                     if (isHighScore(totalScore, currentScenario)) {
-                        // データベースの値を変更するためのコードを記述
+                        currentScenario.highScore = totalScore.toInt()
+                        scenarioUpdateState.value = currentScenario
                     }
 
                     /* リザルト画面に遷移 */
@@ -444,20 +446,26 @@ fun getComment(
     val (totalScore, speedScore, clarityScore, volumeScore) = intArrayOf(scores["totalScore"]!!.toInt(), scores["speedScore"]!!.toInt(), scores["clarityScore"]!!.toInt(), scores["volumeScore"]!!.toInt())
     val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
 
-    /* 過去のリザルトと比較して評価できるようにする */
-    val results = resultViewModel.allResults.value
-    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }
-    val latestSameScenarioResult = sameScenarioResults?.last()
+    /* 過去のリザルトと比較して評価できるようにする
+    * リザルトがない状態のときにnullになってクラッシュするため一旦削除
+    * */
+//    val results = resultViewModel.allResults.value
+//    var sameScenarioResults: List<Result>? = null
+//    var latestSameScenarioResult: Result? = null
+//    results?.let {
+//        sameScenarioResults = results.filter { it.scenario_title == scenarioTitle }
+//        latestSameScenarioResult = sameScenarioResults!!.last()
+//    }
 
     val comment = when {
-        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
-            when {
-                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
-                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
-                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
-                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-            }
-        }
+//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+//            when {
+//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+//            }
+//        }
         (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
             "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
         }
