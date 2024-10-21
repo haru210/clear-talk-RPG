@@ -30,6 +30,8 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModelFactory
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
+import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.loadingscreen.LoadingScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -59,7 +61,8 @@ enum class ClearTalkRPGScreen {
     SelectScenario,
     Scenario,
     Result,
-    ResultHistory
+    ResultHistory,
+    Loading
 }
 
 @Composable
@@ -71,15 +74,26 @@ fun SceneGenerator(
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
     val resultState = remember { mutableStateOf<Result?>(null) }
+    val scenarioUpdateState = remember { mutableStateOf<Scenario?>(null) }
     val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
     val resultCommentState = remember { mutableStateOf("") }
+    val navigationState = remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(resultState.value) {
         resultState.value?.let { result ->
-                withContext(Dispatchers.IO) {
-                    resultViewModel.post(result)
-                }
+            withContext(Dispatchers.IO) {
+                resultViewModel.post(result)
+            }
             resultState.value = null
+        }
+    }
+
+    LaunchedEffect(scenarioUpdateState.value) {
+        scenarioUpdateState.value?.let { scenario ->
+            withContext(Dispatchers.IO) {
+                scenarioViewModel.update(scenario)
+            }
+            scenarioUpdateState.value = null
         }
     }
 
@@ -95,14 +109,20 @@ fun SceneGenerator(
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
                     navController = navController,
-                    scenarioSelectState = scenarioSelectState
+                    scenarioSelectState = scenarioSelectState,
+                    navigationState = navigationState
                 )
+            }
+            composable(route = ClearTalkRPGScreen.Loading.name) {
+                LoadingScreen(navigation = { navController.navigate(navigationState.value!!) })
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
                 ScenarioScreen(
                     navController = navController,
                     scenarioViewModel = scenarioViewModel,
+                    resultViewModel = resultViewModel,
                     resultState = resultState,
+                    scenarioUpdateState = scenarioUpdateState,
                     /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
                     * リスト等の添字に使用する場合は-1する必要がある。
                     * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */

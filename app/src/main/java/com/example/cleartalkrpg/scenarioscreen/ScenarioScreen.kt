@@ -1,5 +1,6 @@
 package com.example.cleartalkrpg.scenarioscreen
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -34,6 +35,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.airbnb.lottie.compose.LottieAnimation
+import com.airbnb.lottie.compose.LottieCompositionSpec
+import com.airbnb.lottie.compose.LottieConstants
+import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
@@ -42,6 +47,7 @@ import com.example.cleartalkrpg.R
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
+import com.example.cleartalkrpg.ui.theme.DownpointingTriangleAnimation
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -49,7 +55,9 @@ import kotlinx.coroutines.delay
 fun ScenarioScreen(
     navController: NavController,
     scenarioViewModel: ScenarioViewModel,
+    resultViewModel: ResultViewModel,
     resultState: MutableState<Result?>,
+    scenarioUpdateState: MutableState<Scenario?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
     resultCommentState: MutableState<String>
@@ -117,15 +125,22 @@ fun ScenarioScreen(
                         partialScores.third.average().isNaN() -> 0.0
                         else -> partialScores.third.average()
                     }
-                    /* 総評コメントを取得 */
-                    val comment = getComment(Triple(averageSpeedScore.toInt(), averageClarityScore.toInt(), averageVolumeScore.toInt()))
                     val totalScore = averageSpeedScore + averageClarityScore + averageVolumeScore
+
                     val scores = mapOf(
                         Pair("totalScore", totalScore),
                         Pair("speedScore", averageSpeedScore),
                         Pair("clarityScore", averageClarityScore),
                         Pair("volumeScore", averageVolumeScore)
                     )
+
+                    /* 総評コメントを取得 */
+                    val comment = getComment(
+                        scores = scores,
+                        resultViewModel = resultViewModel,
+                        scenarioTitle = currentScenario.title
+                    )
+
                     resultScoresState.value = scores
                     resultCommentState.value = comment
 
@@ -140,6 +155,12 @@ fun ScenarioScreen(
                     )
                     resultState.value = result
 
+                    /* ハイスコアならばシナリオのハイスコアとして設定 */
+                    if (isHighScore(totalScore, currentScenario)) {
+                        currentScenario.highScore = totalScore.toInt()
+                        scenarioUpdateState.value = currentScenario
+                    }
+
                     /* リザルト画面に遷移 */
                     navController.navigate(ClearTalkRPGScreen.Result.name)
                 }
@@ -151,7 +172,6 @@ fun ScenarioScreen(
         Box(
             modifier = Modifier.fillMaxSize()
         ) {
-            Text(text = currentScenario.title, modifier = Modifier.padding(8.dp))
             if (currentScreenIndex < currentScenario.screens.size) {
                 ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
                 ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
@@ -189,6 +209,13 @@ fun ScenarioScreen(
                     )
                 }
             }
+            Text(
+                text = currentScenario.title,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                fontSize = 16.sp,
+                color = Color.DarkGray,
+                modifier = Modifier.padding(16.dp, 8.dp)
+            )
         }
     }
 
@@ -296,12 +323,6 @@ fun ScenarioMessageBox(
     }
 }
 
-/* テキストボックスの右下に表示される逆三角形のアニメーション */
-@Composable
-fun AnimatedTriangleIndicator(isMessageComplete: Boolean) {
-
-}
-
 /* テキストボックスの上方に設置されるキャラクターのネームプレート */
 @Composable
 fun ScenarioCharacterNamePlate(characterName: String) {
@@ -360,6 +381,17 @@ fun DisplayScenarioMessage(
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp),
         )
+        /* メッセージが全て表示されたあと、逆三角形のアニメーションを表示 */
+        if (isMessageComplete) {
+            Box(
+                contentAlignment = Alignment.BottomEnd,
+                modifier = Modifier.padding(12.dp)
+            ) {
+                Box(modifier = Modifier.size(18.dp)) {
+                    DownpointingTriangleAnimation()
+                }
+            }
+        }
     }
 }
 
@@ -405,10 +437,35 @@ fun ScenarioError(onClick: () -> Unit, errorMessage: String) {
     }
 }
 
-fun getComment(scores : Triple<Int, Int, Int>) : String {
-    val (speedScore, clarityScore, volumeScore) = scores
+fun getComment(
+    scores : Map<String, Double>,
+    resultViewModel: ResultViewModel,
+    scenarioTitle: String
+) : String {
+    /* リザルトのそれぞれのスコアを取得 */
+    val (totalScore, speedScore, clarityScore, volumeScore) = intArrayOf(scores["totalScore"]!!.toInt(), scores["speedScore"]!!.toInt(), scores["clarityScore"]!!.toInt(), scores["volumeScore"]!!.toInt())
     val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+
+    /* 過去のリザルトと比較して評価できるようにする
+    * リザルトがない状態のときにnullになってクラッシュするため一旦削除
+    * */
+//    val results = resultViewModel.allResults.value
+//    var sameScenarioResults: List<Result>? = null
+//    var latestSameScenarioResult: Result? = null
+//    results?.let {
+//        sameScenarioResults = results.filter { it.scenario_title == scenarioTitle }
+//        latestSameScenarioResult = sameScenarioResults!!.last()
+//    }
+
     val comment = when {
+//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+//            when {
+//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+//            }
+//        }
         (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
             "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
         }
@@ -430,4 +487,17 @@ fun getComment(scores : Triple<Int, Int, Int>) : String {
         else -> "もう少しゆっくり一言一言大切に話してみましょう！"
     }
     return comment
+}
+
+/* 総得点がハイスコアかどうか判定する */
+fun isHighScore(
+    totalScore: Double,
+    currentScenario: Scenario
+): Boolean {
+    val isHighScore: Boolean = when {
+        currentScenario.highScore == 0 -> true
+        currentScenario.highScore < totalScore -> true
+        else -> false
+    }
+    return isHighScore
 }

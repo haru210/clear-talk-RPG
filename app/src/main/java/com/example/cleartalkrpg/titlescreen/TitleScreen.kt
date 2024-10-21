@@ -6,8 +6,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.material3.Text
@@ -24,6 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.R
@@ -116,7 +120,7 @@ fun TapToStartButton(navController: NavController) {
             fontWeight = FontWeight.Bold,
             fontSize = 20.sp,
             color = Color.White,
-            modifier = Modifier.padding(36.dp, 12.dp)
+            modifier = Modifier.padding(40.dp, 14.dp)
         )
     }
 }
@@ -134,6 +138,9 @@ fun ViewResultHistoryButton(navController: NavController) {
             modifier = Modifier.padding(16.dp, 0.dp)
         ) {
             Row(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.padding(16.dp, 4.dp)
             ) {
                 HistoryIcon(iconColor = Color.White, iconSize = 48.dp)
                 Text(
@@ -141,8 +148,8 @@ fun ViewResultHistoryButton(navController: NavController) {
                     fontFamily = FontFamily(Font(R.font.koruri_bold)),
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp,
-                    color = Color.White,
-                    modifier = Modifier.padding(12.dp, 12.dp)
+                    textAlign = TextAlign.Center,
+                    color = Color.White
                 )
             }
         }

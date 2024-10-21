@@ -18,6 +18,7 @@ roomCommon = "2.6.1"
 runtimeLivedata = "1.7.2"
 gson = "2.11.0"
 media3 = "1.4.1"
+lottie = "6.5.2"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -48,6 +49,8 @@ media3-exoplayer = { module = "androidx.media3:media3-exoplayer", name="exoplaye
 media3-exoplayer-dash = { module = "androidx.media3:media3-exoplayer-dash", name="exoplayer-dash", version.ref = "media3" }
 media3-ui = { module = "androidx.media3:media3-ui", name="ui", version.ref = "media3" }
 media3-common = { module = "androidx.media3:media3-common", name="common", version.ref = "media3" }
+lottie = { group = "com.airbnb.android", name="lottie", version.ref = "lottie" }
+lottie-compose = { group = "com.airbnb.android", name="lottie-compose", version.ref = "lottie" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

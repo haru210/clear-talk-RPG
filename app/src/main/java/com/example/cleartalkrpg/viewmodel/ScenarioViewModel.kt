@@ -13,6 +13,10 @@ class ScenarioViewModel(private val repository: UserRepository) : ViewModel() {
         repository.post(scenario)
     }
 
+    fun update(scenario: Scenario) = viewModelScope.launch {
+        repository.update(scenario)
+    }
+
     fun delete(scenario: Scenario) = viewModelScope.launch {
         repository.delete(scenario)
     }

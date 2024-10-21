@@ -80,6 +80,9 @@ dependencies {
     implementation(libs.media3.ui)
     implementation(libs.media3.common)
 
+    implementation(libs.lottie)
+    implementation(libs.lottie.compose)
+
     ksp(libs.room.compiler)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

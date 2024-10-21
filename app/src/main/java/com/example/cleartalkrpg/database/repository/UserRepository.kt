@@ -25,6 +25,9 @@ class UserRepository(
     suspend fun post(scenario: Scenario) {
         scenarioDao.post(scenario)
     }
+    suspend fun update(scenario: Scenario) {
+        scenarioDao.update(scenario)
+    }
     suspend fun delete(scenario: Scenario) {
         scenarioDao.delete(scenario)
     }

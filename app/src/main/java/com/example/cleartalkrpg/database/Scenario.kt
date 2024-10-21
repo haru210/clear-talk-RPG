@@ -11,7 +11,7 @@ data class Scenario(
     val description: String,
     val jacketImage: Int,
     val timeRequired: Int,
-    val highScore: Int = 0,
+    var highScore: Int = 0,
     val screens: MutableList<Screen>
 )
 

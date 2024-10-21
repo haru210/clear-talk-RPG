@@ -18,11 +18,13 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.defaultMinSize
 import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -90,11 +92,11 @@ fun ResultScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .padding(24.dp),
+            .padding(8.dp),
         contentAlignment = Alignment.Center
     ) {
         Column(
-            verticalArrangement = Arrangement.spacedBy(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
             modifier = Modifier.width(IntrinsicSize.Max)
         ) {
             Row(
@@ -125,7 +127,7 @@ fun ResultScreen(
                 PartialScoreBoard(typeName = "速さ", score = speedScore, maxScore = 30, backgroundColor = Color(95, 253, 101, 255))
             }
             Row(
-                horizontalArrangement = Arrangement.spacedBy(24.dp),
+                horizontalArrangement = Arrangement.spacedBy(32.dp),
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 BackToOtherScreenButton(
@@ -174,7 +176,7 @@ fun TotalScoreBoard(totalScore: Number, totalScoreBoardColor: Triple<n_Backgroun
 //    var isPlaying by remember { mutableStateOf(false) }
 
     /* アニメーション用の文字列のスケール状態 (最初は非表示) */
-    var scale by remember { mutableStateOf(0f) }
+    var scale by remember { mutableFloatStateOf(0f) }
     var isVisible by remember { mutableStateOf(false) }
 
     /* 画面表示数百ミリ秒後にアニメーション開始 */
@@ -336,7 +338,7 @@ fun BackToOtherScreenButton(
             text = displayName,
             fontSize = 18.sp,
             fontFamily = FontFamily(Font(R.font.koruri_bold)),
-            modifier = Modifier.padding(24.dp)
+            modifier = Modifier.padding(24.dp, 14.dp)
         )
     }
 }
