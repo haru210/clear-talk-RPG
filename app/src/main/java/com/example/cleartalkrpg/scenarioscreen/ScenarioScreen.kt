@@ -43,6 +43,7 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
 import com.example.cleartalkrpg.ui.theme.DownpointingTriangleAnimation
+import com.example.cleartalkrpg.utils.ScreenPosition
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -169,7 +170,9 @@ fun ScenarioScreen(
         ) {
             if (currentScreenIndex < currentScenario.screens.size) {
                 ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
-                currentScenario.screens[currentScreenIndex].characterSprite?.let { ScenarioCharacterSprite(it) }
+                currentScenario.screens[currentScreenIndex].characterSpriteLeft?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Left) }
+                currentScenario.screens[currentScreenIndex].characterSpriteMiddle?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Middle) }
+                currentScenario.screens[currentScreenIndex].characterSpriteRight?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Right) }
             } else {
                 isScenarioError = true
                 errorMessage = "There are no screens inserted in the selected scenario."
@@ -281,12 +284,18 @@ fun ScenarioScreenBackgroundImage(backgroundImageId: Int) {
     }
 }
 
-/* 画面に表示するキャラクターのアバター */
+/* 画面に表示するキャラクターのスプライト */
 @Composable
-fun ScenarioCharacterSprite(characterSpriteId: Int) {
+fun ScenarioCharacterSprite(characterSpriteId: Int, position: ScreenPosition) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        contentAlignment = when {
+            (position == ScreenPosition.Left) -> Alignment.CenterStart
+            (position == ScreenPosition.Right) -> Alignment.CenterEnd
+            else -> Alignment.Center
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(80.dp, 0.dp)
     ) {
         Image(
             painter = painterResource(id = characterSpriteId),

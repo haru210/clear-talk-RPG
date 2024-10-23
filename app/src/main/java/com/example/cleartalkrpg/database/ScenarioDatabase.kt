@@ -58,7 +58,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 screens = mutableListOf<Screen>(
                     Screen(
                         characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSpriteRight = R.drawable.kamakiri,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "おう　なつだぜ\n" +
                                 "おれは　げんきだぜ\n" +
@@ -67,7 +67,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     ),
                     Screen(
                         characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSpriteRight = R.drawable.kamakiri,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "おれの　こころも　かまも\n" +
                                 "どきどきするほど\n" +
@@ -76,7 +76,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     ),
                     Screen(
                         characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSpriteRight = R.drawable.kamakiri,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "おう　あついぜ\n" +
                                 "おれは　がんばるぜ\n" +
@@ -85,7 +85,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     ),
                     Screen(
                         characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSpriteRight = R.drawable.kamakiri,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "かまを　ふりかざす　すがた\n" +
                                 "わくわくするほど\n" +
@@ -130,7 +130,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 screens = mutableListOf<Screen>(
                     Screen(
                         characterName = "GM",
-                        characterSprite = null,
+                        characterSpriteMiddle = null,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "あのイーハトーヴォのすきとおった風、\n" +
                                 "夏でも底に冷たさをもつ青いそら、\n" +
@@ -147,7 +147,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 screens = mutableListOf<Screen>(
                     Screen(
                         characterName = "You",
-                        characterSprite = null,
+                        characterSpriteMiddle = null,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "こんにちは",
                         lineLength = 5
