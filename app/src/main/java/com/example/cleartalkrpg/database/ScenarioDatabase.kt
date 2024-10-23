@@ -122,6 +122,38 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 timeRequired = 15,
                 screens = mutableListOf<Screen>()
             ))
+            scenarios.add(5,Scenario(
+                title = "ポラーノの広場 節",
+                description = "宮沢賢治の短編小説",
+                jacketImage = R.mipmap.scenario1_image,
+                timeRequired = 1,
+                screens = mutableListOf<Screen>(
+                    Screen(
+                        characterName = "GM",
+                        characterSprite = R.drawable.kamakiri,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "あのイーハトーヴォのすきとおった風、\n" +
+                                "夏でも底に冷たさをもつ青いそら、\n" +
+                                "うつくしい森で飾られたモリーオ市、郊外のぎらぎら光る草の波。",
+                        lineLength = 70
+                    ),
+                )
+            ))
+            scenarios.add(6,Scenario(
+                title = "こんにちはするだけ",
+                description = "こんにちはするだけ",
+                jacketImage = R.mipmap.scenario1_image,
+                timeRequired = 1,
+                screens = mutableListOf<Screen>(
+                    Screen(
+                        characterName = "You",
+                        characterSprite = R.drawable.kamakiri,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "こんにちは",
+                        lineLength = 5
+                    ),
+                )
+            ))
             scenarios.forEach { scenario ->
                 scenarioDao.post(scenario)
             }
