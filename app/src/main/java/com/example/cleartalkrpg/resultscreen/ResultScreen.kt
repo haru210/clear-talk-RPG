@@ -131,9 +131,9 @@ fun ResultScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 BackToOtherScreenButton(
-                    displayName = "タイトル画面へ",
+                    displayName = "ホーム画面へ",
                     backToOtherScreenClick = {
-                        navController.navigate(ClearTalkRPGScreen.Title.name)
+                        navController.navigate(ClearTalkRPGScreen.Home.name)
                     }
                 )
                 BackToOtherScreenButton(
