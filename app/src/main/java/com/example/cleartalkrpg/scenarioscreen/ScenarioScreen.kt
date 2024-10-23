@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.scenarioscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -35,10 +34,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
@@ -443,29 +438,31 @@ fun getComment(
     scenarioTitle: String
 ) : String {
     /* リザルトのそれぞれのスコアを取得 */
-    val (totalScore, speedScore, clarityScore, volumeScore) = intArrayOf(scores["totalScore"]!!.toInt(), scores["speedScore"]!!.toInt(), scores["clarityScore"]!!.toInt(), scores["volumeScore"]!!.toInt())
+    val totalScore = scores["totalScore"]?.toInt() ?: 0
+    val speedScore = scores["speedScore"]?.toInt() ?: 0
+    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
+    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
+
+    /* スコアの最大値を設定 */
     val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
 
-    /* 過去のリザルトと比較して評価できるようにする
-    * リザルトがない状態のときにnullになってクラッシュするため一旦削除
-    * */
-//    val results = resultViewModel.allResults.value
-//    var sameScenarioResults: List<Result>? = null
-//    var latestSameScenarioResult: Result? = null
-//    results?.let {
-//        sameScenarioResults = results.filter { it.scenario_title == scenarioTitle }
-//        latestSameScenarioResult = sameScenarioResults!!.last()
-//    }
+    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
+    val results = resultViewModel.allResults.value
+    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
+    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
 
     val comment = when {
-//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
-//            when {
-//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
-//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-//            }
-//        }
+        /* 過去のシナリオと比較して評価コメントを選択する */
+        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+            when {
+                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+            }
+        }
+
+        /* その他シナリオの評価コメント */
         (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
             "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
         }
