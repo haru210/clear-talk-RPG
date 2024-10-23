@@ -1,7 +1,6 @@
 package com.example.cleartalkrpg
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,10 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -32,8 +29,9 @@ import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.loadingscreen.LoadingScreen
+import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModel
+import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModelFactory
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -43,13 +41,17 @@ class MainActivity : ComponentActivity() {
     private val scenarioViewModel: ScenarioViewModel by viewModels {
         ScenarioViewModelFactory((application as CTRPGApplication).repository)
     }
+    private val characterSheetViewModel: CharacterSheetViewModel by viewModels {
+        CharacterSheetViewModelFactory((application as CTRPGApplication).repository)
+    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ClearTalkRPGTheme {
                 SceneGenerator(
                     resultViewModel = resultViewModel,
-                    scenarioViewModel = scenarioViewModel
+                    scenarioViewModel = scenarioViewModel,
+                    characterSheetViewModel = characterSheetViewModel
                 )
             }
         }
@@ -68,7 +70,8 @@ enum class ClearTalkRPGScreen {
 @Composable
 fun SceneGenerator(
     resultViewModel: ResultViewModel,
-    scenarioViewModel: ScenarioViewModel
+    scenarioViewModel: ScenarioViewModel,
+    characterSheetViewModel: CharacterSheetViewModel
 ) {
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
