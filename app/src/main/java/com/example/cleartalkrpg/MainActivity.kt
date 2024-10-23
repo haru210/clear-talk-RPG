@@ -122,15 +122,16 @@ fun SceneGenerator(
                 characterSheetSelectState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
             }
             composable(route = ClearTalkRPGScreen.CreateCharacterSheet.name) {
-                SelectCharacterScreen(
+                CreateCharacterSheetScreen(
                     navController = navController,
                     characterSheetViewModel = characterSheetViewModel
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectCharacter.name) {
-                CreateCharacterSheetScreen(
+                SelectCharacterScreen(
                     navController = navController,
-                    characterSheetViewModel = characterSheetViewModel
+                    characterSheetViewModel = characterSheetViewModel,
+                    characterSheetSelectState = characterSheetSelectState
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
