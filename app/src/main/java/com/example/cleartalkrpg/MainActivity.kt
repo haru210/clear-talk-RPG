@@ -15,6 +15,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.cleartalkrpg.charactersheetscreen.CharacterSheetScreen
+import com.example.cleartalkrpg.charactersheetscreen.rememberCharacterSheetSelectState
+import com.example.cleartalkrpg.database.CharacterSheet
 import com.example.cleartalkrpg.resultscreen.ResultScreen
 import com.example.cleartalkrpg.scenarioscreen.ScenarioScreen
 import com.example.cleartalkrpg.titlescreen.TitleScreen
@@ -29,6 +31,7 @@ import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.homescreen.HomeScreen
 import com.example.cleartalkrpg.loadingscreen.LoadingScreen
 import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModel
 import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModelFactory
@@ -61,6 +64,7 @@ class MainActivity : ComponentActivity() {
 
 enum class ClearTalkRPGScreen {
     Title,
+    Home,
     CharacterSheet,
     SelectScenario,
     Scenario,
@@ -78,6 +82,8 @@ fun SceneGenerator(
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
+    val characterSheetSelctState = rememberCharacterSheetSelectState(characterSheetViewModel = characterSheetViewModel)
+
     val resultState = remember { mutableStateOf<Result?>(null) }
     val scenarioUpdateState = remember { mutableStateOf<Scenario?>(null) }
     val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
@@ -110,6 +116,9 @@ fun SceneGenerator(
         ) {
             composable(route = ClearTalkRPGScreen.Title.name) {
                 TitleScreen(navController = navController)
+            }
+            composable(route = ClearTalkRPGScreen.Home.name) {
+                characterSheetSelctState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
             }
             composable(route = ClearTalkRPGScreen.CharacterSheet.name) {
                 CharacterSheetScreen(
