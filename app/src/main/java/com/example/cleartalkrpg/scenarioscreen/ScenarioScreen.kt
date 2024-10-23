@@ -377,7 +377,7 @@ fun DisplayScenarioMessage(
         Text(
             text = displayedMessage,
             color = Color.White,
-            fontFamily = FontFamily(Font(R.font.grsgor_r_web, FontWeight.Bold)),
+            fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp),
         )
