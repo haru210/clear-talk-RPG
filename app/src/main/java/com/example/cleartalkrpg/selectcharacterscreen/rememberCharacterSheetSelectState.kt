@@ -1,4 +1,4 @@
-package com.example.cleartalkrpg.charactersheetscreen
+package com.example.cleartalkrpg.selectcharacterscreen
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect

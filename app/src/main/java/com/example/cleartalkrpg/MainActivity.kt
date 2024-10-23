@@ -14,9 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.cleartalkrpg.charactersheetscreen.CharacterSheetScreen
-import com.example.cleartalkrpg.charactersheetscreen.rememberCharacterSheetSelectState
-import com.example.cleartalkrpg.database.CharacterSheet
+import com.example.cleartalkrpg.createcharactersheetscreen.CreateCharacterSheetScreen
+import com.example.cleartalkrpg.selectcharacterscreen.SelectCharacterScreen
+import com.example.cleartalkrpg.selectcharacterscreen.rememberCharacterSheetSelectState
 import com.example.cleartalkrpg.resultscreen.ResultScreen
 import com.example.cleartalkrpg.scenarioscreen.ScenarioScreen
 import com.example.cleartalkrpg.titlescreen.TitleScreen
@@ -122,13 +122,13 @@ fun SceneGenerator(
                 characterSheetSelectState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
             }
             composable(route = ClearTalkRPGScreen.CreateCharacterSheet.name) {
-                CharacterSheetScreen(
+                SelectCharacterScreen(
                     navController = navController,
                     characterSheetViewModel = characterSheetViewModel
                 )
             }
             composable(route = ClearTalkRPGScreen.SelectCharacter.name) {
-                CharacterSheetScreen(
+                CreateCharacterSheetScreen(
                     navController = navController,
                     characterSheetViewModel = characterSheetViewModel
                 )
