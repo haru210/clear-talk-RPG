@@ -82,7 +82,7 @@ fun SceneGenerator(
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
-    val characterSheetSelctState = rememberCharacterSheetSelectState(characterSheetViewModel = characterSheetViewModel)
+    val characterSheetSelectState = rememberCharacterSheetSelectState(characterSheetViewModel = characterSheetViewModel)
 
     val resultState = remember { mutableStateOf<Result?>(null) }
     val scenarioUpdateState = remember { mutableStateOf<Scenario?>(null) }
@@ -118,7 +118,7 @@ fun SceneGenerator(
                 TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.Home.name) {
-                characterSheetSelctState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
+                characterSheetSelectState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
             }
             composable(route = ClearTalkRPGScreen.CharacterSheet.name) {
                 CharacterSheetScreen(
