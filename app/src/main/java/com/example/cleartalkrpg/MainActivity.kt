@@ -65,7 +65,8 @@ class MainActivity : ComponentActivity() {
 enum class ClearTalkRPGScreen {
     Title,
     Home,
-    CharacterSheet,
+    CreateCharacterSheet,
+    SelectCharacter,
     SelectScenario,
     Scenario,
     Result,
@@ -120,7 +121,13 @@ fun SceneGenerator(
             composable(route = ClearTalkRPGScreen.Home.name) {
                 characterSheetSelectState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
             }
-            composable(route = ClearTalkRPGScreen.CharacterSheet.name) {
+            composable(route = ClearTalkRPGScreen.CreateCharacterSheet.name) {
+                CharacterSheetScreen(
+                    navController = navController,
+                    characterSheetViewModel = characterSheetViewModel
+                )
+            }
+            composable(route = ClearTalkRPGScreen.SelectCharacter.name) {
                 CharacterSheetScreen(
                     navController = navController,
                     characterSheetViewModel = characterSheetViewModel
