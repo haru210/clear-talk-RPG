@@ -174,7 +174,7 @@ fun ScenarioScreen(
         ) {
             if (currentScreenIndex < currentScenario.screens.size) {
                 ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
-                ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
+                currentScenario.screens[currentScreenIndex].characterSprite?.let { ScenarioCharacterSprite(it) }
             } else {
                 isScenarioError = true
                 errorMessage = "There are no screens inserted in the selected scenario."

@@ -18,7 +18,7 @@ data class Scenario(
 data class Screen(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val characterName: String = "かまきり",
-    val characterSprite: Int = R.drawable.kamakiri,
+    val characterSprite: Int? = null,
     val backgroundImage: Int = R.mipmap.scenario1_image,
     val voiceOver: Int = 0,
     val line: String = "セリフを入力してください",

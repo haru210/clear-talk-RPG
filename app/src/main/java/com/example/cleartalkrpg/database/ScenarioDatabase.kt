@@ -130,7 +130,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 screens = mutableListOf<Screen>(
                     Screen(
                         characterName = "GM",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSprite = null,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "あのイーハトーヴォのすきとおった風、\n" +
                                 "夏でも底に冷たさをもつ青いそら、\n" +
@@ -147,7 +147,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                 screens = mutableListOf<Screen>(
                     Screen(
                         characterName = "You",
-                        characterSprite = R.drawable.kamakiri,
+                        characterSprite = null,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "こんにちは",
                         lineLength = 5
