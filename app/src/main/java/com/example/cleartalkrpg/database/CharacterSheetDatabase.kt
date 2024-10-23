@@ -77,6 +77,35 @@ abstract class CharacterSheetDatabase: RoomDatabase() {
                     DMGB = 0
                 )
             )
+            characterSheets.add(1,
+                CharacterSheet(
+                    name = "かまきりりゅうじ",
+                    occupation = "かまきり",
+                    sprite = R.drawable.kamakiri,
+                    description = "おれはかまきりに登場するキャラクター",
+                    gender = Gender.Female,
+                    age = 17,
+                    hometown = "港区",
+                    STR = 0,
+                    CON = 0,
+                    POW = 0,
+                    DEX = 0,
+                    APP = 0,
+                    SIZ = 0,
+                    INT = 0,
+                    EDU = 0,
+                    PRO = 0,
+                    SAN = 0,
+                    LUCK = 0,
+                    IDEA = 0,
+                    KNOW = 0,
+                    PAT = 0,
+                    MAGP = 0,
+                    OCCP = 0,
+                    HOBP = 0,
+                    DMGB = 0
+                )
+            )
 
             characterSheets.forEach { characterSheet ->
                 characterSheetDao.post(characterSheet)
