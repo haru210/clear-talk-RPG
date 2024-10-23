@@ -77,6 +77,10 @@ abstract class CharacterSheetDatabase: RoomDatabase() {
                     DMGB = 0
                 )
             )
+
+            characterSheets.forEach { characterSheet ->
+                characterSheetDao.post(characterSheet)
+            }
         }
     }
 }
