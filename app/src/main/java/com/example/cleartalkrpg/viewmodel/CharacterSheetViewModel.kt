@@ -3,7 +3,6 @@ package com.example.cleartalkrpg.viewmodel
 import androidx.lifecycle.*
 import com.example.cleartalkrpg.database.CharacterSheet
 import com.example.cleartalkrpg.database.repository.UserRepository
-import com.example.cleartalkrpg.database.Result
 import kotlinx.coroutines.launch
 
 class CharacterSheetViewModel(private val repository: UserRepository) : ViewModel() {
@@ -12,6 +11,10 @@ class CharacterSheetViewModel(private val repository: UserRepository) : ViewMode
 
     fun post(characterSheet: CharacterSheet) = viewModelScope.launch {
         repository.post(characterSheet)
+    }
+
+    fun update(characterSheet: CharacterSheet) = viewModelScope.launch {
+        repository.update(characterSheet)
     }
 
     fun delete(characterSheet: CharacterSheet) = viewModelScope.launch {

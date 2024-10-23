@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CharacterSheetDao {
-    @Query("select * from charactersheets order by id asc")
+    @Query("select * from character_sheets order by id asc")
     fun getAll(): Flow<List<CharacterSheet>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

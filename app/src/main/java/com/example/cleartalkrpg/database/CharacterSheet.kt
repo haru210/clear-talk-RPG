@@ -4,7 +4,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.cleartalkrpg.utils.Gender
 
-@Entity(tableName = "charactersheets")
+@Entity(tableName = "character_sheets")
 data class CharacterSheet(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
 
@@ -13,7 +13,7 @@ data class CharacterSheet(
     var sprite: Int? = null, // 立ち絵
     var description: String? = null, // 説明
     var gender: Gender? = null, // 性別
-    var age: UInt? = null, // 年齢
+    var age: Int? = null, // 年齢
     var hometown: String? = null, // 出身地
 
     /* STATUS */

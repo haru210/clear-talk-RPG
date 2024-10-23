@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.example.cleartalkrpg.charactersheetscreen.CharacterSheetScreen
 import com.example.cleartalkrpg.resultscreen.ResultScreen
 import com.example.cleartalkrpg.scenarioscreen.ScenarioScreen
 import com.example.cleartalkrpg.titlescreen.TitleScreen
@@ -60,6 +61,7 @@ class MainActivity : ComponentActivity() {
 
 enum class ClearTalkRPGScreen {
     Title,
+    CharacterSheet,
     SelectScenario,
     Scenario,
     Result,
@@ -108,6 +110,12 @@ fun SceneGenerator(
         ) {
             composable(route = ClearTalkRPGScreen.Title.name) {
                 TitleScreen(navController = navController)
+            }
+            composable(route = ClearTalkRPGScreen.CharacterSheet.name) {
+                CharacterSheetScreen(
+                    navController = navController,
+                    characterSheetViewModel = characterSheetViewModel
+                )
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
