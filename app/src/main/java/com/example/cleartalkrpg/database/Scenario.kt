@@ -24,5 +24,6 @@ data class Screen(
     val backgroundImage: Int = R.mipmap.scenario1_image,
     val voiceOver: Int = 0,
     val line: String = "セリフを入力してください",
-    val lineLength: Int = 0
+    val lineLength: Int = 0,
+    val isRecordingRequired: Boolean = false
 )

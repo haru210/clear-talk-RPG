@@ -96,7 +96,9 @@ fun ScenarioScreen(
         return
     }
 
-    StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
+    if (currentScenario.screens[currentScreenIndex].isRecordingRequired) {
+        StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
+    }
 
     Surface(
         onClick = {
