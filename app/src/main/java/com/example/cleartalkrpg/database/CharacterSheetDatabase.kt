@@ -81,7 +81,7 @@ abstract class CharacterSheetDatabase: RoomDatabase() {
                 CharacterSheet(
                     name = "かまきりりゅうじ",
                     occupation = "かまきり",
-                    sprite = R.drawable.kamakiri,
+                    sprite = R.drawable.kamakiri_right,
                     description = "おれはかまきりに登場するキャラクター",
                     gender = Gender.Female,
                     age = 17,
