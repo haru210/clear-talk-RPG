@@ -102,8 +102,8 @@ fun ScenarioScreen(
         StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
     }
 
-    currentScenario.screens.forEach { screen ->
-        screen.characterSpriteLeft = selectedCharacterSheet.sprite
+    if (currentScenario.screens[currentScreenIndex].isSelectedCharacterStanding) {
+        currentScenario.screens[currentScreenIndex].characterSpriteLeft = selectedCharacterSheet.sprite
     }
 
     Surface(
@@ -455,52 +455,52 @@ fun getComment(
     scenarioTitle: String
 ) : String {
     /* リザルトのそれぞれのスコアを取得 */
-    val totalScore = scores["totalScore"]?.toInt() ?: 0
-    val speedScore = scores["speedScore"]?.toInt() ?: 0
-    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
-    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
-
-    /* スコアの最大値を設定 */
-    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
-
-    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
-    val results = resultViewModel.allResults.value
-    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
-    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
-
-    val comment = when {
-        /* 過去のシナリオと比較して評価コメントを選択する */
-        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
-            when {
-                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
-                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
-                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
-                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-            }
-        }
-
-        /* その他シナリオの評価コメント */
-        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
-            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
-        }
-        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
-            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-        }
-        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
-            "悪くはありません。自信を持って落ち着いて話してみましょう"
-        }
-        (speedScore < maxSpeedScore - 20) -> {
-            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
-        }
-        (clarityScore < maxClarityScore - 30) -> {
-            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
-        }
-        (volumeScore < maxVolumeScore - 20) -> {
-            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
-        }
-        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
-    }
-    return comment
+//    val totalScore = scores["totalScore"]?.toInt() ?: 0
+//    val speedScore = scores["speedScore"]?.toInt() ?: 0
+//    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
+//    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
+//
+//    /* スコアの最大値を設定 */
+//    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+//
+//    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
+//    val results = resultViewModel.allResults.value
+//    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
+//    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
+//
+//    val comment = when {
+//        /* 過去のシナリオと比較して評価コメントを選択する */
+//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+//            when {
+//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+//            }
+//        }
+//
+//        /* その他シナリオの評価コメント */
+//        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
+//            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
+//        }
+//        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
+//            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+//        }
+//        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
+//            "悪くはありません。自信を持って落ち着いて話してみましょう"
+//        }
+//        (speedScore < maxSpeedScore - 20) -> {
+//            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
+//        }
+//        (clarityScore < maxClarityScore - 30) -> {
+//            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
+//        }
+//        (volumeScore < maxVolumeScore - 20) -> {
+//            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
+//        }
+//        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
+//    }
+    return "汝、己の声が全てに届き、聴く者に響き渡ることを心得よ。"//comment
 }
 
 /* 総得点がハイスコアかどうか判定する */

@@ -54,7 +54,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
             scenarios.add(0, Scenario(
                 title = "チュートリアル",
                 description = "ClearTalk RPGを始める探索者のキミたちへ送る、ボクのチュートリアル",
-                jacketImage = R.drawable.title_screen_background_image,
+                jacketImage = R.drawable.tutorial,
                 timeRequired = 2,
                 screens = mutableListOf(
                     Screen(
@@ -63,7 +63,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "こんにちは。ボクはチューターのロココ。\n" +
-                                "チュートリアルを始めるよ"
+                                "チュートリアルを始めるよ",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -71,7 +72,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "まず、キミのお名前を知りたいな。\n" +
-                                "大きな声でボクに伝わるように言ってみて"
+                                "大きな声でボクに伝わるように言ってみて",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "あなた",
@@ -79,14 +81,16 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "こんにちは。私は<selectedCharacterName>だよ",
-                        isRecordingRequired = true
+                        isRecordingRequired = true,
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
                         characterSpriteLeft = null,
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
-                        line = "うーん。聞こえないなぁ......"
+                        line = "うーん。聞こえないなぁ......",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -94,7 +98,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "あっ！マイクがオフになってた。\n" +
-                                "マイクをオンにするよ"
+                                "マイクをオンにするよ",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -103,7 +108,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "右上にマイクのアイコンが表示されるから、\n" +
                                 "そのときに喋ってみて。\n" +
-                                "もう一度お名前、教えてくれない？"
+                                "もう一度お名前、教えてくれない？",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "あなた",
@@ -111,7 +117,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "私は<selectedCharacterName>だよ",
-                        isRecordingRequired = true
+                        isRecordingRequired = true,
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -119,7 +126,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "うん！聞こえたよ！<selectedCharacterName>だね\n" +
-                                "今からゲームの説明を始めるね"
+                                "今からゲームの説明を始めるね",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -127,7 +135,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "右上にマイクのアイコンが表示されてる時、\n" +
-                                "下のメッセージを読み上げてね"
+                                "下のメッセージを読み上げてね",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -136,7 +145,8 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "別にメッセージを全く同じように読まなくてもいい。\n" +
                                 "自分のキャラクターにあった喋り方で話してね。\n" +
-                                "これはロールプレイの基本なの"
+                                "これはロールプレイの基本なの",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
@@ -145,14 +155,16 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "ドロイドくんなら「ワタシハドロイドデス」、\n" +
                                 "かまきりりゅうじなら「おう　おれはかまきりだぜ」って\n" +
-                                "言ってみるといいかも！"
+                                "言ってみるといいかも！",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
                         characterSpriteLeft = null,
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
-                        line = "じゃあ、試しに挨拶してみて"
+                        line = "じゃあ、試しに挨拶してみて",
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "あなた",
@@ -160,14 +172,16 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "よろしくお願いします",
-                        isRecordingRequired = true
+                        isRecordingRequired = true,
+                        isSelectedCharacterStanding = true
                     ),
                     Screen(
                         characterName = "ロロコ",
                         characterSpriteLeft = null,
                         characterSpriteRight = R.drawable.roroco,
                         backgroundImage = R.drawable.title_screen_background_image,
-                        line = "よろしくね！"
+                        line = "よろしくね！",
+                        isSelectedCharacterStanding = true
                     )
                 )
             ))
@@ -271,8 +285,29 @@ abstract class ScenarioDatabase: RoomDatabase() {
                         characterSpriteMiddle = null,
                         backgroundImage = R.drawable.title_screen_background_image,
                         line = "こんにちは",
-                        lineLength = 5
+                        lineLength = 5,
+                        isRecordingRequired = true
                     ),
+                )
+            ))
+            scenarios.add(8,Scenario(
+                title = "牢獄からの脱出",
+                description = "起きたらそこは薄暗い牢獄だった。廊下を進むと、そこには見知らぬ少女がいた。",
+                jacketImage = R.drawable.prison,
+                timeRequired = 20,
+                screens = mutableListOf(
+                    Screen(
+                        characterName = "？？？",
+                        characterSpriteMiddle = R.drawable.girl_darken,
+                        backgroundImage = R.drawable.prison,
+                        line = "ちょっ！静かにして！"
+                    ),
+                    Screen(
+                        characterName = "？？？",
+                        characterSpriteMiddle = R.drawable.girl_undarkened,
+                        backgroundImage = R.drawable.prison,
+                        line = "私も気づいたらこの牢獄にいたの......"
+                    )
                 )
             ))
 
