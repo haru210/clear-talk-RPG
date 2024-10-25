@@ -39,6 +39,7 @@ import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
+import com.example.cleartalkrpg.database.CharacterSheet
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
@@ -56,7 +57,8 @@ fun ScenarioScreen(
     scenarioUpdateState: MutableState<Scenario?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
-    resultCommentState: MutableState<String>
+    resultCommentState: MutableState<String>,
+    selectedCharacterSheet: CharacterSheet
 ) {
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
@@ -98,6 +100,10 @@ fun ScenarioScreen(
 
     if (currentScenario.screens[currentScreenIndex].isRecordingRequired) {
         StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
+    }
+
+    currentScenario.screens.forEach { screen ->
+        screen.characterSpriteLeft = selectedCharacterSheet.sprite
     }
 
     Surface(

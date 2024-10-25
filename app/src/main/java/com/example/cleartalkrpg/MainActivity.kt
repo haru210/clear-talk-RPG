@@ -119,7 +119,9 @@ fun SceneGenerator(
                 TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.Home.name) {
-                characterSheetSelectState.selectedCharacter?.let { it1 -> HomeScreen(navController = navController, selectedCharacterSheet = it1) }
+                characterSheetSelectState.selectedCharacter?.let { it1 ->
+                    HomeScreen(navController = navController, selectedCharacterSheet = it1)
+                }
             }
             composable(route = ClearTalkRPGScreen.CreateCharacterSheet.name) {
                 CreateCharacterSheetScreen(
@@ -145,19 +147,22 @@ fun SceneGenerator(
                 LoadingScreen(navigation = { navController.navigate(navigationState.value!!) })
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
-                ScenarioScreen(
-                    navController = navController,
-                    scenarioViewModel = scenarioViewModel,
-                    resultViewModel = resultViewModel,
-                    resultState = resultState,
-                    scenarioUpdateState = scenarioUpdateState,
-                    /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
-                    * リスト等の添字に使用する場合は-1する必要がある。
-                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
-                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
-                    resultScoresState = resultScoresState,
-                    resultCommentState = resultCommentState
-                )
+                characterSheetSelectState.selectedCharacter?.let { it1 ->
+                    ScenarioScreen(
+                        navController = navController,
+                        scenarioViewModel = scenarioViewModel,
+                        resultViewModel = resultViewModel,
+                        resultState = resultState,
+                        scenarioUpdateState = scenarioUpdateState,
+                        /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
+                                    * リスト等の添字に使用する場合は-1する必要がある。
+                                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
+                        selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
+                        resultScoresState = resultScoresState,
+                        resultCommentState = resultCommentState,
+                        selectedCharacterSheet = it1
+                    )
+                }
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(

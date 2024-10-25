@@ -47,10 +47,131 @@ abstract class ScenarioDatabase: RoomDatabase() {
             }
         }
 
+        /* TODO: 非常にハードコードしているのでjsonでparseして渡せるようにする */
         suspend fun populateDatabase(scenarioDao: ScenarioDao) {
             /* シードデータの挿入 */
             val scenarios = mutableListOf<Scenario>()
-            scenarios.add(0,Scenario(
+            scenarios.add(0, Scenario(
+                title = "チュートリアル",
+                description = "ClearTalk RPGを始める探索者のキミたちへ送る、ボクのチュートリアル",
+                jacketImage = R.drawable.title_screen_background_image,
+                timeRequired = 2,
+                screens = mutableListOf(
+                    Screen(
+                        characterName = "？？？",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "こんにちは。ボクはチューターのロココ。\n" +
+                                "チュートリアルを始めるよ"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "まず、キミのお名前を知りたいな。\n" +
+                                "大きな声でボクに伝わるように言ってみて"
+                    ),
+                    Screen(
+                        characterName = "あなた",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "こんにちは。私は<selectedCharacterName>だよ",
+                        isRecordingRequired = true
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "うーん。聞こえないなぁ......"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "あっ！マイクがオフになってた。\n" +
+                                "マイクをオンにするよ"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "右上にマイクのアイコンが表示されるから、\n" +
+                                "そのときに喋ってみて。\n" +
+                                "もう一度お名前、教えてくれない？"
+                    ),
+                    Screen(
+                        characterName = "あなた",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "私は<selectedCharacterName>だよ",
+                        isRecordingRequired = true
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "うん！聞こえたよ！<selectedCharacterName>だね\n" +
+                                "今からゲームの説明を始めるね"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "右上にマイクのアイコンが表示されてる時、\n" +
+                                "下のメッセージを読み上げてね"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "別にメッセージを全く同じように読まなくてもいい。\n" +
+                                "自分のキャラクターにあった喋り方で話してね。\n" +
+                                "これはロールプレイの基本なの"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "ドロイドくんなら「ワタシハドロイドデス」、\n" +
+                                "かまきりりゅうじなら「おう　おれはかまきりだぜ」って\n" +
+                                "言ってみるといいかも！"
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "じゃあ、試しに挨拶してみて"
+                    ),
+                    Screen(
+                        characterName = "あなた",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "よろしくお願いします",
+                        isRecordingRequired = true
+                    ),
+                    Screen(
+                        characterName = "ロロコ",
+                        characterSpriteLeft = null,
+                        characterSpriteRight = R.drawable.roroco,
+                        backgroundImage = R.drawable.title_screen_background_image,
+                        line = "よろしくね！"
+                    )
+                )
+            ))
+            scenarios.add(1,Scenario(
                 title = "おれはかまきり",
                 description = "かまきり りゅうじによる詩",
                 jacketImage = R.mipmap.scenario1_image,
@@ -94,35 +215,35 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     )
                 )
             ))
-            scenarios.add(1,Scenario(
+            scenarios.add(2,Scenario(
                 title = "テセウスの心臓",
                 description = "失った心臓。それは己を犠牲にしてまで愛した心臓。誰が盗んだ？",
                 jacketImage = R.mipmap.scenario1_image,
                 timeRequired = 15,
                 screens = mutableListOf<Screen>()
             ))
-            scenarios.add(2,Scenario(
+            scenarios.add(3,Scenario(
                 title = "イル＝ペコローネIV 人形劇",
                 description = "ノブレス＝オブリージュを忘れた愚者は劇場の舞台で踊らされ、審判の裁定を待つばかりである。",
                 jacketImage = R.mipmap.scenario1_image,
                 timeRequired = 40,
                 screens = mutableListOf<Screen>()
             ))
-            scenarios.add(3,Scenario(
+            scenarios.add(4,Scenario(
                 title = "リミナルスペースの患者",
                 description = "静謐な虚空と久遠の一瞬《トキ》、紡がれる記憶は身を滅ぼす。",
                 jacketImage = R.mipmap.scenario1_image,
                 timeRequired = 20,
                 screens = mutableListOf<Screen>()
             ))
-            scenarios.add(4,Scenario(
+            scenarios.add(5,Scenario(
                 title = "雨のち小夜曲",
                 description = "雫が世界に最後の響きを齎すとき、その儚き少女は復讐の舞を舞う。",
                 jacketImage = R.mipmap.scenario1_image,
                 timeRequired = 15,
                 screens = mutableListOf<Screen>()
             ))
-            scenarios.add(5,Scenario(
+            scenarios.add(6,Scenario(
                 title = "ポラーノの広場 節",
                 description = "宮沢賢治の短編小説",
                 jacketImage = R.mipmap.scenario1_image,
@@ -139,7 +260,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     ),
                 )
             ))
-            scenarios.add(6,Scenario(
+            scenarios.add(7,Scenario(
                 title = "こんにちはするだけ",
                 description = "こんにちはするだけ",
                 jacketImage = R.mipmap.scenario1_image,
@@ -154,6 +275,7 @@ abstract class ScenarioDatabase: RoomDatabase() {
                     ),
                 )
             ))
+
             scenarios.forEach { scenario ->
                 scenarioDao.post(scenario)
             }
