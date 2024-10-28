@@ -31,6 +31,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -39,11 +40,11 @@ import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.R
-import com.example.cleartalkrpg.database.CharacterSheet
 import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
 import com.example.cleartalkrpg.ui.theme.DownpointingTriangleAnimation
+import com.example.cleartalkrpg.ui.theme.RecordVoiceOverIcon
 import com.example.cleartalkrpg.utils.ScreenPosition
 import kotlinx.coroutines.delay
 
@@ -57,8 +58,7 @@ fun ScenarioScreen(
     scenarioUpdateState: MutableState<Scenario?>,
     selectedScenarioId: Int,
     resultScoresState: MutableState<Map<String, Double>>,
-    resultCommentState: MutableState<String>,
-    selectedCharacterSheet: CharacterSheet
+    resultCommentState: MutableState<String>
 ) {
     /* 選択されたシナリオをcurrentScenarioに設定する */
     val scenarios by scenarioViewModel.allScenarios.observeAsState(mutableListOf())
@@ -100,10 +100,6 @@ fun ScenarioScreen(
 
     if (currentScenario.screens[currentScreenIndex].isRecordingRequired) {
         StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
-    }
-
-    if (currentScenario.screens[currentScreenIndex].isSelectedCharacterStanding) {
-        currentScenario.screens[currentScreenIndex].characterSpriteLeft = selectedCharacterSheet.sprite
     }
 
     Surface(
@@ -185,7 +181,19 @@ fun ScenarioScreen(
                 isScenarioError = true
                 errorMessage = "There are no screens inserted in the selected scenario."
             }
-            PauseButton(onClick = { isPaused = !isPaused })
+            Box(
+                contentAlignment = Alignment.TopEnd,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    RolePlayAdvanceNoticeUI(currentScreenIndex = currentScreenIndex, currentScenario = currentScenario)
+                    PauseButton(onClick = { isPaused = !isPaused })
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -263,16 +271,40 @@ fun StartListening(
 /* ポーズボタン */
 @Composable
 fun PauseButton(onClick: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            onClick = onClick,
-            color = Color.Gray,
-            modifier = Modifier
-                .padding(16.dp)
-                .align(alignment = Alignment.TopEnd)
-                .clip(RoundedCornerShape(32.dp))
-        ) {
-            PauseIcon(iconColor = Color.White, iconSize = 48.dp)
+    Surface(
+        onClick = onClick,
+        color = Color.Gray,
+        modifier = Modifier.clip(RoundedCornerShape(32.dp))
+    ) {
+        PauseIcon(iconColor = Color.White, iconSize = 48.dp)
+    }
+}
+
+/* ロールプレイ事前通知UI */
+@Composable
+fun RolePlayAdvanceNoticeUI(currentScreenIndex: Int, currentScenario: Scenario) {
+    if (currentScreenIndex < currentScenario.screens.size - 1) {
+        if (currentScenario.screens[currentScreenIndex+1].isRecordingRequired) {
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(16.dp, 8.dp)
+                ) {
+                    Text(
+                        text = "NEXT: ",
+                        fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                        fontSize = 24.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                    RecordVoiceOverIcon(iconColor = Color.Black, iconSize = 28.dp)
+                }
+            }
         }
     }
 }
@@ -455,52 +487,52 @@ fun getComment(
     scenarioTitle: String
 ) : String {
     /* リザルトのそれぞれのスコアを取得 */
-//    val totalScore = scores["totalScore"]?.toInt() ?: 0
-//    val speedScore = scores["speedScore"]?.toInt() ?: 0
-//    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
-//    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
-//
-//    /* スコアの最大値を設定 */
-//    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
-//
-//    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
-//    val results = resultViewModel.allResults.value
-//    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
-//    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
-//
-//    val comment = when {
-//        /* 過去のシナリオと比較して評価コメントを選択する */
-//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
-//            when {
-//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
-//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-//            }
-//        }
-//
-//        /* その他シナリオの評価コメント */
-//        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
-//            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
-//        }
-//        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
-//            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-//        }
-//        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
-//            "悪くはありません。自信を持って落ち着いて話してみましょう"
-//        }
-//        (speedScore < maxSpeedScore - 20) -> {
-//            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
-//        }
-//        (clarityScore < maxClarityScore - 30) -> {
-//            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
-//        }
-//        (volumeScore < maxVolumeScore - 20) -> {
-//            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
-//        }
-//        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
-//    }
-    return "汝、己の声が全てに届き、聴く者に響き渡ることを心得よ。"//comment
+    val totalScore = scores["totalScore"]?.toInt() ?: 0
+    val speedScore = scores["speedScore"]?.toInt() ?: 0
+    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
+    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
+
+    /* スコアの最大値を設定 */
+    val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
+
+    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
+    val results = resultViewModel.allResults.value
+    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
+    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
+
+    val comment = when {
+        /* 過去のシナリオと比較して評価コメントを選択する */
+        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+            when {
+                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+            }
+        }
+
+        /* その他シナリオの評価コメント */
+        (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
+            "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
+        }
+        (maxSpeedScore - 10 <= speedScore && maxClarityScore - 10 <= clarityScore && maxVolumeScore - 10 <= volumeScore) -> {
+            "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+        }
+        (speedScore < maxSpeedScore - 20 && clarityScore < maxClarityScore - 20 && volumeScore < maxVolumeScore - 20) -> {
+            "悪くはありません。自信を持って落ち着いて話してみましょう"
+        }
+        (speedScore < maxSpeedScore - 20) -> {
+            "少し話す速さにブレを感じます。プレゼンをしている気持ちになって話してみると良いでしょう"
+        }
+        (clarityScore < maxClarityScore - 30) -> {
+            "あまり明瞭とは言えない声になってしまっています。背筋を伸ばして息を吐きながら話すとぐっと良くなると思います。"
+        }
+        (volumeScore < maxVolumeScore - 20) -> {
+            "声が小さいです。顎をひいて大きく息を吸って吐きながら話すと良い声が出るでしょう。"
+        }
+        else -> "もう少しゆっくり一言一言大切に話してみましょう！"
+    }
+    return comment
 }
 
 /* 総得点がハイスコアかどうか判定する */

@@ -25,6 +25,5 @@ data class Screen(
     val voiceOver: Int = 0,
     val line: String = "セリフを入力してください",
     val lineLength: Int = 0,
-    val isRecordingRequired: Boolean = false,
-    val isSelectedCharacterStanding: Boolean = false
+    val isRecordingRequired: Boolean = false
 )

@@ -14,9 +14,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.cleartalkrpg.createcharactersheetscreen.CreateCharacterSheetScreen
-import com.example.cleartalkrpg.selectcharacterscreen.SelectCharacterScreen
-import com.example.cleartalkrpg.selectcharacterscreen.rememberCharacterSheetSelectState
 import com.example.cleartalkrpg.resultscreen.ResultScreen
 import com.example.cleartalkrpg.scenarioscreen.ScenarioScreen
 import com.example.cleartalkrpg.titlescreen.TitleScreen
@@ -33,8 +30,6 @@ import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.homescreen.HomeScreen
 import com.example.cleartalkrpg.loadingscreen.LoadingScreen
-import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModel
-import com.example.cleartalkrpg.viewmodel.CharacterSheetViewModelFactory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -45,17 +40,13 @@ class MainActivity : ComponentActivity() {
     private val scenarioViewModel: ScenarioViewModel by viewModels {
         ScenarioViewModelFactory((application as CTRPGApplication).repository)
     }
-    private val characterSheetViewModel: CharacterSheetViewModel by viewModels {
-        CharacterSheetViewModelFactory((application as CTRPGApplication).repository)
-    }
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ClearTalkRPGTheme {
                 SceneGenerator(
                     resultViewModel = resultViewModel,
-                    scenarioViewModel = scenarioViewModel,
-                    characterSheetViewModel = characterSheetViewModel
+                    scenarioViewModel = scenarioViewModel
                 )
             }
         }
@@ -65,8 +56,6 @@ class MainActivity : ComponentActivity() {
 enum class ClearTalkRPGScreen {
     Title,
     Home,
-    CreateCharacterSheet,
-    SelectCharacter,
     SelectScenario,
     Scenario,
     Result,
@@ -77,13 +66,11 @@ enum class ClearTalkRPGScreen {
 @Composable
 fun SceneGenerator(
     resultViewModel: ResultViewModel,
-    scenarioViewModel: ScenarioViewModel,
-    characterSheetViewModel: CharacterSheetViewModel
+    scenarioViewModel: ScenarioViewModel
 ) {
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
-    val characterSheetSelectState = rememberCharacterSheetSelectState(characterSheetViewModel = characterSheetViewModel)
 
     val resultState = remember { mutableStateOf<Result?>(null) }
     val scenarioUpdateState = remember { mutableStateOf<Scenario?>(null) }
@@ -119,22 +106,7 @@ fun SceneGenerator(
                 TitleScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.Home.name) {
-                characterSheetSelectState.selectedCharacter?.let { it1 ->
-                    HomeScreen(navController = navController, selectedCharacterSheet = it1)
-                }
-            }
-            composable(route = ClearTalkRPGScreen.CreateCharacterSheet.name) {
-                CreateCharacterSheetScreen(
-                    navController = navController,
-                    characterSheetViewModel = characterSheetViewModel
-                )
-            }
-            composable(route = ClearTalkRPGScreen.SelectCharacter.name) {
-                SelectCharacterScreen(
-                    navController = navController,
-                    characterSheetViewModel = characterSheetViewModel,
-                    characterSheetSelectState = characterSheetSelectState
-                )
+                HomeScreen(navController = navController)
             }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
@@ -147,22 +119,19 @@ fun SceneGenerator(
                 LoadingScreen(navigation = { navController.navigate(navigationState.value!!) })
             }
             composable(route = ClearTalkRPGScreen.Scenario.name) {
-                characterSheetSelectState.selectedCharacter?.let { it1 ->
-                    ScenarioScreen(
-                        navController = navController,
-                        scenarioViewModel = scenarioViewModel,
-                        resultViewModel = resultViewModel,
-                        resultState = resultState,
-                        scenarioUpdateState = scenarioUpdateState,
-                        /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
-                                    * リスト等の添字に使用する場合は-1する必要がある。
-                                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
-                        selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
-                        resultScoresState = resultScoresState,
-                        resultCommentState = resultCommentState,
-                        selectedCharacterSheet = it1
-                    )
-                }
+                ScenarioScreen(
+                    navController = navController,
+                    scenarioViewModel = scenarioViewModel,
+                    resultViewModel = resultViewModel,
+                    resultState = resultState,
+                    scenarioUpdateState = scenarioUpdateState,
+                    /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
+                                * リスト等の添字に使用する場合は-1する必要がある。
+                                * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
+                    selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
+                    resultScoresState = resultScoresState,
+                    resultCommentState = resultCommentState
+                )
             }
             composable(route = ClearTalkRPGScreen.Result.name) {
                 ResultScreen(

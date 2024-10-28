@@ -33,21 +33,18 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.R
-import com.example.cleartalkrpg.database.CharacterSheet
 import com.example.cleartalkrpg.ui.theme.AccessibilityIcon
 import com.example.cleartalkrpg.ui.theme.HistoryIcon
 import com.example.cleartalkrpg.ui.theme.PersonAddIcon
 
 @Composable
 fun HomeScreen(
-    navController: NavController,
-    selectedCharacterSheet: CharacterSheet
+    navController: NavController
 ) {
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
         HomeScreenBackgroundImage()
-        selectedCharacterSheet.sprite?.let { HomeCharacterSprite(characterSprite = it) }
         DarkeningBottomScreen()
         Box(
             modifier = Modifier
@@ -57,22 +54,6 @@ fun HomeScreen(
             HomeMenu(navController = navController)
             StartToAdventure(navController = navController)
         }
-    }
-}
-
-/* 選択状態のキャラクターのスプライトを表示する */
-@Composable
-fun HomeCharacterSprite(characterSprite: Int) {
-    Box(
-        contentAlignment = Alignment.CenterStart,
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(100.dp, 0.dp)
-    ) {
-        Image(
-            painter = painterResource(id = characterSprite),
-            contentDescription = "Home Character Sprite"
-        )
     }
 }
 
@@ -107,42 +88,6 @@ fun HomeMenu(navController: NavController) {
         Row(
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            /* キャラメイクボタン */
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .clickable { navController.navigate(ClearTalkRPGScreen.CreateCharacterSheet.name) }
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-                    .border(2.dp, Color.DarkGray, RoundedCornerShape(8.dp))
-                    .padding(8.dp)
-            ) {
-                PersonAddIcon(iconColor = Color.Black, iconSize = 48.dp)
-                Text(
-                    text = "キャラメイク",
-                    fontFamily = FontFamily(Font(R.font.hangyaku)),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(1000)
-                )
-            }
-            /* キャラセレクトボタン */
-            Column(
-                horizontalAlignment = Alignment.CenterHorizontally,
-                modifier = Modifier
-                    .clickable { navController.navigate(ClearTalkRPGScreen.SelectCharacter.name) }
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(Color.White)
-                    .border(2.dp, Color.DarkGray, RoundedCornerShape(8.dp))
-                    .padding(8.dp)
-            ) {
-                AccessibilityIcon(iconColor = Color.Black, iconSize = 48.dp)
-                Text(
-                    text = "キャラセレクト",
-                    fontFamily = FontFamily(Font(R.font.hangyaku)),
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight(1000)
-                )
-            }
             /* リザルトヒストリーボタン */
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally,
@@ -208,7 +153,7 @@ fun StartToAdventure(navController: NavController) {
                 }
             )
             Text(
-                text = "冒険を始める",
+                text = "物語に潜る",
                 fontFamily = FontFamily(Font(R.font.hangyaku)),
                 fontSize = 40.sp,
                 fontWeight = FontWeight(1000)

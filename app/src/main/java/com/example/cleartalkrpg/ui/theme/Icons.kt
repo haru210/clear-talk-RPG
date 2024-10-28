@@ -48,3 +48,13 @@ fun AccessibilityIcon(iconColor: Color, iconSize: Dp) {
         modifier = Modifier.size(iconSize)
     )
 }
+
+@Composable
+fun RecordVoiceOverIcon(iconColor: Color, iconSize: Dp) {
+    Icon(
+        painter = painterResource(id = R.drawable.record_voice_over),
+        contentDescription = "Record Voice Over Icon",
+        tint = iconColor,
+        modifier = Modifier.size(iconSize)
+    )
+}
