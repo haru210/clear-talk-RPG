@@ -28,3 +28,13 @@ fun DownpointingTriangleAnimation() {
         contentScale = ContentScale.FillBounds
     )
 }
+
+@Composable
+fun ClearTalkRPGLogoAnimation() {
+    val composition by rememberLottieComposition(LottieCompositionSpec.RawRes(R.raw.cleartalkrpg_logo_animation))
+    LottieAnimation(
+        composition = composition,
+        iterations = 1,
+        contentScale = ContentScale.FillBounds,
+    )
+}
