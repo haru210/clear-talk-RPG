@@ -51,7 +51,7 @@ fun ScenarioSelectScreen(
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(modifier = Modifier.fillMaxSize()) {
-            CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Title.name) })
+            CustomTopBar(onBackClick = { navController.navigate(ClearTalkRPGScreen.Home.name) })
             Row(modifier = Modifier.fillMaxSize()) {
                 // シナリオ選択画面
                 Column(
@@ -225,7 +225,7 @@ fun CustomTopBar(onBackClick: () -> Unit) {
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
         Text(
-            text = "タイトル画面へ",
+            text = "ホーム画面へ",
             fontFamily = FontFamily(Font(R.font.koruri_regular)),
             color = Color(0, 0, 0),
             fontSize = 13.sp,

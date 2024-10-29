@@ -47,81 +47,28 @@ abstract class ScenarioDatabase: RoomDatabase() {
             }
         }
 
+        /* TODO: 非常にハードコードしているのでjsonでparseして渡せるようにする */
         suspend fun populateDatabase(scenarioDao: ScenarioDao) {
             /* シードデータの挿入 */
             val scenarios = mutableListOf<Scenario>()
             scenarios.add(0,Scenario(
-                title = "おれはかまきり",
-                description = "かまきり りゅうじによる詩",
+                title = "ポラーノの広場 節",
+                description = "宮沢賢治の短編小説",
                 jacketImage = R.mipmap.scenario1_image,
                 timeRequired = 1,
                 screens = mutableListOf<Screen>(
                     Screen(
-                        characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
+                        characterName = "GM",
+                        characterSpriteMiddle = null,
                         backgroundImage = R.drawable.title_screen_background_image,
-                        line = "おう　なつだぜ\n" +
-                                "おれは　げんきだぜ\n" +
-                                "あまりちかよるな",
-                        lineLength = 22
+                        line = "あのイーハトーヴォのすきとおった風、\n" +
+                                "夏でも底に冷たさをもつ青いそら、\n" +
+                                "うつくしい森で飾られたモリーオ市、郊外のぎらぎら光る草の波。",
+                        lineLength = 70
                     ),
-                    Screen(
-                        characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
-                        backgroundImage = R.drawable.title_screen_background_image,
-                        line = "おれの　こころも　かまも\n" +
-                                "どきどきするほど\n" +
-                                "ひかっているぜ",
-                        lineLength = 25
-                    ),
-                    Screen(
-                        characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
-                        backgroundImage = R.drawable.title_screen_background_image,
-                        line = "おう　あついぜ\n" +
-                                "おれは　がんばるぜ\n" +
-                                "もえる　ひをあびて",
-                        lineLength = 22
-                    ),
-                    Screen(
-                        characterName = "かまきり",
-                        characterSprite = R.drawable.kamakiri,
-                        backgroundImage = R.drawable.title_screen_background_image,
-                        line = "かまを　ふりかざす　すがた\n" +
-                                "わくわくするほど\n" +
-                                "きまってるぜ",
-                        lineLength = 25
-                    )
                 )
             ))
-            scenarios.add(1,Scenario(
-                title = "テセウスの心臓",
-                description = "失った心臓。それは己を犠牲にしてまで愛した心臓。誰が盗んだ？",
-                jacketImage = R.mipmap.scenario1_image,
-                timeRequired = 15,
-                screens = mutableListOf<Screen>()
-            ))
-            scenarios.add(2,Scenario(
-                title = "イル＝ペコローネIV 人形劇",
-                description = "ノブレス＝オブリージュを忘れた愚者は劇場の舞台で踊らされ、審判の裁定を待つばかりである。",
-                jacketImage = R.mipmap.scenario1_image,
-                timeRequired = 40,
-                screens = mutableListOf<Screen>()
-            ))
-            scenarios.add(3,Scenario(
-                title = "リミナルスペースの患者",
-                description = "静謐な虚空と久遠の一瞬《トキ》、紡がれる記憶は身を滅ぼす。",
-                jacketImage = R.mipmap.scenario1_image,
-                timeRequired = 20,
-                screens = mutableListOf<Screen>()
-            ))
-            scenarios.add(4,Scenario(
-                title = "雨のち小夜曲",
-                description = "雫が世界に最後の響きを齎すとき、その儚き少女は復讐の舞を舞う。",
-                jacketImage = R.mipmap.scenario1_image,
-                timeRequired = 15,
-                screens = mutableListOf<Screen>()
-            ))
+
             scenarios.forEach { scenario ->
                 scenarioDao.post(scenario)
             }

@@ -1,7 +1,6 @@
 package com.example.cleartalkrpg
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -9,10 +8,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -31,9 +28,9 @@ import com.example.cleartalkrpg.viewmodel.ScenarioViewModel
 import com.example.cleartalkrpg.viewmodel.ScenarioViewModelFactory
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Scenario
+import com.example.cleartalkrpg.homescreen.HomeScreen
 import com.example.cleartalkrpg.loadingscreen.LoadingScreen
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 class MainActivity : ComponentActivity() {
@@ -58,6 +55,7 @@ class MainActivity : ComponentActivity() {
 
 enum class ClearTalkRPGScreen {
     Title,
+    Home,
     SelectScenario,
     Scenario,
     Result,
@@ -73,6 +71,7 @@ fun SceneGenerator(
     val navController = rememberNavController()
     val resultSelectState = rememberResultSelectState(resultViewModel = resultViewModel)
     val scenarioSelectState = rememberScenarioSelectState(scenarioViewModel = scenarioViewModel)
+
     val resultState = remember { mutableStateOf<Result?>(null) }
     val scenarioUpdateState = remember { mutableStateOf<Scenario?>(null) }
     val resultScoresState = remember { mutableStateOf<Map<String, Double>>(emptyMap()) }
@@ -106,6 +105,9 @@ fun SceneGenerator(
             composable(route = ClearTalkRPGScreen.Title.name) {
                 TitleScreen(navController = navController)
             }
+            composable(route = ClearTalkRPGScreen.Home.name) {
+                HomeScreen(navController = navController)
+            }
             composable(route = ClearTalkRPGScreen.SelectScenario.name) {
                 ScenarioSelectScreen(
                     navController = navController,
@@ -124,8 +126,8 @@ fun SceneGenerator(
                     resultState = resultState,
                     scenarioUpdateState = scenarioUpdateState,
                     /* PrimaryKeyのautoGenerateプロパティの仕様上idが1から始まるので、
-                    * リスト等の添字に使用する場合は-1する必要がある。
-                    * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
+                                * リスト等の添字に使用する場合は-1する必要がある。
+                                * もともとシナリオのidを添字に使用する設計に問題があるので修正要検討。 */
                     selectedScenarioId = scenarioSelectState.selectedScenario!!.id - 1, // 技術的負債
                     resultScoresState = resultScoresState,
                     resultCommentState = resultCommentState

@@ -28,3 +28,33 @@ fun PauseIcon(iconColor: Color, iconSize: Dp) {
         modifier = Modifier.size(iconSize)
     )
 }
+
+@Composable
+fun PersonAddIcon(iconColor: Color, iconSize: Dp) {
+    Icon(
+        painter = painterResource(id = R.drawable.person_add),
+        contentDescription = "Person Add Icon",
+        tint = iconColor,
+        modifier = Modifier.size(iconSize)
+    )
+}
+
+@Composable
+fun AccessibilityIcon(iconColor: Color, iconSize: Dp) {
+    Icon(
+        painter = painterResource(id = R.drawable.accessibility),
+        contentDescription = "Accessibility Icon",
+        tint = iconColor,
+        modifier = Modifier.size(iconSize)
+    )
+}
+
+@Composable
+fun RecordVoiceOverIcon(iconColor: Color, iconSize: Dp) {
+    Icon(
+        painter = painterResource(id = R.drawable.record_voice_over),
+        contentDescription = "Record Voice Over Icon",
+        tint = iconColor,
+        modifier = Modifier.size(iconSize)
+    )
+}

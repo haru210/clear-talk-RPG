@@ -1,6 +1,5 @@
 package com.example.cleartalkrpg.scenarioscreen
 
-import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -32,13 +31,10 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.airbnb.lottie.compose.LottieAnimation
-import com.airbnb.lottie.compose.LottieCompositionSpec
-import com.airbnb.lottie.compose.LottieConstants
-import com.airbnb.lottie.compose.rememberLottieComposition
 import com.example.cleartalkrpg.ClearTalkRPGScreen
 import com.example.cleartalkrpg.database.Scenario
 import com.example.cleartalkrpg.ui.theme.PauseIcon
@@ -48,6 +44,8 @@ import com.example.cleartalkrpg.viewmodel.ResultViewModel
 import com.example.cleartalkrpg.database.Result
 import com.example.cleartalkrpg.database.Screen
 import com.example.cleartalkrpg.ui.theme.DownpointingTriangleAnimation
+import com.example.cleartalkrpg.ui.theme.RecordVoiceOverIcon
+import com.example.cleartalkrpg.utils.ScreenPosition
 import kotlinx.coroutines.delay
 
 /* データベースから選択されたシナリオに必要な情報をフェッチし、シナリオ画面を開始する */
@@ -100,7 +98,9 @@ fun ScenarioScreen(
         return
     }
 
-    StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
+    if (currentScenario.screens[currentScreenIndex].isRecordingRequired) {
+        StartListening(currentScenarioIndex = currentScreenIndex, currentScreen = currentScenario.screens[currentScreenIndex], partialScores = partialScores)
+    }
 
     Surface(
         onClick = {
@@ -174,12 +174,26 @@ fun ScenarioScreen(
         ) {
             if (currentScreenIndex < currentScenario.screens.size) {
                 ScenarioScreenBackgroundImage(currentScenario.screens[currentScreenIndex].backgroundImage)
-                ScenarioCharacterSprite(currentScenario.screens[currentScreenIndex].characterSprite)
+                currentScenario.screens[currentScreenIndex].characterSpriteLeft?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Left) }
+                currentScenario.screens[currentScreenIndex].characterSpriteMiddle?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Middle) }
+                currentScenario.screens[currentScreenIndex].characterSpriteRight?.let { ScenarioCharacterSprite(characterSpriteId = it, position = ScreenPosition.Right) }
             } else {
                 isScenarioError = true
                 errorMessage = "There are no screens inserted in the selected scenario."
             }
-            PauseButton(onClick = { isPaused = !isPaused })
+            Box(
+                contentAlignment = Alignment.TopEnd,
+                modifier = Modifier.fillMaxSize()
+            ) {
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.padding(16.dp)
+                ) {
+                    RolePlayAdvanceNoticeUI(currentScreenIndex = currentScreenIndex, currentScenario = currentScenario)
+                    PauseButton(onClick = { isPaused = !isPaused })
+                }
+            }
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -257,16 +271,40 @@ fun StartListening(
 /* ポーズボタン */
 @Composable
 fun PauseButton(onClick: () -> Unit) {
-    Box(modifier = Modifier.fillMaxSize()) {
-        Surface(
-            onClick = onClick,
-            color = Color.Gray,
-            modifier = Modifier
-                .padding(16.dp)
-                .align(alignment = Alignment.TopEnd)
-                .clip(RoundedCornerShape(32.dp))
-        ) {
-            PauseIcon(iconColor = Color.White, iconSize = 48.dp)
+    Surface(
+        onClick = onClick,
+        color = Color.Gray,
+        modifier = Modifier.clip(RoundedCornerShape(32.dp))
+    ) {
+        PauseIcon(iconColor = Color.White, iconSize = 48.dp)
+    }
+}
+
+/* ロールプレイ事前通知UI */
+@Composable
+fun RolePlayAdvanceNoticeUI(currentScreenIndex: Int, currentScenario: Scenario) {
+    if (currentScreenIndex < currentScenario.screens.size - 1) {
+        if (currentScenario.screens[currentScreenIndex+1].isRecordingRequired) {
+            Surface(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(Color.White)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.padding(16.dp, 8.dp)
+                ) {
+                    Text(
+                        text = "NEXT: ",
+                        fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                        fontSize = 24.sp,
+                        color = Color.Black,
+                        textAlign = TextAlign.Center
+                    )
+                    RecordVoiceOverIcon(iconColor = Color.Black, iconSize = 28.dp)
+                }
+            }
         }
     }
 }
@@ -286,12 +324,18 @@ fun ScenarioScreenBackgroundImage(backgroundImageId: Int) {
     }
 }
 
-/* 画面に表示するキャラクターのアバター */
+/* 画面に表示するキャラクターのスプライト */
 @Composable
-fun ScenarioCharacterSprite(characterSpriteId: Int) {
+fun ScenarioCharacterSprite(characterSpriteId: Int, position: ScreenPosition) {
     Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier.fillMaxSize()
+        contentAlignment = when {
+            (position == ScreenPosition.Left) -> Alignment.CenterStart
+            (position == ScreenPosition.Right) -> Alignment.CenterEnd
+            else -> Alignment.Center
+        },
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(80.dp, 0.dp)
     ) {
         Image(
             painter = painterResource(id = characterSpriteId),
@@ -377,7 +421,7 @@ fun DisplayScenarioMessage(
         Text(
             text = displayedMessage,
             color = Color.White,
-            fontFamily = FontFamily(Font(R.font.grsgor_r_web, FontWeight.Bold)),
+            fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
             fontSize = 18.sp,
             modifier = Modifier.padding(28.dp, 12.dp),
         )
@@ -443,29 +487,31 @@ fun getComment(
     scenarioTitle: String
 ) : String {
     /* リザルトのそれぞれのスコアを取得 */
-    val (totalScore, speedScore, clarityScore, volumeScore) = intArrayOf(scores["totalScore"]!!.toInt(), scores["speedScore"]!!.toInt(), scores["clarityScore"]!!.toInt(), scores["volumeScore"]!!.toInt())
+    val totalScore = scores["totalScore"]?.toInt() ?: 0
+    val speedScore = scores["speedScore"]?.toInt() ?: 0
+    val clarityScore = scores["clarityScore"]?.toInt() ?: 0
+    val volumeScore = scores["volumeScore"]?.toInt() ?: 0
+
+    /* スコアの最大値を設定 */
     val (maxSpeedScore, maxClarityScore, maxVolumeScore) = listOf(30, 40, 30)
 
-    /* 過去のリザルトと比較して評価できるようにする
-    * リザルトがない状態のときにnullになってクラッシュするため一旦削除
-    * */
-//    val results = resultViewModel.allResults.value
-//    var sameScenarioResults: List<Result>? = null
-//    var latestSameScenarioResult: Result? = null
-//    results?.let {
-//        sameScenarioResults = results.filter { it.scenario_title == scenarioTitle }
-//        latestSameScenarioResult = sameScenarioResults!!.last()
-//    }
+    /* 過去のリザルトのうち、今回と同じシナリオのリザルトの中で最も新しいものを取得する */
+    val results = resultViewModel.allResults.value
+    val sameScenarioResults = results?.filter { it.scenario_title == scenarioTitle }.orEmpty()
+    val latestSameScenarioResult = sameScenarioResults.lastOrNull()
 
     val comment = when {
-//        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
-//            when {
-//                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
-//                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
-//                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
-//            }
-//        }
+        /* 過去のシナリオと比較して評価コメントを選択する */
+        (latestSameScenarioResult != null && latestSameScenarioResult.total_score < totalScore) -> {
+            when {
+                latestSameScenarioResult.speed_score < speedScore -> "前回より丁度の良い速度で話すことができています。その調子で頑張りましょう！"
+                latestSameScenarioResult.clarity_score < clarityScore -> "前回より聞こえやすい声で話せています。その調子で頑張りましょう！"
+                latestSameScenarioResult.volume_score < volumeScore -> "前回より大きい声が出ていて聞こえやすいです。その調子で頑張りましょう！"
+                else -> "全体的に聞こえやすい発声ができています。目の前に話相手がいると思って声が伝わるように意識すると良いでしょう。"
+            }
+        }
+
+        /* その他シナリオの評価コメント */
         (speedScore == maxSpeedScore && clarityScore == maxClarityScore && volumeScore == maxVolumeScore) -> {
             "完璧な発声ができています。もうここからはあなたの領域です。自由に表現力を高めてください。"
         }

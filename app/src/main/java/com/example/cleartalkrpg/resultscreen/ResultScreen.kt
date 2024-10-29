@@ -131,9 +131,9 @@ fun ResultScreen(
                 modifier = Modifier.align(Alignment.CenterHorizontally)
             ) {
                 BackToOtherScreenButton(
-                    displayName = "タイトル画面へ",
+                    displayName = "ホーム画面へ",
                     backToOtherScreenClick = {
-                        navController.navigate(ClearTalkRPGScreen.Title.name)
+                        navController.navigate(ClearTalkRPGScreen.Home.name)
                     }
                 )
                 BackToOtherScreenButton(
@@ -277,7 +277,7 @@ fun CommentBoard(comment: String) {
                 modifier = Modifier.padding(24.dp, 8.dp)
             ) {
                 Text(
-                    text = "【一言コメント】",
+                    text = "【 神の声 】",
                     fontFamily = FontFamily(Font(R.font.koruri_bold, FontWeight.Bold)),
                     fontSize = 18.sp
                 )
@@ -345,7 +345,7 @@ fun BackToOtherScreenButton(
 
 /* 背景画像 */
 @Composable
-fun TitleScreenBackgroundImage(titleScreenBackGroundImage: Int = R.drawable.title_screen_background_image) {
+fun TitleScreenBackgroundImage(titleScreenBackGroundImage: Int = R.drawable.prison) {
     Box(modifier = Modifier.fillMaxSize()) {
         Image(
             painter = painterResource(id = titleScreenBackGroundImage),

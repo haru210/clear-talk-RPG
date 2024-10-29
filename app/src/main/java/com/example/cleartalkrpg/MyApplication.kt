@@ -1,6 +1,7 @@
 package com.example.cleartalkrpg
 
 import android.app.Application
+// import com.example.cleartalkrpg.database.CharacterSheetDatabase
 import com.example.cleartalkrpg.database.ResultDatabase
 import com.example.cleartalkrpg.database.ScenarioDatabase
 import com.example.cleartalkrpg.database.repository.UserRepository
