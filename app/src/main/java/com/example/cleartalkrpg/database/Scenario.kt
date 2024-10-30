@@ -17,7 +17,7 @@ data class Scenario(
 
 data class Screen(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
-    val characterName: String = "かまきり",
+    val characterName: String? = null,
     var characterSpriteLeft: Int? = null,
     var characterSpriteMiddle: Int? = null,
     var characterSpriteRight: Int? = null,
