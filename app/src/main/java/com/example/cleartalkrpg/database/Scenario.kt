@@ -5,7 +5,6 @@ import androidx.room.PrimaryKey
 import com.example.cleartalkrpg.R
 import kotlinx.serialization.Serializable
 
-@Serializable
 @Entity(tableName = "scenarios")
 data class Scenario(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
@@ -17,7 +16,6 @@ data class Scenario(
     val screens: MutableList<Screen>
 )
 
-@Serializable
 data class Screen(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val characterName: String? = null,
