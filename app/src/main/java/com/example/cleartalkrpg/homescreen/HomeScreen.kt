@@ -100,9 +100,9 @@ fun HomeMenu(navController: NavController) {
             ) {
                 HistoryIcon(iconColor = Color.Black, iconSize = 48.dp)
                 Text(
-                    text = "リザルトヒストリー",
-                    fontFamily = FontFamily(Font(R.font.hangyaku)),
-                    fontSize = 20.sp,
+                    text = "リザルト履歴",
+                    fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                    fontSize = 18.sp,
                     fontWeight = FontWeight(1000)
                 )
             }
@@ -154,8 +154,8 @@ fun StartToAdventure(navController: NavController) {
             )
             Text(
                 text = "物語に潜る",
-                fontFamily = FontFamily(Font(R.font.hangyaku)),
-                fontSize = 40.sp,
+                fontFamily = FontFamily(Font(R.font.koruri_bold)),
+                fontSize = 28.sp,
                 fontWeight = FontWeight(1000)
             )
         }

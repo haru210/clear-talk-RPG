@@ -349,7 +349,7 @@ fun ScenarioCharacterSprite(characterSpriteId: Int, position: ScreenPosition) {
 @Composable
 fun ScenarioMessageBox(
     scenarioMessage: String,
-    scenarioCharacterName: String,
+    scenarioCharacterName: String?,
     messageDisplaySpeed: Long,
     onMessageComplete: () -> Unit,
     isMessageComplete: Boolean
@@ -357,7 +357,9 @@ fun ScenarioMessageBox(
     Column(
 
     ) {
-        ScenarioCharacterNamePlate(characterName = scenarioCharacterName)
+        if (scenarioCharacterName != null) {
+            ScenarioCharacterNamePlate(characterName = scenarioCharacterName)
+        }
         DisplayScenarioMessage(
             scenarioMessage = scenarioMessage,
             messageDisplaySpeed = messageDisplaySpeed,
